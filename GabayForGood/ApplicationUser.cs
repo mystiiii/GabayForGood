@@ -11,8 +11,6 @@ namespace GabayForGood.DataModel
     {
         public string FullName { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsAdmin { get; set; }
-        public bool IsOrg { get; set; }
 
         public List<Donation> Donation { get; set; }
     }
