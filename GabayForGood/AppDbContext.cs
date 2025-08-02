@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,23 +26,29 @@ namespace GabayForGood.DataModel
         {
             base.OnModelCreating(mb);
 
-            mb.Entity<Organization>().ToTable("Organizations");
-            mb.Entity<Organization>().Property(p => p.OrganizationId).ValueGeneratedOnAdd();
-            mb.Entity<Organization>().Property(p => p.Description).HasColumnType("nvarchar(100)");
-            mb.Entity<Organization>().Property(p => p.YearFounded).HasColumnType("int");
-            mb.Entity<Organization>().Property(p => p.Address).HasColumnType("nvarchar(150)");
-            mb.Entity<Organization>().Property(p => p.Email).HasColumnType("nvarchar(50)");
-            mb.Entity<Organization>().Property(p => p.ContactNo).HasColumnType("nvarchar(50)");
-            mb.Entity<Organization>().Property(p => p.ContactPerson).HasColumnType("nvarchar(50)");
-            mb.Entity<Organization>().Property(p => p.OrgLink).HasColumnType("nvarchar(50)").IsRequired(false);
-            mb.Entity<Organization>().Property(p => p.CreatedAt).HasColumnType("DateTime2(7)");
+            mb.Entity<Project>()
+                .HasOne(p => p.Organization)
+                .WithMany(p => p.Project)
+                .HasForeignKey(p => p.OrganizationId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            mb.Entity<Project>().ToTable("Projects");
-            mb.Entity<Project>().Property(p => p.OrganizationId).ValueGeneratedOnAdd();
-            mb.Entity<Project>().Property(p => p.Title).HasColumnType("nvarchar50");
-            mb.Entity<Project>().Property(p => p.Title).HasColumnType("nvarchar50");
+            mb.Entity<ProjectUpdate>()
+                .HasOne(p => p.Project)
+                .WithMany(p => p.ProjectUpdates)
+                .HasForeignKey(p => p.ProjectId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            mb.Entity<Donation>()
+                .HasOne(p => p.Project)
+                .WithMany(p => p.Donations)
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.Restrict);
 
+            mb.Entity<Donation>()
+               .HasOne<IdentityUser>()  // No navigation property on IdentityUser
+               .WithMany()              // No navigation property collection
+               .HasForeignKey(d => d.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Organization> Organizations { get; set; }
