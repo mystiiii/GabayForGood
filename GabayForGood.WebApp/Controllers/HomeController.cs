@@ -9,10 +9,4 @@ public class HomeController : Controller
     {
         return View();
     }
-
-    //pollo - landing page
-    public IActionResult Landing()
-    {
-        return View();
-    }
 }
