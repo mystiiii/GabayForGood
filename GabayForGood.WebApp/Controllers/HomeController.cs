@@ -1,22 +1,15 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using GabayForGood.WebApp.Models;
 
 namespace GabayForGood.WebApp.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
         return View();
     }
+<<<<<<< HEAD
 
     public IActionResult Privacy()
     {
@@ -35,4 +28,6 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+=======
+>>>>>>> master
 }

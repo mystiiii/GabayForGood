@@ -1,1 +1,57 @@
-﻿
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+    @using GabayForGood.WebApp.Models
+    @model List<OrgVM>
+}
+
+@if (Model.Count() < 1)
+{
+    <div class="alert alert-info">
+        No Organizations found.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>NGO ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Contact</th>
+                <th>Date Created/Modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (OrgVM p in Model)
+            {
+                <tr>
+                    <td>@p.OrganizationID</td>
+                    <td>
+                        @p.Name
+                        <br />
+                        <small class="text-muted">@p.Description</small>
+                    </td>
+                    <td>@p.Address</td>
+                    <td>
+                        @p.ContactPerson
+                        <br />
+                        @p.Email
+                        <br />
+                        @p.ContactNo
+                    </td>
+                    <td>
+                        Created: @p.CreatedAt
+                        <br />
+                        Modified: @p.ModifiedAt
+                    </td>
+                    <td style="text-align:center">
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

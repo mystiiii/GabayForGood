@@ -1,22 +1,43 @@
-html {
-  font-size: 14px;
+.main-header {
+    background: linear-gradient(135deg, #4a9b9b 0%, #5fb3b3 100%);
+    color: white;
+    padding: 20px 0;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.navbar-brand-custom {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: white !important;
+    text-decoration: none;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    .navbar-brand-custom:hover {
+        color: #f0f0f0 !important;
+    }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.nav-link-custom {
+    color: white !important;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
+
+    .nav-link-custom:hover {
+        color: #f0f0f0 !important;
+    }
 
 body {
-  margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-main {
+    flex: 1;
 }
