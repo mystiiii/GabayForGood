@@ -5,7 +5,7 @@ using System;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(opts => {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("LeiServer"));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("Pollo"));
 });
 
 builder.Services.AddControllersWithViews();

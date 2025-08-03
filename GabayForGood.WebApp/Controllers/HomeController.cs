@@ -23,6 +23,13 @@ public class HomeController : Controller
         return View();
     }
 
+    //pollo - landing page
+    public IActionResult Landing()
+    {
+        return View();
+    }
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
