@@ -2,8 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using GabayForGood.DataModel;
 using System;
 using Microsoft.AspNetCore.Identity;
+using GabayForGood.WebApp.MapConfig;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddDbContext<AppDbContext>(opts => {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("LeiServer"));
@@ -13,9 +16,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireLowercase = true;
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();

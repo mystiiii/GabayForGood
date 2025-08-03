@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/adminSite.css" asp-append-version="true" />
 
@@ -23,13 +23,13 @@
         <div class="row g-0">
             <div class="col-md-3 col-lg-2 admin-sidebar">
                 <div class="sidebar-header">
-                    <a href="#" class="admin-brand">Gabay Admin</a>
+                    <a href="#" class="admin-brand">Gabay For Good Admin</a>
                 </div>
                 <nav class="nav flex-column">
                     <a class="nav-link active" asp-controller="Admin" asp-action="Index">
                         <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" asp-controler="Admin" asp-action="RegisterOrg">
                         <i class="fas fa-users me-2"></i> Register NGO
                     </a>
                 </nav>

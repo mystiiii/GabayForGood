@@ -11,16 +11,14 @@ public static class DbInitializer
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // 1. Ensure Admin Role Exists
         var roleName = "Admin";
         if (!await roleManager.RoleExistsAsync(roleName))
         {
             await roleManager.CreateAsync(new IdentityRole(roleName));
         }
 
-        // 2. Create Admin User If It Doesn't Exist
         var adminEmail = "admin";
-        var adminPassword = "password"; // Change this later
+        var adminPassword = "P@ssw0rd!"; 
 
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
