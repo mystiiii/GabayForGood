@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddDbContext<AppDbContext>(opts => {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("Pollo"));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("LeiServer"));
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
