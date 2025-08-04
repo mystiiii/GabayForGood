@@ -1,5 +1,70 @@
-﻿@{
+﻿@using GabayForGood.WebApp.Models
+@model OrgVM
+@{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Register Organization";
+    ViewData["Title"] = "Register Organization - ";
 }
+
+<div class="p-3">
+    <h1>Add New Organization</h1>
+    <hr />
+    <h3>Organization Information</h3>
+    <form asp-controller="Organization" asp-action="Add" method="post">
+        <div class="form-group">
+            <label>Organization Name</label>
+            <input asp-for="Name" class="form-control form-control-sm" style="width: 300px;" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Organization Description</label>
+            <textarea asp-for="Description" class="form-control form-control-sm" style="width: 300px; height: 80px;" required></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Year Founded</label>
+            <input asp-for="YearFounded" type="number" class="form-control form-control-sm" style="width: 300px;" required />
+            <span asp-validation-for="YearFounded" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Address</label>
+            <textarea asp-for="Address" class="form-control form-control-sm" style="width: 300px; height: 60px;" required></textarea>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Email</label>
+            <input asp-for="Email" type="email" class="form-control form-control-sm" style="width: 300px;" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Contact Number</label>
+            <input asp-for="ContactNo" type="tel" class="form-control form-control-sm" style="width: 300px;" required />
+            <span asp-validation-for="ContactNo" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Contact Person</label>
+            <input asp-for="ContactPerson" class="form-control form-control-sm" style="width: 300px;" required />
+            <span asp-validation-for="ContactPerson" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Organization Website (Optional)</label>
+            <input asp-for="OrgLink" type="url" class="form-control form-control-sm" style="width: 300px;" />
+            <span asp-validation-for="OrgLink" class="text-danger"></span>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i> Add Organization
+        </button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

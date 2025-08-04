@@ -17,7 +17,7 @@ public static class DbInitializer
             await roleManager.CreateAsync(new IdentityRole(roleName));
         }
 
-        var adminEmail = "admin";
+        var adminEmail = "admin@gabayforgood.com";
         var adminPassword = "P@ssw0rd!"; 
 
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
