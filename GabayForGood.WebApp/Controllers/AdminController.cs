@@ -77,6 +77,15 @@ namespace GabayForGood.WebApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Add()
+        {
+            return LocalRedirect("/Admin");
+        }
+
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> LogOut()
         {
             await signInManager.SignOutAsync();
