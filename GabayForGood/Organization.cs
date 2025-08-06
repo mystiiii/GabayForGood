@@ -49,7 +49,7 @@ namespace GabayForGood.DataModel
 
         [Required]
         [Column(TypeName = "datetime2")]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         public List<Project> Project { get; set; }
     }

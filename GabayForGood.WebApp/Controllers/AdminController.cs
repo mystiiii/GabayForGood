@@ -76,6 +76,7 @@ namespace GabayForGood.WebApp.Controllers
             return View(model);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(OrgVM org)
@@ -86,11 +87,25 @@ namespace GabayForGood.WebApp.Controllers
             }
 
             var orgEntity = mapper.Map<Organization>(org);
+            orgEntity.CreatedAt = DateTime.UtcNow;
 
             await context.Organizations.AddAsync(orgEntity);
             await context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Admin"); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var entity = await context.Organizations.FindAsync(id);
+            if (entity != null)
+            {
+                context.Organizations.Remove(entity);
+                await context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index", "Admin");
         }
 
 

@@ -1,61 +1,248 @@
-﻿@{
+﻿@using GabayForGood.WebApp.Models
+@model List<OrgVM>
+@{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Dashboard";
-    @using GabayForGood.WebApp.Models
-    @model List<OrgVM>
 }
+
+<style>
+    .admin-main-content {
+        background: linear-gradient(135deg, #4a9b9b, #2d7a7a) !important;
+    }
+
+    .content-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .page-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    .content-divider {
+        height: 3px;
+        background: linear-gradient(90deg, #4a9b9b, #2d7a7a);
+        border: none;
+        border-radius: 2px;
+        margin-bottom: 2rem;
+    }
+
+    .modern-table {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+        .modern-table thead th {
+            background: linear-gradient(135deg, #4a9b9b, #2d7a7a);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .modern-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+            .modern-table tbody tr:hover {
+                background-color: #f8f9fa;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .modern-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .org-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .org-description {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .contact-info {
+        line-height: 1.4;
+    }
+
+    .contact-person {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .contact-details {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .date-info {
+        line-height: 1.4;
+        font-size: 0.9rem;
+    }
+
+    .date-label {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .date-value {
+        color: #6c757d;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+
+        .btn-delete:active {
+            transform: translateY(0);
+        }
+
+    .alert-modern {
+        background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+        border: none;
+        border-radius: 12px;
+        color: #0c5460;
+        padding: 1.5rem;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .org-id-badge {
+        background: linear-gradient(135deg, #4a9b9b, #2d7a7a);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    /* Remove any conflicting styles from admin layout */
+    .admin-main-content .container-fluid {
+        padding: 0;
+    }
+</style>
 
 @if (Model.Count() < 1)
 {
-    <div class="alert alert-info">
-        No Organizations found.
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style="background-color: #2C7A7B;">
+        <div class="content-container p-5 w-100" style="max-width: 800px;">
+            <h1 class="page-title text-center fs-2 mb-4">Organizations</h1>
+            <hr class="content-divider mb-4">
+            <div class="alert alert-modern text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                No Organizations found.
+            </div>
+        </div>
     </div>
 }
 else
 {
-    <div class="" style="background-color: #FFF8F8;">
-        Organizations
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style="background-color: #2C7A7B;">
+        <div class="content-container p-5 w-100" style="max-width: 1400px;">
+            <h1 class="page-title text-center fs-2 mb-4">Organizations</h1>
+            <hr class="content-divider mb-4">
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>NGO ID</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Contact</th>
-                <th>Date Created/Modified</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (OrgVM p in Model)
-            {
-                <tr>
-                    <td>@p.OrganizationID</td>
-                    <td>
-                        @p.Name
-                        <br />
-                        <small class="text-muted">@p.Description</small>
-                    </td>
-                    <td>@p.Address</td>
-                    <td>
-                        @p.ContactPerson
-                        <br />
-                        @p.Email
-                        <br />
-                        @p.ContactNo
-                    </td>
-                    <td>
-                        Created: @p.CreatedAt
-                        <br />
-                        Modified: @p.ModifiedAt
-                    </td>
-                    <td style="text-align:center">
-                        
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            <div class="table-responsive">
+                <table class="table modern-table">
+                    <thead>
+                        <tr>
+                            <th>NGO ID</th>
+                            <th>Organization Details</th>
+                            <th>Address</th>
+                            <th>Contact Information</th>
+                            <th>Timeline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (OrgVM p in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    <span class="org-id-badge">@p.OrganizationID</span>
+                                </td>
+                                <td>
+                                    <div class="org-name">@p.Name</div>
+                                    <div class="org-description">@p.Description</div>
+                                </td>
+                                <td>
+                                    <div style="max-width: 200px;">@p.Address</div>
+                                </td>
+                                <td>
+                                    <div class="contact-info">
+                                        <div class="contact-person">@p.ContactPerson</div>
+                                        <div class="contact-details">@p.Email</div>
+                                        <div class="contact-details">@p.ContactNo</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div><span class="date-label">Created:</span> <span class="date-value">@p.CreatedAt</span></div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <form asp-controller="Admin" asp-action="Delete"
+                                          method="post" style="display:inline">
+                                        <input type="hidden" name="Id" value="@p.OrganizationID" />
+                                        <button type="submit" class="btn btn-delete">
+                                            <i class="fas fa-trash me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 }

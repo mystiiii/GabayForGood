@@ -5,64 +5,161 @@
     ViewData["Title"] = "Register Organization - ";
 }
 
-<div class="p-3">
-    <h1>Add New Organization</h1>
-    <hr />
-    <h3>Organization Information</h3>
-    <form asp-controller="Admin" asp-action="Add" method="post">
-        <div class="form-group">
-            <label>Organization Name</label>
-            <input asp-for="Name" class="form-control form-control-sm" style="width: 300px;" required />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Organization Description</label>
-            <textarea asp-for="Description" class="form-control form-control-sm" style="width: 300px; height: 80px;" required></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Year Founded</label>
-            <input asp-for="YearFounded" type="number" class="form-control form-control-sm" style="width: 300px;" required />
-            <span asp-validation-for="YearFounded" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Address</label>
-            <textarea asp-for="Address" class="form-control form-control-sm" style="width: 300px; height: 60px;" required></textarea>
-            <span asp-validation-for="Address" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Email</label>
-            <input asp-for="Email" type="email" class="form-control form-control-sm" style="width: 300px;" required />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Contact Number</label>
-            <input asp-for="ContactNo" type="tel" class="form-control form-control-sm" style="width: 300px;" required />
-            <span asp-validation-for="ContactNo" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Contact Person</label>
-            <input asp-for="ContactPerson" class="form-control form-control-sm" style="width: 300px;" required />
-            <span asp-validation-for="ContactPerson" class="text-danger"></span>
-        </div>
-        <br />
-        <div class="form-group">
-            <label>Organization Website (Optional)</label>
-            <input asp-for="OrgLink" type="url" class="form-control form-control-sm" style="width: 300px;" />
-            <span asp-validation-for="OrgLink" class="text-danger"></span>
-        </div>
-        <br />
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-square-plus"></i> Add Organization
-        </button>
-    </form>
+<style>
+    .admin-main-content {
+        background: linear-gradient(135deg, #4a9b9b, #2d7a7a) !important;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        animation: slideUp 0.6s ease-out;
+    }
+
+    @@keyframes slideUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .form-divider {
+        height: 3px;
+        background: linear-gradient(90deg, #4a9b9b, #2d7a7a);
+        border: none;
+        border-radius: 2px;
+    }
+
+    .form-control {
+        background-color: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus {
+            background-color: white;
+            border-color: #4a9b9b;
+            box-shadow: 0 0 0 3px rgba(74, 155, 155, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-control:hover {
+            border-color: #4a9b9b;
+            background-color: white;
+        }
+
+    .btn-signup {
+        background: linear-gradient(135deg, #ffc107, #ffb300);
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .btn-signup:hover {
+            background: linear-gradient(135deg, #ffb300, #ffa000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-signup:active {
+            transform: translateY(0);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-title {
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Remove any conflicting styles from admin layout */
+    .admin-main-content .container-fluid {
+        padding: 0;
+    }
+</style>
+
+<div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4" style="background-color: #2C7A7B;" >
+    <div class="form-container p-5 w-100" style="max-width: 1200px;">
+        <h1 class="form-title text-center fs-2 mb-4">Register Organization</h1>
+        <hr class="form-divider mb-4">
+
+        <form asp-controller="Admin" asp-action="Add" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-4">
+                <label asp-for="Name" class="form-label">Organization Name:</label>
+                <input asp-for="Name" type="text" class="form-control" required placeholder="Enter organization name">
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label">Organization Description:</label>
+                <textarea asp-for="Description" class="form-control" rows="3" required placeholder="Describe your organization"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="YearFounded" class="form-label">Year Founded:</label>
+                <input asp-for="YearFounded" type="number" class="form-control" required placeholder="e.g., 2020">
+                <span asp-validation-for="YearFounded" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Address" class="form-label">Address:</label>
+                <textarea asp-for="Address" class="form-control" rows="2" required placeholder="Enter complete address"></textarea>
+                <span asp-validation-for="Address" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label">Email Address:</label>
+                <input asp-for="Email" type="email" class="form-control" required placeholder="organization@example.com">
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ContactNo" class="form-label">Contact Number:</label>
+                <input asp-for="ContactNo" type="tel" class="form-control" required placeholder="+63 (912) 345-6789">
+                <span asp-validation-for="ContactNo" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ContactPerson" class="form-label">Person of Contact:</label>
+                <input asp-for="ContactPerson" type="text" class="form-control" required placeholder="Contact person name">
+                <span asp-validation-for="ContactPerson" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="OrgLink" class="form-label">Website/Facebook Page:</label>
+                <input asp-for="OrgLink" type="url" class="form-control" placeholder="https://www.example.com">
+                <span asp-validation-for="OrgLink" class="text-danger small"></span>
+            </div>
+
+            <div class="d-grid mt-4 d-flex justify-content-center" sstyle="max-width: 400px;">
+                <button type="submit" class="btn btn-signup btn-lg text-white py-3" >
+                    <i class="fas fa-user-plus me-2"></i>Register
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

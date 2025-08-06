@@ -28,7 +28,7 @@ public class Donation
     public string Status { get; set; }
 
     [Required]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
 
     // Navigation properties
     [ForeignKey("UserId")]

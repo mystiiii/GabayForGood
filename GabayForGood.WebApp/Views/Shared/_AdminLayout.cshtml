@@ -12,7 +12,6 @@
     <div class="container-fluid p-0">
         @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
         {
-            <!-- Full admin layout with sidebar -->
             <div class="d-flex">
                 <div class="admin-sidebar">
                     <div class="sidebar-header">
@@ -30,11 +29,7 @@
                         <a class="footer-link" asp-controller="Admin" asp-action="Logout">Logout</a>
                     </div>
                 </div>
-                <div class="admin-main-content" style="background-color: #2C7A7B;">
-                    <main class="admin-content text-center">
-                        @RenderBody()
-                    </main>
-                </div>
+                    @RenderBody()
             </div>
         }
         else

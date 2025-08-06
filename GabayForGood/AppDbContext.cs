@@ -45,8 +45,8 @@ namespace GabayForGood.DataModel
                 .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-               .HasOne<IdentityUser>()  // No navigation property on IdentityUser
-               .WithMany()              // No navigation property collection
+               .HasOne<IdentityUser>()  
+               .WithMany()  
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.Restrict);
         }
