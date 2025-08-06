@@ -76,12 +76,21 @@ namespace GabayForGood.WebApp.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add()
+        public async Task<IActionResult> Add(OrgVM org)
         {
-            return LocalRedirect("/Admin");
+            if (!ModelState.IsValid)
+            {
+                return View(org); 
+            }
+
+            var orgEntity = mapper.Map<Organization>(org);
+
+            await context.Organizations.AddAsync(orgEntity);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Admin"); 
         }
 
 

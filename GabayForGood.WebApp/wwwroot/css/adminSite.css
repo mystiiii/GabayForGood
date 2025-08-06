@@ -1,14 +1,19 @@
-﻿/* Admin-specific styles */
-.admin-sidebar {
-    background-color: #2c3e50;
+﻿.admin-sidebar {
+    background-color: #FFF8F8;
     min-height: 100vh;
+    width: 250px; /* Fixed width instead of percentage */
     padding: 0;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
     .admin-sidebar .nav-link {
-        color: #ecf0f1;
+        color: #333;
         padding: 15px 20px;
         border-bottom: 1px solid #34495e;
+        font-weight: bold !important;
     }
 
         .admin-sidebar .nav-link:hover {
@@ -16,46 +21,77 @@
             color: white;
         }
 
-        .admin-sidebar .nav-link.active {
-            background-color: #3498db;
-            color: white;
-        }
-
-.admin-header {
-    background-color: #34495e;
-    color: white;
-    padding: 15px 30px;
-    margin-bottom: 0;
-}
-
-.admin-content {
-    padding: 30px;
-    background-color: #ecf0f1;
-    min-height: calc(100vh - 80px);
+.admin-main-content {
+    flex: 1; /* Take remaining space */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .admin-brand {
-    color: white;
+    color: #333;
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: bold !important;
     text-decoration: none;
 }
 
     .admin-brand:hover {
-        color: #bdc3c7;
+        color: #666;
     }
 
 .sidebar-header {
     padding: 20px;
-    background-color: #2c3e50;
+    background-color: #D9D9D9;
     border-bottom: 1px solid #34495e;
 }
 
-.user-info {
-    color: #bdc3c7;
-    font-size: 0.9rem;
+.sidebar-footer {
+    padding: 20px;
+    background-color: #D9D9D9;
+    border-top: 1px solid #34495e;
+    margin-top: auto; /* Push to bottom */
+}
+
+    .sidebar-footer .footer-link {
+        color: #333;
+        padding: 15px 20px;
+        font-weight: bold !important;
+        text-decoration: none;
+    }
+
+.footer-link:hover {
+    color: #666;
+}
+
+/* Navigation container should flex to fill space */
+.nav.flex-column {
+    flex: 1;
+}
+
+ Login layout styles 
+.login-container {
+    min-height: 100vh;
+}
+
+.login-content {
+    width: 100%;
+    max-width: 400px;
 }
 
 body {
     overflow-x: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 100% !important;
+        position: relative !important;
+        height: auto !important;
+    }
+
+    .d-flex {
+        flex-direction: column;
+    }
 }
