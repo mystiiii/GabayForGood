@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-builder.Services.AddDbContext<AppDbContext>(opts => {
+builder.Services.AddDbContext<AppDbContext>(opts =>
+{
     opts.UseSqlServer(builder.Configuration.GetConnectionString("Pollo"));
 });
 
@@ -43,7 +44,20 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();    
 app.UseAuthorization();
+
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 401 || response.StatusCode == 403)
+    {
+        response.Redirect("/Home/Index");
+    }
+});
+
 
 app.MapControllerRoute(
     name: "default",

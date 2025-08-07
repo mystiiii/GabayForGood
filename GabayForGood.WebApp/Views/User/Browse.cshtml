@@ -22,10 +22,6 @@
     .card-footer small {
         font-size: 0.85rem;
     }
-
-    .object-fit-cover {
-        object-fit: cover;
-    }
 </style>
 
 <!-- WHOLE PAGE CONTAINER -->
@@ -41,13 +37,17 @@
             </div>
         </div>
 
-        <!-- Right Side: Fixed Images -->
+        <!-- Right Side: Two Rectangles with Image Upload -->
         <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" style="background-color: #FDBB2D;">
-            <div class="mb-4" style="width: 70%; height: 350px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <img src="~/images/top1.jpg" class="w-100 h-100 object-fit-cover" alt="Top Image 1" />
+            <div class="mb-4 position-relative" style="width: 70%; height: 350px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
+                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage1')" />
+                <img id="previewImage1" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
+                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
             </div>
-            <div style="width: 60%; height: 300px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <img src="~/images/top2.jpg" class="w-100 h-100 object-fit-cover" alt="Top Image 2" />
+            <div class="position-relative" style="width: 60%; height: 300px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
+                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage2')" />
+                <img id="previewImage2" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
+                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
             </div>
         </div>
     </div>
@@ -60,12 +60,14 @@
     <!-- PROJECT CARDS SECTION -->
     <div class="w-100 py-5 px-4" style="background-color: #003840;">
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            @for (int i = 1; i <= 6; i++)
+            @for (int i = 0; i < 6; i++)
             {
                 <div class="col">
                     <div class="card h-100 shadow-sm rounded-4 overflow-hidden">
-                        <div class="bg-light text-center" style="height: 300px; overflow: hidden;">
-                            <img src="~/images/card@i.jpg" class="w-100 h-100 object-fit-cover" alt="Card Image @i" />
+                        <div class="position-relative bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'cardPreview@i')" />
+                            <img id="cardPreview@i" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
+                            <span class="position-absolute text-muted" style="z-index: -1;">Click to upload image</span>
                         </div>
                         <div class="card-footer bg-white p-3">
                             <h6 class="cause-title">TITLE OF THE PROJECT & SHIT</h6>
@@ -92,3 +94,19 @@
         </div>
     </div>
 </div>
+
+<!-- IMAGE PREVIEW SCRIPT -->
+<script>
+    function previewImage(input, previewId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
