@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-builder.Services.AddDbContext<AppDbContext>(opts => {
+builder.Services.AddDbContext<AppDbContext>(opts =>
+{
     opts.UseSqlServer(builder.Configuration.GetConnectionString("LeiServer"));
 });
 
