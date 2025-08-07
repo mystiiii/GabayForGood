@@ -1,5 +1,36 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using GabayForGood.WebApp.Models
+@model AdminVM
 @{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Login -";
+}
+
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100" style="background-color: #2C7A7B;">
+    <h1 class="display-4 fw-bold text-white mb-4">GABAY FOR GOOD</h1>
+    
+    <div class="card shadow-sm p-4 rounded-3" style="width: 100%; max-width: 400px; background-color: #FFF8F8;">
+        <h3 class="text-center mb-4" style="color: #333;">Admin Login</h3>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <form asp-controller="Admin" asp-action="LogIn" method="post">
+            <input asp-for="ReturnURL" type="hidden" />
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label" style="color: #666;">Username</label>
+                <input asp-for="Username" type="email" class="form-control" required>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label" style="color: #666;">Password</label>
+                <input asp-for="Password" type="password" class="form-control" required>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn w-100" style="background-color: #2C7A7B; color: white; border: none;">Login</button>
+            @Html.AntiForgeryToken()
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

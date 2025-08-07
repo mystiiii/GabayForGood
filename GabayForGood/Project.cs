@@ -52,7 +52,7 @@ namespace GabayForGood.DataModel
         public string Status { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         public Organization Organization { get; set; }
         public List<ProjectUpdate> ProjectUpdates { get; set; }

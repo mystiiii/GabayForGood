@@ -22,7 +22,7 @@ namespace GabayForGood.DataModel
         public string Description { get; set; }
 
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         public Project Project { get; set; }
     }
