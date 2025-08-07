@@ -10,7 +10,7 @@ public class HomeController : Controller
     {
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            await HttpContext.SignOutAsync(); // Prevent Browse from appearing by default if still signed in
+            await HttpContext.SignOutAsync(); 
         }
 
         return View();
