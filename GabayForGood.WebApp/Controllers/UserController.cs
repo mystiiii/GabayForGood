@@ -11,17 +11,36 @@ namespace GabayForGood.WebApp.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UserController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
-        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult SignIn(string? returnUrl = null)
+        {
+            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Browse()
+        {
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -41,21 +60,16 @@ namespace GabayForGood.WebApp.Controllers
             var result = await userManager.CreateAsync(user, vm.Password);
             if (result.Succeeded)
             {
+                // Assign the "User" role to the new user
+                await userManager.AddToRoleAsync(user, "User");
+
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Browse", "User");
             }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
-
             return View(vm);
-        }
-
-        // SIGN IN
-        [HttpGet]
-        public IActionResult SignIn(string? returnUrl = null)
-        {
-            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
         }
 
         [HttpPost]
@@ -65,8 +79,17 @@ namespace GabayForGood.WebApp.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var result = await signInManager.PasswordSignInAsync(vm.UserName, vm.Password, false, false);
+            var user = await userManager.FindByNameAsync(vm.UserName);
+            if (user != null)
+            {
+                if (await userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    ModelState.AddModelError("", "Admin users cannot login through this form. Please use the admin portal.");
+                    return View(vm);
+                }
+            }
 
+            var result = await signInManager.PasswordSignInAsync(vm.UserName, vm.Password, false, false);
             if (result.Succeeded)
                 return RedirectToAction("Browse", "User");
 
@@ -82,14 +105,6 @@ namespace GabayForGood.WebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
-        [Authorize]
-        public IActionResult Browse()
-        {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
 
-            return View();
-        }
     }
 }

@@ -36,7 +36,7 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbInitializer.SeedAdminAsync(scope.ServiceProvider);
+    await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 
 if (!app.Environment.IsDevelopment())
