@@ -3,6 +3,8 @@ using GabayForGood.DataModel;
 using System;
 using Microsoft.AspNetCore.Identity;
 using GabayForGood.WebApp.MapConfig;
+using GabayForGood.Data;
+using GabayForGood.WebApp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
-    
+
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
@@ -32,11 +34,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbInitializer.SeedAdminAsync(scope.ServiceProvider);
+    await DbInitializer.SeedRolesAndAdminAsync(scope.ServiceProvider);
 }
 
 if (!app.Environment.IsDevelopment())
@@ -47,15 +50,38 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<RoleBasedDefaultRouteMiddleware>();
+
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == 401 || response.StatusCode == 403)
+    {
+        response.Redirect("/Home/Index");
+    }
+});
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "organization",
+    pattern: "Organization/{action=Index}/{id?}",
+    defaults: new { controller = "Organization" });
+
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/{action=Index}/{id?}",
+    defaults: new { controller = "Admin" });
+
+app.MapControllerRoute(
+    name: "user",
+    pattern: "User/{action=Index}/{id?}",
+    defaults: new { controller = "User" });
 
 app.Run();
