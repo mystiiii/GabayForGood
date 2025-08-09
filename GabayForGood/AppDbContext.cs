@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,6 +56,10 @@ namespace GabayForGood.DataModel
                .WithMany()
                .HasForeignKey(u => u.OrganizationID)
                .OnDelete(DeleteBehavior.Restrict);
+
+            mb.Entity<Organization>()
+            .Property(o => o.Password)
+            .HasDefaultValue("GFGOrg123!");
         }
 
         public DbSet<Organization> Organizations { get; set; }

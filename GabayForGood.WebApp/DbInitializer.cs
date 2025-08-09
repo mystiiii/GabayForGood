@@ -4,41 +4,69 @@ using System;
 using System.Threading.Tasks;
 using GabayForGood.DataModel;
 
-public static class DbInitializer
+namespace GabayForGood.Data
 {
-    public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
+    public static class DbInitializer
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-        string[] roles = { "Admin", "User", "Organization" }; 
-
-        foreach (var role in roles)
+        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
         {
-            if (!await roleManager.RoleExistsAsync(role))
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var context = serviceProvider.GetRequiredService<AppDbContext>();
+
+            string[] roles = { "Admin", "User", "Organization" };
+
+            foreach (var role in roles)
             {
-                await roleManager.CreateAsync(new IdentityRole(role));
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
             }
-        }
 
-        var adminEmail = "admin@gabayforgood.com";
-        var adminPassword = "P@ssw0rd!";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            var adminEmail = "admin@gabayforgood.com";
+            var adminPassword = "P@ssw0rd!";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
-        if (adminUser == null)
-        {
-            var user = new ApplicationUser
+            if (adminUser == null)
             {
-                UserName = adminEmail,
-                Email = adminEmail,
-                FullName = "System Administrator",
-                EmailConfirmed = true,
-            };
+                var user = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FullName = "System Administrator",
+                    EmailConfirmed = true,
+                };
 
-            var result = await userManager.CreateAsync(user, adminPassword);
-            if (result.Succeeded)
+                var result = await userManager.CreateAsync(user, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
+
+            var organizations = context.Organizations.ToList();
+            foreach (var org in organizations)
             {
-                await userManager.AddToRoleAsync(user, "Admin");
+                var existingOrgUser = await userManager.FindByEmailAsync(org.Email);
+                if (existingOrgUser == null)
+                {
+                    var orgUser = new ApplicationUser
+                    {
+                        UserName = org.Email,
+                        Email = org.Email,
+                        FullName = org.Name,
+                        EmailConfirmed = true
+                    };
+
+                    var password = string.IsNullOrWhiteSpace(org.Password) ? "GFGOrg123!" : org.Password;
+
+                    var createOrgResult = await userManager.CreateAsync(orgUser, password);
+                    if (createOrgResult.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(orgUser, "Organization");
+                    }
+                }
             }
         }
     }

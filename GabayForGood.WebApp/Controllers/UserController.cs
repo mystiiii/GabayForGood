@@ -36,7 +36,7 @@ namespace GabayForGood.WebApp.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public IActionResult Browse()
         {
             if (User.Identity == null || !User.Identity.IsAuthenticated)
@@ -60,7 +60,6 @@ namespace GabayForGood.WebApp.Controllers
             var result = await userManager.CreateAsync(user, vm.Password);
             if (result.Succeeded)
             {
-                // Assign the "User" role to the new user
                 await userManager.AddToRoleAsync(user, "User");
 
                 await signInManager.SignInAsync(user, isPersistent: false);
@@ -74,28 +73,39 @@ namespace GabayForGood.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInVM vm)
+        public async Task<IActionResult> SignIn(SignInVM svm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
+                return View(svm);
 
-            var user = await userManager.FindByNameAsync(vm.UserName);
+            var user = await userManager.FindByNameAsync(svm.UserName);
+
             if (user != null)
             {
                 if (await userManager.IsInRoleAsync(user, "Admin"))
                 {
                     ModelState.AddModelError("", "Admin users cannot login through this form. Please use the admin portal.");
-                    return View(vm);
+                    return View(svm);
+                }
+
+                var result = await signInManager.PasswordSignInAsync(svm.UserName, svm.Password, false, false);
+                if (result.Succeeded)
+                {
+                    if (await userManager.IsInRoleAsync(user, "Organization"))
+                    {
+                        return RedirectToAction("Index", "Organization");
+                    }
+                    else if (await userManager.IsInRoleAsync(user, "User"))
+                    {
+                        return RedirectToAction("Browse", "User");
+                    }
                 }
             }
 
-            var result = await signInManager.PasswordSignInAsync(vm.UserName, vm.Password, false, false);
-            if (result.Succeeded)
-                return RedirectToAction("Browse", "User");
-
             ModelState.AddModelError("", "Invalid login attempt.");
-            return View(vm);
+            return View(svm);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

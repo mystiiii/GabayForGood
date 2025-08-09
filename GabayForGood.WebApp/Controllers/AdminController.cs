@@ -83,16 +83,17 @@ namespace GabayForGood.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(org); 
+                return View(org);
             }
 
             var orgEntity = mapper.Map<Organization>(org);
             orgEntity.CreatedAt = DateTime.UtcNow;
+            orgEntity.Password = "GFGOrg123!";
 
             await context.Organizations.AddAsync(orgEntity);
             await context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Admin"); 
+            return RedirectToAction("Index", "Admin");
         }
 
         [HttpPost]
