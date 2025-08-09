@@ -11,7 +11,7 @@ public static class DbInitializer
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        string[] roles = { "Admin", "User" }; // Not adding Organization yet as per your request
+        string[] roles = { "Admin", "User", "Organization" }; 
 
         foreach (var role in roles)
         {
@@ -40,17 +40,6 @@ public static class DbInitializer
             {
                 await userManager.AddToRoleAsync(user, "Admin");
             }
-        }
-    }
-
-    // For later when you're ready to add Organization role
-    public static async Task AddOrganizationRoleAsync(IServiceProvider serviceProvider)
-    {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-        if (!await roleManager.RoleExistsAsync("Organization"))
-        {
-            await roleManager.CreateAsync(new IdentityRole("Organization"));
         }
     }
 }

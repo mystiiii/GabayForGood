@@ -26,18 +26,27 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="nav-links">
-                        <a href="#about" class="nav-link-custom">ABOUT</a>
-
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-link nav-link-custom">Sign Out</button>
-                            </form>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle nav-link-custom" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
+                                            <button type="submit" class="dropdown-item">Sign Out</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         }
                         else
                         {
-                            <a asp-controller="User" asp-action="SignIn" class="nav-link-custom">Sign In</a>
-                            <a asp-controller="User" asp-action="SignUp" class="nav-link-custom">Sign Up</a>
+                            <a asp-controller="User" asp-action="SignIn" class="btn-signup ">Donate now!</a>
                         }
                     </div>
                 </div>

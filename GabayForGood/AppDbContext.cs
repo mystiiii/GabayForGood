@@ -49,6 +49,12 @@ namespace GabayForGood.DataModel
                .WithMany()  
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.Restrict);
+
+            mb.Entity<ApplicationUser>()
+               .HasOne(p => p.Organization)
+               .WithMany()
+               .HasForeignKey(u => u.OrganizationID)
+               .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Organization> Organizations { get; set; }
