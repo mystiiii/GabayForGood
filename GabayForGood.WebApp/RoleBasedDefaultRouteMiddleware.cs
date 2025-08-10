@@ -5,11 +5,11 @@ namespace GabayForGood.WebApp.Middleware
 {
     public class RoleBasedDefaultRouteMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate next;
 
         public RoleBasedDefaultRouteMiddleware(RequestDelegate next)
         {
-            _next = next;
+            this.next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -42,7 +42,7 @@ namespace GabayForGood.WebApp.Middleware
                     }
                 }
             }
-            await _next(context);
+            await next(context);
         }
     }
 }

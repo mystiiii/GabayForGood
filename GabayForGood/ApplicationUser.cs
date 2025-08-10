@@ -11,14 +11,13 @@ namespace GabayForGood.DataModel
 {
     public class ApplicationUser : IdentityUser
     {
-        public int? OrganizationID { get; set; }
-
-        public string FullName { get; set; }
+        public string FullName { get; set; }    
         public DateTime CreatedAt { get; set; }
+        public int? OrganizationID { get; set; }
 
         public List<Donation> Donation { get; set; }
 
         [ForeignKey("OrganizationID")]
-        public virtual Organization? Organization { get; set; }
+        public Organization Organization { get; set; }
     }
 }

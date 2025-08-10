@@ -1,1 +1,420 @@
-﻿
+﻿@model GabayForGood.WebApp.Models.ProjectVM
+@{
+    ViewData["Title"] = "Create New Project";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #ffd700;
+    }
+
+    .form-title {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+    .form-subtitle {
+        color: #666;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group.full-width {
+            flex: 100%;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-control {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #fafafa;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-control:hover {
+            border-color: #d0d0d0;
+            background-color: white;
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.5;
+    }
+
+    select.form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .currency-input {
+        position: relative;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-weight: 600;
+        z-index: 1;
+    }
+
+    .currency-input .form-control {
+        padding-left: 35px;
+    }
+
+    .date-row {
+        display: flex;
+        gap: 20px;
+        align-items: end;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn {
+        padding: 14px 30px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 140px;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: #ffd700;
+        color: #333;
+        box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+    }
+
+        .btn-primary:hover {
+            background-color: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            text-decoration: none;
+            color: #333;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+    .validation-summary {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .field-validation-error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .form-control.input-validation-error {
+        border-color: #dc3545;
+        background-color: #fff5f5;
+    }
+
+    .required {
+        color: #dc3545;
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+    @@media (max-width: 768px) {
+        .form-container
+
+    {
+        margin: 10px;
+        padding: 25px;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .date-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-title">Create New Project</h1>
+        <p class="form-subtitle">Share your cause and make a difference in the community</p>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="validation-summary"></div>
+    }
+
+    <form asp-controller="Organization" asp-action="Add" method="post">
+
+        <!-- Project Title -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Title" class="form-label">Project Title <span class="required">*</span></label>
+                <input asp-for="Title" class="form-control" placeholder="Enter a compelling project title" />
+                <span asp-validation-for="Title" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Description" class="form-label">Project Description <span class="required">*</span></label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your project, its goals, and impact on the community..."></textarea>
+                <span asp-validation-for="Description" class="field-validation-error"></span>
+                <div class="help-text">Provide a detailed description to help donors understand your cause</div>
+            </div>
+        </div>
+
+        <!-- Category and Cause -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Category" class="form-label">Category <span class="required">*</span></label>
+                <select asp-for="Category" class="form-control">
+                    <option value="">Select a category</option>
+                    <option value="Education">Education</option>
+                    <option value="Health">Health & Medical</option>
+                    <option value="Environment">Environment & Conservation</option>
+                    <option value="Poverty">Poverty Alleviation</option>
+                    <option value="Disaster Relief">Disaster Relief & Emergency Response</option>
+                    <option value="Community Development">Community Development</option>
+                    <option value="Children & Youth">Children & Youth Welfare</option>
+                    <option value="Elderly Care">Elderly Care</option>
+                    <option value="Women Empowerment">Women Empowerment</option>
+                    <option value="Human Rights">Human Rights & Advocacy</option>
+                    <option value="Food Security">Food Security & Nutrition</option>
+                    <option value="Infrastructure">Infrastructure & Housing</option>
+                </select>
+                <span asp-validation-for="Category" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cause" class="form-label">Specific Cause <span class="required">*</span></label>
+                <select asp-for="Cause" class="form-control">
+                    <option value="">Select a cause</option>
+                    <!-- Education -->
+                    <option value="Scholarship Programs">Scholarship Programs</option>
+                    <option value="School Building Construction">School Building Construction</option>
+                    <option value="Learning Materials">Learning Materials & Supplies</option>
+                    <option value="Teacher Training">Teacher Training & Development</option>
+                    <option value="Digital Literacy">Digital Literacy Programs</option>
+                    <option value="Alternative Learning">Alternative Learning Systems</option>
+                    <!-- Health -->
+                    <option value="Medical Missions">Medical Missions</option>
+                    <option value="Healthcare Facilities">Healthcare Facilities</option>
+                    <option value="Medicine Access">Medicine & Treatment Access</option>
+                    <option value="Mental Health">Mental Health Support</option>
+                    <option value="Nutrition Programs">Nutrition Programs</option>
+                    <option value="Health Education">Health Education & Awareness</option>
+                    <!-- Environment -->
+                    <option value="Reforestation">Reforestation & Tree Planting</option>
+                    <option value="Marine Conservation">Marine & Coastal Conservation</option>
+                    <option value="Waste Management">Waste Management</option>
+                    <option value="Clean Water">Clean Water Access</option>
+                    <option value="Renewable Energy">Renewable Energy Projects</option>
+                    <option value="Climate Change">Climate Change Adaptation</option>
+                    <!-- Poverty -->
+                    <option value="Livelihood Programs">Livelihood & Skills Training</option>
+                    <option value="Microfinance">Microfinance & Small Business</option>
+                    <option value="Basic Needs">Basic Needs Assistance</option>
+                    <option value="Housing Programs">Housing & Shelter Programs</option>
+                    <!-- Disaster Relief -->
+                    <option value="Emergency Response">Emergency Response</option>
+                    <option value="Relief Goods">Relief Goods Distribution</option>
+                    <option value="Rehabilitation">Post-Disaster Rehabilitation</option>
+                    <option value="Preparedness">Disaster Preparedness Training</option>
+                    <!-- Community -->
+                    <option value="Infrastructure Development">Infrastructure Development</option>
+                    <option value="Community Centers">Community Centers</option>
+                    <option value="Local Governance">Local Governance Support</option>
+                    <option value="Cultural Preservation">Cultural Preservation</option>
+                    <!-- Vulnerable Groups -->
+                    <option value="Street Children">Street Children Programs</option>
+                    <option value="Indigenous Communities">Indigenous Communities</option>
+                    <option value="Persons with Disabilities">Persons with Disabilities</option>
+                    <option value="Senior Citizens">Senior Citizens Care</option>
+                    <option value="Women & Children Protection">Women & Children Protection</option>
+                    <option value="LGBTQ+ Support">LGBTQ+ Support Programs</option>
+                </select>
+                <span asp-validation-for="Cause" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Location" class="form-label">Project Location <span class="required">*</span></label>
+                <input asp-for="Location" class="form-control" placeholder="City, Province or specific location" />
+                <span asp-validation-for="Location" class="field-validation-error"></span>
+                <div class="help-text">Specify where the project will be implemented</div>
+            </div>
+        </div>
+
+        <!-- Goal Amount -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="GoalAmount" class="form-label">Funding Goal <span class="required">*</span></label>
+                <div class="currency-input">
+                    <span class="currency-symbol">₱</span>
+                    <input asp-for="GoalAmount" type="number" class="form-control" placeholder="0.00" step="0.01" min="1" />
+                </div>
+                <span asp-validation-for="GoalAmount" class="field-validation-error"></span>
+                <div class="help-text">Enter the total amount needed for this project</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="form-label">Initial Status</label>
+                <select asp-for="Status" class="form-control">
+                    <option value="Draft">Draft</option>
+                    <option value="Active" selected>Active</option>
+                    <option value="Pending">Pending Review</option>
+                </select>
+                <span asp-validation-for="Status" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Project Duration -->
+        <div class="form-row">
+            <div class="date-row">
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label">Start Date <span class="required">*</span></label>
+                    <input asp-for="StartDate" type="date" class="form-control" />
+                    <span asp-validation-for="StartDate" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label">End Date <span class="required">*</span></label>
+                    <input asp-for="EndDate" type="date" class="form-control" />
+                    <span asp-validation-for="EndDate" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Create Project</button>
+            <a asp-controller="Organization" asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().split('T')[0];
+        var startDateInput = document.querySelector('input[name="StartDate"]');
+        var endDateInput = document.querySelector('input[name="EndDate"]');
+
+        startDateInput.setAttribute('min', today);
+
+        startDateInput.addEventListener('change', function() {
+            endDateInput.setAttribute('min', this.value);
+            if (endDateInput.value && endDateInput.value < this.value) {
+                endDateInput.value = '';
+            }
+        });
+    });
+</script>

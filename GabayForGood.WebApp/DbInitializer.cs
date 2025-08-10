@@ -44,30 +44,6 @@ namespace GabayForGood.Data
                     await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
-
-            var organizations = context.Organizations.ToList();
-            foreach (var org in organizations)
-            {
-                var existingOrgUser = await userManager.FindByEmailAsync(org.Email);
-                if (existingOrgUser == null)
-                {
-                    var orgUser = new ApplicationUser
-                    {
-                        UserName = org.Email,
-                        Email = org.Email,
-                        FullName = org.Name,
-                        EmailConfirmed = true
-                    };
-
-                    var password = string.IsNullOrWhiteSpace(org.Password) ? "GFGOrg123!" : org.Password;
-
-                    var createOrgResult = await userManager.CreateAsync(orgUser, password);
-                    if (createOrgResult.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(orgUser, "Organization");
-                    }
-                }
-            }
         }
     }
 }

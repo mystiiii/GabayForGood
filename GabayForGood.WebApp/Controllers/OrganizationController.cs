@@ -27,7 +27,43 @@ namespace GabayForGood.WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var projs = await context.Projects.ToListAsync();
-            return View(mapper.Map<List<OrgVM>>(projs));
+            return View(mapper.Map<List<ProjectVM>>(projs));
         }
+
+        [Authorize(Roles = "Organization")]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        public async Task<IActionResult> Add(ProjectVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var projectModel = mapper.Map<Project>(model);
+                projectModel.CreatedAt = DateTime.UtcNow;
+
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                if (user.OrganizationID.HasValue)
+                {
+                    projectModel.OrganizationId = user.OrganizationID.Value;
+                } 
+
+                await context.Projects.AddAsync(projectModel);
+                await context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
     }
 }
