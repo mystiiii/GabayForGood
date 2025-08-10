@@ -10,6 +10,12 @@ namespace GabayForGood.DataModel
 {
     public class ApplicationUser : IdentityUser
     {
+        // New Fields
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ContactNo { get; set; }
+
+        // Keep existing
         public string FullName { get; set; }
         public DateTime CreatedAt { get; set; }
 

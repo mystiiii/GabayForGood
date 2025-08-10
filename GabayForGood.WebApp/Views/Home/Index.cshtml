@@ -1,7 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Home -";
-    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Gabay For Good - User Landing Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -25,18 +24,20 @@
     .card-custom {
         background-color: #2b5a6b;
         border-radius: 12px;
-        padding: 20px;
+        padding: 24px;
         color: white;
         height: 100%;
+        font-size: 1.1rem;
     }
 
     .card-highlight {
         background-color: #fcd34d;
         color: #111;
+        font-size: 1.1rem;
     }
 
     .objective-image {
-        height: 180px;
+        height: 270px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -57,31 +58,51 @@
         object-fit: cover;
         border-radius: 10px;
     }
+
+    h1 {
+        font-size: 4rem; 
+    }
+
+    h2 {
+        font-size: 3.25rem; 
+    }
+
+    h3 {
+        font-size: 2rem;
+    }
+
+    h5 {
+        font-size: 1.4rem;
+    }
+
+    p {
+        font-size: 1.1rem;
+    }
 </style>
+
 
 <!-- HERO SECTION -->
 <section class="py-5 w-100">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-wrap">
         <div class="col-md-6">
             <medium class="text-muted">Gabay For Good</medium>
-            <h1 class="fw-bold display-6">"Connect with causes that matter one platform</h1>
-            <h1 class="fw-bold display-6">countless ways to give back."</h1>
-            <a class="btn btn-dark" href="#">LEARN MORE</a>
+            <h1 class="fw-bold display-6">"Connect with causes that matter</h1>
+            <h1 class="fw-bold display-6">one platform countless ways to give back."</h1>
         </div>
         <div class="col-md-5 hero-img">
-            <img src="~/images/hero.jpg" alt="Hero Section Image">
+            <img src="~/images/Hero.png" alt="Hero Section Image">
         </div>
     </div>
 </section>
 
 <!-- MARQUEE / SCROLL SECTION -->
 <div class="bg-dark text-white py-2 text-center">
-    Non-Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non-Profit Organizations &bull; Direct Donations
+    Non-Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non-Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non-Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non-Profit Organizations &bull; Direct Donations &bull; Gabay For Good
 </div>
 
 <!-- ABOUT US SECTION -->
 <section class="bg-section py-5 w-100">
-    <div class="container">
+    <div class="container-fluid">
         <h3 class="fw-bold text-center mb-4">ABOUT US</h3>
         <div class="row justify-content-center">
             <div class="col-md-5 mb-3 about-img">
@@ -98,9 +119,9 @@
 
 <!-- OBJECTIVES SECTION -->
 <section class="bg-objectives py-5 w-100">
-    <div class="container">
+    <div class="container-fluid">
         <h2 class="text-uppercase fw-bold mb-4">OBJECTIVES</h2>
-        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque scelerisque nulla et enim consequat eget pretium mi pulvinar.</p>
+        <p></p>
         <div class="row mt-4">
             <div class="col-md-4 mb-3">
                 <div class="card-custom">

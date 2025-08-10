@@ -18,7 +18,7 @@ public static class DbInitializer
         }
 
         var adminEmail = "admin@gabayforgood.com";
-        var adminPassword = "P@ssw0rd!"; 
+        var adminPassword = "P@ssw0rd!";
 
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)

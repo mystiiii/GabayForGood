@@ -12,14 +12,17 @@ namespace GabayForGood.DataModel
     public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
+            : base(options)
         {
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=LAPTOP-P2U5CE9K\\SQLEXPRESS01;Database=GabayforGood;UID=sa;Password=stbenilde;TrustServerCertificate=true");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Server=LAPTOP-P2U5CE9K\\SQLEXPRESS01;Database=GabayforGood;UID=sa;Password=stbenilde;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
@@ -45,16 +48,15 @@ namespace GabayForGood.DataModel
                 .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-               .HasOne<IdentityUser>()  
-               .WithMany()  
-               .HasForeignKey(d => d.UserId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUpdate> ProjectUpdates { get; set; }
         public DbSet<Donation> Donations { get; set; }
-
     }
 }

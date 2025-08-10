@@ -1,0 +1,51 @@
+﻿@model GabayForGood.WebApp.Models.EditProfileVM
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center rounded-top-4">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="EditProfile" method="post">
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                            <input asp-for="FirstName" class="form-control rounded-pill" placeholder="Enter first name" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label fw-semibold"></label>
+                            <input asp-for="LastName" class="form-control rounded-pill" placeholder="Enter last name" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-semibold"></label>
+                            <input asp-for="Email" class="form-control rounded-pill" readonly />
+                            <div class="form-text">Email cannot be changed</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success rounded-pill fw-semibold">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center small text-muted">
+                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

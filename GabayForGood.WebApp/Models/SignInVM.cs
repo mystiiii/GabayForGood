@@ -6,14 +6,15 @@ namespace GabayForGood.WebApp.Models
     {
         public SignInVM()
         {
-            UserName = "";
+            Email = "";
             Password = "";
             ReturnUrl = "";
         }
 
         [Required]
-        [Display(Name = "Username")]
-        public string UserName { get; set; }
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

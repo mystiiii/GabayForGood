@@ -2,7 +2,6 @@
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,6 +33,7 @@
         }
 
             .auth-card input[type="text"],
+            .auth-card input[type="email"],
             .auth-card input[type="password"] {
                 width: 100%;
                 padding: 10px;
@@ -66,12 +66,9 @@
             <h4>User Login</h4>
             <form asp-controller="User" asp-action="SignIn" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="All" class="text-danger mb-2"></div>
-
-                <input asp-for="UserName" placeholder="username" type="text" />
+                <input asp-for="Email" placeholder="email" type="email" />
                 <input asp-for="Password" placeholder="password" type="password" />
-
                 <input type="submit" value="Login" />
-
                 <a asp-controller="User" asp-action="SignUp">Doesn’t have account? Sign Up</a>
             </form>
         </div>

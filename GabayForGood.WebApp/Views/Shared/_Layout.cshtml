@@ -30,9 +30,25 @@
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-link nav-link-custom">Sign Out</button>
-                            </form>
+                            var firstName = User.FindFirst("FirstName")?.Value ?? "";
+                            var lastName = User.FindFirst("LastName")?.Value ?? "";
+                            var fullName = $"{firstName} {lastName}".Trim();
+
+                            <div class="dropdown">
+                                <button class="btn btn-link dropdown-toggle nav-link-custom" data-bs-toggle="dropdown">
+                                    @fullName
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Edit Profile</a>
+                                    </li>
+                                    <li>
+                                        <form asp-controller="User" asp-action="SignOut" method="post">
+                                            <button type="submit" class="dropdown-item">Sign Out</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         }
                         else
                         {
