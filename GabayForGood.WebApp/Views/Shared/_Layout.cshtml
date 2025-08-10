@@ -34,7 +34,10 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
+                                    @if (!User.IsInRole("Organization"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
+                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
@@ -53,15 +56,11 @@
             </div>
         </div>
     </header>
-
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-
     <footer>
-        
     </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

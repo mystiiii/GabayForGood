@@ -93,21 +93,61 @@ namespace GabayForGood.WebApp.Controllers
             await context.Organizations.AddAsync(orgEntity);
             await context.SaveChangesAsync();
 
+            var user = new ApplicationUser
+            {
+                FullName = "Organization",
+                CreatedAt = orgEntity.CreatedAt,
+                UserName = orgEntity.Email, 
+                Email = orgEntity.Email,
+                OrganizationID = orgEntity.OrganizationId 
+            };
+
+            var result = await userManager.CreateAsync(user, orgEntity.Password);
+
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Organization");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                context.Organizations.Remove(orgEntity);
+                await context.SaveChangesAsync();
+
+                return View(org);
+            }
+
             return RedirectToAction("Index", "Admin");
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await context.Organizations.FindAsync(id);
-            if (entity != null)
+            var org = await context.Organizations.FindAsync(id);
+            if (org != null)
             {
-                context.Organizations.Remove(entity);
+                var orgUsers = userManager.Users
+                    .Where(u => u.OrganizationID == id)
+                    .ToList();
+
+                foreach (var user in orgUsers)
+                {
+                    await userManager.DeleteAsync(user);
+                }
+
+                context.Organizations.Remove(org);
                 await context.SaveChangesAsync();
             }
+
             return RedirectToAction("Index", "Admin");
         }
+
 
 
         [Authorize(Roles = "Admin")]

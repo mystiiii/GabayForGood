@@ -1,0 +1,501 @@
+﻿@model GabayForGood.WebApp.Models.ProjectVM
+@{
+    ViewData["Title"] = "Create New Project";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+        border-bottom: 3px solid #ffd700;
+    }
+
+    .form-title {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+    .form-subtitle {
+        color: #666;
+        font-size: 16px;
+        margin-top: 8px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .form-group.full-width {
+            flex: 100%;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-control {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background-color: #fafafa;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd700;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-control:hover {
+            border-color: #d0d0d0;
+            background-color: white;
+        }
+
+        .form-control:disabled {
+            background-color: #f8f8f8;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.5;
+    }
+
+    select.form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+
+    .currency-input {
+        position: relative;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-weight: 600;
+        z-index: 1;
+    }
+
+    .currency-input .form-control {
+        padding-left: 35px;
+    }
+
+    .date-row {
+        display: flex;
+        gap: 20px;
+        align-items: end;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn {
+        padding: 14px 30px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 140px;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background-color: #ffd700;
+        color: #333;
+        box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+    }
+
+        .btn-primary:hover {
+            background-color: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            text-decoration: none;
+            color: #333;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+    .validation-summary {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .field-validation-error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .form-control.input-validation-error {
+        border-color: #dc3545;
+        background-color: #fff5f5;
+    }
+
+    .required {
+        color: #dc3545;
+    }
+
+    .help-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
+    }
+
+    @@media (max-width: 768px) {
+        .form-container
+
+    {
+        margin: 10px;
+        padding: 25px;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .date-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-title">Create New Project</h1>
+        <p class="form-subtitle">Share your cause and make a difference in the community</p>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="validation-summary"></div>
+    }
+
+    <form asp-controller="Organization" asp-action="Add" method="post">
+
+        <!-- Project Title -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Title" class="form-label">Project Title <span class="required">*</span></label>
+                <input asp-for="Title" class="form-control" placeholder="Enter a compelling project title" />
+                <span asp-validation-for="Title" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Description" class="form-label">Project Description <span class="required">*</span></label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your project, its goals, and impact on the community..."></textarea>
+                <span asp-validation-for="Description" class="field-validation-error"></span>
+                <div class="help-text">Provide a detailed description to help donors understand your cause</div>
+            </div>
+        </div>
+
+        <!-- Category and Cause -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Category" class="form-label">Category <span class="required">*</span></label>
+                <select asp-for="Category" id="categorySelect" class="form-control">
+                    <option value="">Select a category</option>
+                    <option value="Education">Education</option>
+                    <option value="Health">Health & Medical</option>
+                    <option value="Environment">Environment & Conservation</option>
+                    <option value="Poverty">Poverty Alleviation</option>
+                    <option value="Disaster Relief">Disaster Relief & Emergency Response</option>
+                    <option value="Community Development">Community Development</option>
+                    <option value="Children & Youth">Children & Youth Welfare</option>
+                    <option value="Elderly Care">Elderly Care</option>
+                    <option value="Women Empowerment">Women Empowerment</option>
+                    <option value="Human Rights">Human Rights & Advocacy</option>
+                    <option value="Food Security">Food Security & Nutrition</option>
+                    <option value="Infrastructure">Infrastructure & Housing</option>
+                </select>
+                <span asp-validation-for="Category" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cause" class="form-label">Specific Cause <span class="required">*</span></label>
+                <select asp-for="Cause" id="causeSelect" class="form-control" disabled>
+                    <option value="">Select a category first</option>
+                </select>
+                <span asp-validation-for="Cause" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="Location" class="form-label">Project Location <span class="required">*</span></label>
+                <input asp-for="Location" class="form-control" placeholder="City, Province or specific location" />
+                <span asp-validation-for="Location" class="field-validation-error"></span>
+                <div class="help-text">Specify where the project will be implemented</div>
+            </div>
+        </div>
+
+        <!-- Goal Amount -->
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="GoalAmount" class="form-label">Funding Goal <span class="required">*</span></label>
+                <div class="currency-input">
+                    <span class="currency-symbol">₱</span>
+                    <input asp-for="GoalAmount" type="number" class="form-control" placeholder="0.00" step="0.01" min="1" />
+                </div>
+                <span asp-validation-for="GoalAmount" class="field-validation-error"></span>
+                <div class="help-text">Enter the total amount needed for this project</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="form-label">Project Status</label>
+                <input asp-for="Status" type="hidden" value="Active" />
+                <input type="text" class="form-control" value="Active" disabled readonly />
+                <span asp-validation-for="Status" class="field-validation-error"></span>
+                <div class="help-text">New projects start as Active. Status can be changed to Completed later.</div>
+            </div>
+        </div>
+
+        <!-- Project Duration -->
+        <div class="form-row">
+            <div class="date-row">
+                <div class="form-group">
+                    <label asp-for="StartDate" class="form-label">Start Date <span class="required">*</span></label>
+                    <input asp-for="StartDate" type="date" id="startDateInput" class="form-control" />
+                    <span asp-validation-for="StartDate" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate" class="form-label">End Date <span class="required">*</span></label>
+                    <input asp-for="EndDate" type="date" id="endDateInput" class="form-control" />
+                    <span asp-validation-for="EndDate" class="field-validation-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Create Project</button>
+            <a asp-controller="Organization" asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Define cause options for each category
+        const causesByCategory = {
+            "Education": [
+                { value: "Scholarship Programs", text: "Scholarship Programs" },
+                { value: "School Building Construction", text: "School Building Construction" },
+                { value: "Learning Materials", text: "Learning Materials & Supplies" },
+                { value: "Teacher Training", text: "Teacher Training & Development" },
+                { value: "Digital Literacy", text: "Digital Literacy Programs" },
+                { value: "Alternative Learning", text: "Alternative Learning Systems" }
+            ],
+            "Health": [
+                { value: "Medical Missions", text: "Medical Missions" },
+                { value: "Healthcare Facilities", text: "Healthcare Facilities" },
+                { value: "Medicine Access", text: "Medicine & Treatment Access" },
+                { value: "Mental Health", text: "Mental Health Support" },
+                { value: "Nutrition Programs", text: "Nutrition Programs" },
+                { value: "Health Education", text: "Health Education & Awareness" }
+            ],
+            "Environment": [
+                { value: "Reforestation", text: "Reforestation & Tree Planting" },
+                { value: "Marine Conservation", text: "Marine & Coastal Conservation" },
+                { value: "Waste Management", text: "Waste Management" },
+                { value: "Clean Water", text: "Clean Water Access" },
+                { value: "Renewable Energy", text: "Renewable Energy Projects" },
+                { value: "Climate Change", text: "Climate Change Adaptation" }
+            ],
+            "Poverty": [
+                { value: "Livelihood Programs", text: "Livelihood & Skills Training" },
+                { value: "Microfinance", text: "Microfinance & Small Business" },
+                { value: "Basic Needs", text: "Basic Needs Assistance" },
+                { value: "Housing Programs", text: "Housing & Shelter Programs" }
+            ],
+            "Disaster Relief": [
+                { value: "Emergency Response", text: "Emergency Response" },
+                { value: "Relief Goods", text: "Relief Goods Distribution" },
+                { value: "Rehabilitation", text: "Post-Disaster Rehabilitation" },
+                { value: "Preparedness", text: "Disaster Preparedness Training" }
+            ],
+            "Community Development": [
+                { value: "Infrastructure Development", text: "Infrastructure Development" },
+                { value: "Community Centers", text: "Community Centers" },
+                { value: "Local Governance", text: "Local Governance Support" },
+                { value: "Cultural Preservation", text: "Cultural Preservation" }
+            ],
+            "Children & Youth": [
+                { value: "Street Children", text: "Street Children Programs" },
+                { value: "Youth Development", text: "Youth Development Programs" },
+                { value: "Child Protection", text: "Child Protection Services" },
+                { value: "Early Childhood", text: "Early Childhood Development" }
+            ],
+            "Elderly Care": [
+                { value: "Senior Citizens", text: "Senior Citizens Care" },
+                { value: "Elder Healthcare", text: "Elder Healthcare Services" },
+                { value: "Elder Housing", text: "Elder Housing & Facilities" },
+                { value: "Elder Activities", text: "Elder Activities & Programs" }
+            ],
+            "Women Empowerment": [
+                { value: "Women & Children Protection", text: "Women & Children Protection" },
+                { value: "Women Skills Training", text: "Women Skills Training" },
+                { value: "Women Healthcare", text: "Women Healthcare Services" },
+                { value: "Women Leadership", text: "Women Leadership Development" }
+            ],
+            "Human Rights": [
+                { value: "Legal Aid", text: "Legal Aid Services" },
+                { value: "Human Rights Education", text: "Human Rights Education" },
+                { value: "LGBTQ+ Support", text: "LGBTQ+ Support Programs" },
+                { value: "Indigenous Communities", text: "Indigenous Communities" },
+                { value: "Persons with Disabilities", text: "Persons with Disabilities" }
+            ],
+            "Food Security": [
+                { value: "Food Distribution", text: "Food Distribution Programs" },
+                { value: "Nutrition Education", text: "Nutrition Education" },
+                { value: "Community Gardens", text: "Community Gardens" },
+                { value: "Food Production", text: "Sustainable Food Production" }
+            ],
+            "Infrastructure": [
+                { value: "Housing Construction", text: "Housing Construction" },
+                { value: "Water Systems", text: "Water & Sanitation Systems" },
+                { value: "Transportation", text: "Transportation Infrastructure" },
+                { value: "Communication", text: "Communication Infrastructure" }
+            ]
+        };
+
+        // Get DOM elements
+        const categorySelect = document.getElementById('categorySelect');
+        const causeSelect = document.getElementById('causeSelect');
+        const startDateInput = document.getElementById('startDateInput');
+        const endDateInput = document.getElementById('endDateInput');
+
+        // Set today's date as default start date
+        const today = new Date().toISOString().split('T')[0];
+        startDateInput.value = today;
+        startDateInput.setAttribute('min', today);
+
+        // Category change handler
+        categorySelect.addEventListener('change', function() {
+            const selectedCategory = this.value;
+
+            // Clear and reset cause dropdown
+            causeSelect.innerHTML = '<option value="">Select a cause</option>';
+            causeSelect.value = '';
+
+            if (selectedCategory && causesByCategory[selectedCategory]) {
+                // Enable cause dropdown
+                causeSelect.disabled = false;
+
+                // Populate cause options
+                causesByCategory[selectedCategory].forEach(cause => {
+                    const option = document.createElement('option');
+                    option.value = cause.value;
+                    option.textContent = cause.text;
+                    causeSelect.appendChild(option);
+                });
+            } else {
+                // Disable cause dropdown if no category selected
+                causeSelect.disabled = true;
+                causeSelect.innerHTML = '<option value="">Select a category first</option>';
+            }
+        });
+
+        // Start date change handler
+        startDateInput.addEventListener('change', function() {
+            endDateInput.setAttribute('min', this.value);
+            if (endDateInput.value && endDateInput.value < this.value) {
+                endDateInput.value = '';
+            }
+        });
+
+        // Set minimum end date on page load if start date has value
+        if (startDateInput.value) {
+            endDateInput.setAttribute('min', startDateInput.value);
+        }
+    });
+</script>

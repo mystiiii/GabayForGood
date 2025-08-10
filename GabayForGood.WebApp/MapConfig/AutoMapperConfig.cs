@@ -9,6 +9,7 @@ namespace GabayForGood.WebApp.MapConfig
         public AutoMapperConfig()
         {
             CreateMap<Organization, OrgVM>().ReverseMap();
+            CreateMap<Project, ProjectVM>().ReverseMap();
         }
     }
 }
