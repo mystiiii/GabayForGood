@@ -84,6 +84,12 @@
             background-color: white;
         }
 
+        .form-control:disabled {
+            background-color: #f8f8f8;
+            color: #999;
+            cursor: not-allowed;
+        }
+
     textarea.form-control {
         resize: vertical;
         min-height: 100px;
@@ -277,7 +283,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="Category" class="form-label">Category <span class="required">*</span></label>
-                <select asp-for="Category" class="form-control">
+                <select asp-for="Category" id="categorySelect" class="form-control">
                     <option value="">Select a category</option>
                     <option value="Education">Education</option>
                     <option value="Health">Health & Medical</option>
@@ -296,51 +302,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cause" class="form-label">Specific Cause <span class="required">*</span></label>
-                <select asp-for="Cause" class="form-control">
-                    <option value="">Select a cause</option>
-                    <!-- Education -->
-                    <option value="Scholarship Programs">Scholarship Programs</option>
-                    <option value="School Building Construction">School Building Construction</option>
-                    <option value="Learning Materials">Learning Materials & Supplies</option>
-                    <option value="Teacher Training">Teacher Training & Development</option>
-                    <option value="Digital Literacy">Digital Literacy Programs</option>
-                    <option value="Alternative Learning">Alternative Learning Systems</option>
-                    <!-- Health -->
-                    <option value="Medical Missions">Medical Missions</option>
-                    <option value="Healthcare Facilities">Healthcare Facilities</option>
-                    <option value="Medicine Access">Medicine & Treatment Access</option>
-                    <option value="Mental Health">Mental Health Support</option>
-                    <option value="Nutrition Programs">Nutrition Programs</option>
-                    <option value="Health Education">Health Education & Awareness</option>
-                    <!-- Environment -->
-                    <option value="Reforestation">Reforestation & Tree Planting</option>
-                    <option value="Marine Conservation">Marine & Coastal Conservation</option>
-                    <option value="Waste Management">Waste Management</option>
-                    <option value="Clean Water">Clean Water Access</option>
-                    <option value="Renewable Energy">Renewable Energy Projects</option>
-                    <option value="Climate Change">Climate Change Adaptation</option>
-                    <!-- Poverty -->
-                    <option value="Livelihood Programs">Livelihood & Skills Training</option>
-                    <option value="Microfinance">Microfinance & Small Business</option>
-                    <option value="Basic Needs">Basic Needs Assistance</option>
-                    <option value="Housing Programs">Housing & Shelter Programs</option>
-                    <!-- Disaster Relief -->
-                    <option value="Emergency Response">Emergency Response</option>
-                    <option value="Relief Goods">Relief Goods Distribution</option>
-                    <option value="Rehabilitation">Post-Disaster Rehabilitation</option>
-                    <option value="Preparedness">Disaster Preparedness Training</option>
-                    <!-- Community -->
-                    <option value="Infrastructure Development">Infrastructure Development</option>
-                    <option value="Community Centers">Community Centers</option>
-                    <option value="Local Governance">Local Governance Support</option>
-                    <option value="Cultural Preservation">Cultural Preservation</option>
-                    <!-- Vulnerable Groups -->
-                    <option value="Street Children">Street Children Programs</option>
-                    <option value="Indigenous Communities">Indigenous Communities</option>
-                    <option value="Persons with Disabilities">Persons with Disabilities</option>
-                    <option value="Senior Citizens">Senior Citizens Care</option>
-                    <option value="Women & Children Protection">Women & Children Protection</option>
-                    <option value="LGBTQ+ Support">LGBTQ+ Support Programs</option>
+                <select asp-for="Cause" id="causeSelect" class="form-control" disabled>
+                    <option value="">Select a category first</option>
                 </select>
                 <span asp-validation-for="Cause" class="field-validation-error"></span>
             </div>
@@ -368,13 +331,11 @@
                 <div class="help-text">Enter the total amount needed for this project</div>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="form-label">Initial Status</label>
-                <select asp-for="Status" class="form-control">
-                    <option value="Draft">Draft</option>
-                    <option value="Active" selected>Active</option>
-                    <option value="Pending">Pending Review</option>
-                </select>
+                <label asp-for="Status" class="form-label">Project Status</label>
+                <input asp-for="Status" type="hidden" value="Active" />
+                <input type="text" class="form-control" value="Active" disabled readonly />
                 <span asp-validation-for="Status" class="field-validation-error"></span>
+                <div class="help-text">New projects start as Active. Status can be changed to Completed later.</div>
             </div>
         </div>
 
@@ -383,12 +344,12 @@
             <div class="date-row">
                 <div class="form-group">
                     <label asp-for="StartDate" class="form-label">Start Date <span class="required">*</span></label>
-                    <input asp-for="StartDate" type="date" class="form-control" />
+                    <input asp-for="StartDate" type="date" id="startDateInput" class="form-control" />
                     <span asp-validation-for="StartDate" class="field-validation-error"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="EndDate" class="form-label">End Date <span class="required">*</span></label>
-                    <input asp-for="EndDate" type="date" class="form-control" />
+                    <input asp-for="EndDate" type="date" id="endDateInput" class="form-control" />
                     <span asp-validation-for="EndDate" class="field-validation-error"></span>
                 </div>
             </div>
@@ -404,17 +365,137 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var today = new Date().toISOString().split('T')[0];
-        var startDateInput = document.querySelector('input[name="StartDate"]');
-        var endDateInput = document.querySelector('input[name="EndDate"]');
+        // Define cause options for each category
+        const causesByCategory = {
+            "Education": [
+                { value: "Scholarship Programs", text: "Scholarship Programs" },
+                { value: "School Building Construction", text: "School Building Construction" },
+                { value: "Learning Materials", text: "Learning Materials & Supplies" },
+                { value: "Teacher Training", text: "Teacher Training & Development" },
+                { value: "Digital Literacy", text: "Digital Literacy Programs" },
+                { value: "Alternative Learning", text: "Alternative Learning Systems" }
+            ],
+            "Health": [
+                { value: "Medical Missions", text: "Medical Missions" },
+                { value: "Healthcare Facilities", text: "Healthcare Facilities" },
+                { value: "Medicine Access", text: "Medicine & Treatment Access" },
+                { value: "Mental Health", text: "Mental Health Support" },
+                { value: "Nutrition Programs", text: "Nutrition Programs" },
+                { value: "Health Education", text: "Health Education & Awareness" }
+            ],
+            "Environment": [
+                { value: "Reforestation", text: "Reforestation & Tree Planting" },
+                { value: "Marine Conservation", text: "Marine & Coastal Conservation" },
+                { value: "Waste Management", text: "Waste Management" },
+                { value: "Clean Water", text: "Clean Water Access" },
+                { value: "Renewable Energy", text: "Renewable Energy Projects" },
+                { value: "Climate Change", text: "Climate Change Adaptation" }
+            ],
+            "Poverty": [
+                { value: "Livelihood Programs", text: "Livelihood & Skills Training" },
+                { value: "Microfinance", text: "Microfinance & Small Business" },
+                { value: "Basic Needs", text: "Basic Needs Assistance" },
+                { value: "Housing Programs", text: "Housing & Shelter Programs" }
+            ],
+            "Disaster Relief": [
+                { value: "Emergency Response", text: "Emergency Response" },
+                { value: "Relief Goods", text: "Relief Goods Distribution" },
+                { value: "Rehabilitation", text: "Post-Disaster Rehabilitation" },
+                { value: "Preparedness", text: "Disaster Preparedness Training" }
+            ],
+            "Community Development": [
+                { value: "Infrastructure Development", text: "Infrastructure Development" },
+                { value: "Community Centers", text: "Community Centers" },
+                { value: "Local Governance", text: "Local Governance Support" },
+                { value: "Cultural Preservation", text: "Cultural Preservation" }
+            ],
+            "Children & Youth": [
+                { value: "Street Children", text: "Street Children Programs" },
+                { value: "Youth Development", text: "Youth Development Programs" },
+                { value: "Child Protection", text: "Child Protection Services" },
+                { value: "Early Childhood", text: "Early Childhood Development" }
+            ],
+            "Elderly Care": [
+                { value: "Senior Citizens", text: "Senior Citizens Care" },
+                { value: "Elder Healthcare", text: "Elder Healthcare Services" },
+                { value: "Elder Housing", text: "Elder Housing & Facilities" },
+                { value: "Elder Activities", text: "Elder Activities & Programs" }
+            ],
+            "Women Empowerment": [
+                { value: "Women & Children Protection", text: "Women & Children Protection" },
+                { value: "Women Skills Training", text: "Women Skills Training" },
+                { value: "Women Healthcare", text: "Women Healthcare Services" },
+                { value: "Women Leadership", text: "Women Leadership Development" }
+            ],
+            "Human Rights": [
+                { value: "Legal Aid", text: "Legal Aid Services" },
+                { value: "Human Rights Education", text: "Human Rights Education" },
+                { value: "LGBTQ+ Support", text: "LGBTQ+ Support Programs" },
+                { value: "Indigenous Communities", text: "Indigenous Communities" },
+                { value: "Persons with Disabilities", text: "Persons with Disabilities" }
+            ],
+            "Food Security": [
+                { value: "Food Distribution", text: "Food Distribution Programs" },
+                { value: "Nutrition Education", text: "Nutrition Education" },
+                { value: "Community Gardens", text: "Community Gardens" },
+                { value: "Food Production", text: "Sustainable Food Production" }
+            ],
+            "Infrastructure": [
+                { value: "Housing Construction", text: "Housing Construction" },
+                { value: "Water Systems", text: "Water & Sanitation Systems" },
+                { value: "Transportation", text: "Transportation Infrastructure" },
+                { value: "Communication", text: "Communication Infrastructure" }
+            ]
+        };
 
+        // Get DOM elements
+        const categorySelect = document.getElementById('categorySelect');
+        const causeSelect = document.getElementById('causeSelect');
+        const startDateInput = document.getElementById('startDateInput');
+        const endDateInput = document.getElementById('endDateInput');
+
+        // Set today's date as default start date
+        const today = new Date().toISOString().split('T')[0];
+        startDateInput.value = today;
         startDateInput.setAttribute('min', today);
 
+        // Category change handler
+        categorySelect.addEventListener('change', function() {
+            const selectedCategory = this.value;
+
+            // Clear and reset cause dropdown
+            causeSelect.innerHTML = '<option value="">Select a cause</option>';
+            causeSelect.value = '';
+
+            if (selectedCategory && causesByCategory[selectedCategory]) {
+                // Enable cause dropdown
+                causeSelect.disabled = false;
+
+                // Populate cause options
+                causesByCategory[selectedCategory].forEach(cause => {
+                    const option = document.createElement('option');
+                    option.value = cause.value;
+                    option.textContent = cause.text;
+                    causeSelect.appendChild(option);
+                });
+            } else {
+                // Disable cause dropdown if no category selected
+                causeSelect.disabled = true;
+                causeSelect.innerHTML = '<option value="">Select a category first</option>';
+            }
+        });
+
+        // Start date change handler
         startDateInput.addEventListener('change', function() {
             endDateInput.setAttribute('min', this.value);
             if (endDateInput.value && endDateInput.value < this.value) {
                 endDateInput.value = '';
             }
         });
+
+        // Set minimum end date on page load if start date has value
+        if (startDateInput.value) {
+            endDateInput.setAttribute('min', startDateInput.value);
+        }
     });
 </script>

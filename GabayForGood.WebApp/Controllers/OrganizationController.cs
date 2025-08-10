@@ -37,6 +37,18 @@ namespace GabayForGood.WebApp.Controllers
         }
 
         [Authorize(Roles = "Organization")]
+        public IActionResult Edit()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Organization")]
+        public IActionResult Updates()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Organization")]
         [HttpPost]
         public async Task<IActionResult> Add(ProjectVM model)
         {
