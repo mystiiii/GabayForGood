@@ -26,9 +26,16 @@ namespace GabayForGood.WebApp.Controllers
         [Authorize(Roles = "Organization")]
         public async Task<IActionResult> Index()
         {
-            var projs = await context.Projects.ToListAsync();
+            var user = await userManager.GetUserAsync(User);
+            var orgId = user.OrganizationID; 
+
+            var projs = await context.Projects
+                .Where(p => p.OrganizationId == orgId)
+                .ToListAsync();
+
             return View(mapper.Map<List<ProjectVM>>(projs));
         }
+
 
         [Authorize(Roles = "Organization")]
         public IActionResult Add()
@@ -42,11 +49,60 @@ namespace GabayForGood.WebApp.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Organization")]
-        public IActionResult Updates()
+        public async Task<IActionResult> Updates(int id)
         {
-            return View();
+            try
+            {
+                var project = await context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Index", "Organization");
+                }
+
+                var updates = await context.ProjectUpdates
+                    .Where(u => u.ProjectId == id)
+                    .OrderByDescending(u => u.CreatedAt)
+                    .ToListAsync();
+
+                var projectVM = new ProjectVM
+                {
+                    ProjectId = project.ProjectId,
+                    Title = project.Title,
+                    Description = project.Description,
+                    Category = project.Category,
+                    Cause = project.Cause,
+                    Location = project.Location,
+                    GoalAmount = project.GoalAmount,
+                    StartDate = project.StartDate,
+                    EndDate = project.EndDate,
+                    Status = project.Status
+                };
+
+                var updatesVM = updates.Select(u => new ProjectUpdateVM
+                {
+                    ProjectUpdateId = u.ProjectUpdateId,
+                    ProjectId = u.ProjectId,
+                    Title = u.Title,
+                    Description = u.Description,
+                    CreatedAt = u.CreatedAt
+                }).ToList();
+
+                var viewModel = new ProjectUpdatesVM
+                {
+                    Project = projectVM,
+                    Updates = updatesVM
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the project updates.";
+                return RedirectToAction("Index", "Organization");
+            }
         }
+
 
         [Authorize(Roles = "Organization")]
         [HttpPost]
