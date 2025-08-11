@@ -21,46 +21,68 @@
     <header class="main-header px-3">
         <div class="container-fluid">
             <div class="row align-items-center">
+                <!-- Brand -->
                 <div class="col-md-6 d-flex align-items-center">
-                    <a asp-controller="Home" asp-action="Index" class="navbar-brand-custom">Gabay For Good</a>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="User" asp-action="Browse" class="navbar-brand-custom">Gabay For Good</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="Index" class="navbar-brand-custom">Gabay For Good</a>
+                    }
                 </div>
+
+
+                <!-- Navigation Links -->
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="nav-links">
+
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
+                            var firstName = User.FindFirst("FirstName")?.Value ?? "";
+                            var lastName = User.FindFirst("LastName")?.Value ?? "";
+                            var fullNameUser = $"{firstName} {lastName}".Trim();
+
                             <div class="dropdown">
-                                <button class="btn dropdown-toggle nav-link-custom" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    @User.Identity.Name
+                                <button class="btn btn-link dropdown-toggle nav-link-custom" data-bs-toggle="dropdown">
+                                    @fullNameUser
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
-                                    @if (!User.IsInRole("Organization"))
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Edit Profile</a></li>
+
+                                    @if (User.IsInRole("User"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
                                     }
+
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
+                                        <form asp-controller="User" asp-action="SignOut" method="post">
                                             <button type="submit" class="dropdown-item">Sign Out</button>
                                         </form>
                                     </li>
                                 </ul>
                             </div>
+                            <!-- No Donate button when logged in -->
                         }
                         else
                         {
-                            <a asp-controller="User" asp-action="SignIn" class="btn-signup ">Donate now!</a>
+                            <!-- Only Donate button for logged-out users -->
+                            <a asp-controller="User" asp-action="SignIn" class="btn-signup">Donate now!</a>
                         }
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-    <footer>
-    </footer>
+
+    <footer></footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

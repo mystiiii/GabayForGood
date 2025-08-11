@@ -4,6 +4,7 @@ using GabayForGood.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GabayForGood.DataModel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250810111944_AddUserExtraFIelds")]
+    partial class AddUserExtraFIelds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +87,6 @@ namespace GabayForGood.DataModel.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -117,9 +119,6 @@ namespace GabayForGood.DataModel.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int?>("OrganizationID")
-                        .HasColumnType("int");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -148,8 +147,6 @@ namespace GabayForGood.DataModel.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("OrganizationID");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -197,13 +194,6 @@ namespace GabayForGood.DataModel.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("GFGOrg123!");
-
                     b.Property<int>("YearFounded")
                         .HasColumnType("int");
 
@@ -248,9 +238,6 @@ namespace GabayForGood.DataModel.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrganizationId")
                         .HasColumnType("int");
@@ -514,16 +501,6 @@ namespace GabayForGood.DataModel.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GabayForGood.DataModel.ApplicationUser", b =>
-                {
-                    b.HasOne("GabayForGood.DataModel.Organization", "Organization")
-                        .WithMany()
-                        .HasForeignKey("OrganizationID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("GabayForGood.DataModel.Project", b =>

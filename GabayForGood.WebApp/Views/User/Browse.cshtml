@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<GabayForGood.WebApp.Models.ProjectVM>
+@{
     ViewData["Title"] = "Browse -";
     Layout = "_Layout";
 }
@@ -22,6 +23,41 @@
     .card-footer small {
         font-size: 0.85rem;
     }
+
+    .no-projects {
+        text-align: center;
+        padding: 60px 20px;
+        color: white;
+    }
+
+        .no-projects h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .no-projects p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+    .progress {
+        background-color: #e9ecef;
+    }
+
+    .btn-donate {
+        font-size: 0.9rem;
+        padding: 6px 15px;
+    }
+
+    .project-card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
 </style>
 
 <!-- WHOLE PAGE CONTAINER -->
@@ -32,7 +68,7 @@
         <div class="col-md-6 d-flex align-items-center justify-content-center p-5" style="background-color: white;">
             <div>
                 <h1 class="hero-text fw-bold text-dark">
-                    You’re not just giving — you’re healing, feeding, and inspiring lives.
+                    You're not just giving — you're healing, feeding, and inspiring lives.
                 </h1>
             </div>
         </div>
@@ -59,39 +95,68 @@
 
     <!-- PROJECT CARDS SECTION -->
     <div class="w-100 py-5 px-4" style="background-color: #003840;">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @for (int i = 0; i < 6; i++)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm rounded-4 overflow-hidden">
-                        <div class="position-relative bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                            <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'cardPreview@i')" />
-                            <img id="cardPreview@i" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                            <span class="position-absolute text-muted" style="z-index: -1;">Click to upload image</span>
-                        </div>
-                        <div class="card-footer bg-white p-3">
-                            <h6 class="cause-title">TITLE OF THE PROJECT & SHIT</h6>
-                            <div class="mb-2">
-                                <div class="progress rounded-pill" style="height: 10px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <small class="text-muted">60.7% Funded</small>
+        @if (Model == null || Model.Count == 0)
+        {
+            <!-- No Projects Found -->
+            <div class="no-projects">
+                <h3>No Projects Found</h3>
+                <p>There are currently no active projects available. Check back later for new causes to support!</p>
+                <div class="mt-4">
+                    <i class="fas fa-heart" style="font-size: 3rem; color: white; opacity: 0.5;"></i>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Display Projects -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var project = Model[i];
+                    decimal currentAmount = 0; // You'll need to add this to your model or calculate it
+                    decimal percentage = project.GoalAmount > 0 ? (currentAmount / project.GoalAmount) * 100 : 0;
+
+                    <div class="col">
+                        <div class="card h-100 shadow-sm rounded-4 overflow-hidden project-card">
+                            <div class="position-relative bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'cardPreview@(i)')" />
+                                <img id="cardPreview@(i)" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
+                                <span class="position-absolute text-muted" style="z-index: -1;">Click to upload image</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div>
-                                    <div><small class="text-muted">Raised: $12,000</small></div>
-                                    <div><small class="text-muted">Goal: $20,000</small></div>
+                            <div class="card-footer bg-white p-3">
+                                <h6 class="cause-title text-truncate" title="@project.Title">@project.Title</h6>
+                                <small class="text-muted d-block mb-2">@project.Category - @project.Cause</small>
+                                <small class="text-muted d-block mb-3"><i class="fas fa-map-marker-alt"></i> @project.Location</small>
+
+                                <div class="mb-2">
+                                    <div class="progress rounded-pill" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: @(percentage.ToString("F1"))%;" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted">@(percentage.ToString("F1"))% Funded</small>
                                 </div>
-                                <div class="d-flex gap-1">
-                                    <button class="btn btn-success btn-sm rounded-pill">DONATE NOW</button>
-                                    <button class="btn btn-warning btn-sm rounded-pill">LEARN MORE</button>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        <div><small class="text-muted">Raised: ₱@(currentAmount.ToString("N0"))</small></div>
+                                        <div><small class="text-muted">Goal: ₱@(project.GoalAmount.ToString("N0"))</small></div>
+                                    </div>
+                                    <div class="d-flex gap-1">
+                                        <button class="btn btn-success btn-sm rounded-pill btn-donate">DONATE NOW</button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        @(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))
+                                    </small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>
+        }
     </div>
 </div>
 
