@@ -28,11 +28,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/User/SignIn"; 
-    options.LogoutPath = "/User/Logout"; 
-    options.ExpireTimeSpan = TimeSpan.FromSeconds(30);
-    options.SlidingExpiration = false;
-    options.Cookie.IsEssential = false;
+    options.LoginPath = "/Admin/Login"; 
+    options.LogoutPath = "/Admin/Logout"; 
 });
 
 builder.Services.AddControllersWithViews();

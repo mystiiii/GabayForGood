@@ -43,7 +43,7 @@ namespace GabayForGood.WebApp.Controllers
             var user = new ApplicationUser
             {
                 Email = vm.Email,
-                UserName = vm.Email, // ✅ Ensure username matches email
+                UserName = vm.Email,
                 FirstName = vm.FirstName,
                 LastName = vm.LastName,
                 ContactNo = vm.ContactNo,
@@ -52,14 +52,16 @@ namespace GabayForGood.WebApp.Controllers
             };
 
             var result = await userManager.CreateAsync(user, vm.Password);
+
             if (result.Succeeded)
             {
-                // Add claims
+                await userManager.AddToRoleAsync(user, "User");
+
                 await userManager.AddClaimsAsync(user, new[]
                 {
-                    new Claim("FirstName", user.FirstName ?? ""),
-                    new Claim("LastName", user.LastName ?? "")
-                });
+            new Claim("FirstName", user.FirstName ?? ""),
+            new Claim("LastName", user.LastName ?? "")
+        });
 
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Browse", "User");
@@ -71,7 +73,6 @@ namespace GabayForGood.WebApp.Controllers
             return View(vm);
         }
 
-        // SIGN IN
         [HttpGet]
         public IActionResult SignIn(string? returnUrl = null)
         {
@@ -80,35 +81,37 @@ namespace GabayForGood.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInVM vm)
+        public async Task<IActionResult> SignIn(SignInVM svm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
+                return View(svm);
 
-            var result = await signInManager.PasswordSignInAsync(vm.Email, vm.Password, false, false);
+            var user = await userManager.FindByNameAsync(svm.Email);
 
-            if (result.Succeeded)
+            if (user != null)
             {
-                var user = await userManager.FindByNameAsync(vm.Email); // ✅ safer than FindByEmailAsync
-
-                if (user != null)
+                if (await userManager.IsInRoleAsync(user, "Admin"))
                 {
-                    // Ensure claims are up to date
-                    var claims = await userManager.GetClaimsAsync(user);
-
-                    if (!claims.Any(c => c.Type == "FirstName"))
-                        await userManager.AddClaimAsync(user, new Claim("FirstName", user.FirstName ?? ""));
-
-                    if (!claims.Any(c => c.Type == "LastName"))
-                        await userManager.AddClaimAsync(user, new Claim("LastName", user.LastName ?? ""));
+                    ModelState.AddModelError("", "Admin users cannot login through this form. Please use the admin portal.");
+                    return View(svm);
                 }
 
-                await signInManager.RefreshSignInAsync(user);
-                return RedirectToAction("Browse", "User");
+                var result = await signInManager.PasswordSignInAsync(svm.Email, svm.Password, false, false);
+                if (result.Succeeded)
+                {
+                    if (await userManager.IsInRoleAsync(user, "Organization"))
+                    {
+                        return RedirectToAction("Index", "Organization");
+                    }
+                    else if (await userManager.IsInRoleAsync(user, "User"))
+                    {
+                        return RedirectToAction("Browse", "User");
+                    }
+                }
             }
 
             ModelState.AddModelError("", "Invalid login attempt.");
-            return View(vm);
+            return View(svm);
         }
 
         [HttpPost]

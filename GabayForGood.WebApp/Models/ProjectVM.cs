@@ -14,7 +14,7 @@ namespace GabayForGood.WebApp.Models
         [Required(ErrorMessage = "Description is required.")]
         [StringLength(1000, ErrorMessage = "Description must be less than 1000 characters.")]
         public string Description { get; set; }
-
+    
         [Required(ErrorMessage = "Location is required.")]
         [StringLength(200, ErrorMessage = "Location must be less than 200 characters.")]
         public string Location { get; set; }
