@@ -7,14 +7,30 @@ namespace GabayForGood.WebApp.Models
     {
         public SignUpVM()
         {
-            UserName = "";
+            FirstName = "";
+            LastName = "";
+            Email = "";
+            ContactNo = "";
             Password = "";
             ConfirmPassword = "";
         }
 
         [Required]
         [MaxLength(30)]
-        public string UserName { get; set; }
+        public string FirstName { get; set; }
+
+        [Required]
+        [MaxLength(30)]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [Phone]
+        [Display(Name = "Contact No.")]
+        public string ContactNo { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -22,7 +38,7 @@ namespace GabayForGood.WebApp.Models
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; }
     }
 }
