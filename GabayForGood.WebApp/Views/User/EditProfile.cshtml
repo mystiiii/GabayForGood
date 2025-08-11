@@ -4,52 +4,112 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-header bg-primary text-white text-center rounded-top-4 py-3">
-                    <h4 class="mb-0 fw-bold">Edit Profile</h4>
+<style>
+    body {
+        background-color: #2C7A7B !important;
+        font-family: Arial, sans-serif;
+    }
+
+    .profile-card {
+        background-color: #315456 !important;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        padding: 2rem; /* padding inside card */
+    }
+
+        .profile-card h4 {
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-card label {
+            font-weight: 500;
+        }
+
+        .profile-card .form-control {
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 0.5rem;
+            color: #315456 !important;
+        }
+
+            .profile-card .form-control:focus {
+                background-color: white !important;
+                border: none !important;
+                box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+                color: #315456 !important;
+            }
+
+            .profile-card .form-control::placeholder {
+                color: rgba(49, 84, 86, 0.6) !important;
+            }
+
+        .profile-card .btn-save {
+            background-color: white !important;
+            border: none;
+            color: #315456 !important;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+        }
+
+            .profile-card .btn-save:hover {
+                background-color: #f8f9fa !important;
+            }
+
+        .profile-card a {
+            color: white !important;
+            text-decoration: underline;
+        }
+
+            .profile-card a:hover {
+                color: #f8f9fa !important;
+            }
+
+    .text-danger {
+        color: #ff6b6b !important;
+    }
+</style>
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+        <div class="profile-card">
+            <h4>Edit Profile</h4>
+
+            <form asp-action="EditProfile" method="post">
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
                 </div>
-                <div class="card-body p-4">
-                    <form asp-action="EditProfile" method="post">
 
-                        <div class="mb-3">
-                            <label asp-for="FirstName" class="form-label fw-semibold"></label>
-                            <input asp-for="FirstName" class="form-control rounded-pill shadow-sm" placeholder="Enter first name" />
-                            <span asp-validation-for="FirstName" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="LastName" class="form-label fw-semibold"></label>
-                            <input asp-for="LastName" class="form-control rounded-pill shadow-sm" placeholder="Enter last name" />
-                            <span asp-validation-for="LastName" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="ContactNo" class="form-label fw-semibold"></label>
-                            <input asp-for="ContactNo" class="form-control rounded-pill shadow-sm" placeholder="Enter contact number" />
-                            <span asp-validation-for="ContactNo" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label fw-semibold"></label>
-                            <input asp-for="Email" class="form-control rounded-pill shadow-sm" readonly />
-                            <div class="form-text">Email cannot be changed</div>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success rounded-pill fw-semibold shadow-sm">
-                                Save Changes
-                            </button>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
                 </div>
-                <div class="card-footer text-center small text-muted py-3">
-                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-primary fw-semibold">
-                        Cancel
-                    </a>
+
+                <div class="mb-3">
+                    <label asp-for="ContactNo" class="form-label"></label>
+                    <input asp-for="ContactNo" class="form-control" placeholder="Enter contact number" />
+                    <span asp-validation-for="ContactNo" class="text-danger small"></span>
                 </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" readonly />
+                    <div class="form-text text-light">Email cannot be changed</div>
+                </div>
+
+                <button type="submit" class="btn btn-save">Save Changes</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a asp-controller="User" asp-action="Browse">Cancel</a>
             </div>
         </div>
     </div>

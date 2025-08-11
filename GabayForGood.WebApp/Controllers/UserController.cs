@@ -3,9 +3,11 @@ using GabayForGood.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace GabayForGood.WebApp.Controllers
 {
@@ -13,36 +15,21 @@ namespace GabayForGood.WebApp.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly AppDbContext context;
+        private readonly IMapper mapper;
 
-        public UserController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, AppDbContext context, IMapper mapper)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.roleManager = roleManager;
+            this.context = context;
+            this.mapper = mapper;
         }
 
+        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult SignIn(string? returnUrl = null)
-        {
-            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "User")]
-        public IActionResult Browse()
-        {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -55,8 +42,8 @@ namespace GabayForGood.WebApp.Controllers
 
             var user = new ApplicationUser
             {
-                UserName = vm.Email,
                 Email = vm.Email,
+                UserName = vm.Email, // ✅ Ensure username matches email
                 FirstName = vm.FirstName,
                 LastName = vm.LastName,
                 ContactNo = vm.ContactNo,
@@ -80,44 +67,49 @@ namespace GabayForGood.WebApp.Controllers
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
+
             return View(vm);
+        }
+
+        // SIGN IN
+        [HttpGet]
+        public IActionResult SignIn(string? returnUrl = null)
+        {
+            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInVM svm)
+        public async Task<IActionResult> SignIn(SignInVM vm)
         {
             if (!ModelState.IsValid)
-                return View(svm);
-
-            var user = await userManager.FindByNameAsync(svm.UserName);
+                return View(vm);
 
             var result = await signInManager.PasswordSignInAsync(vm.Email, vm.Password, false, false);
 
             if (result.Succeeded)
             {
-                var user = await userManager.FindByEmailAsync(vm.Email);
+                var user = await userManager.FindByNameAsync(vm.Email); // ✅ safer than FindByEmailAsync
 
-                // Ensure claims are up to date
-                await userManager.RemoveClaimsAsync(user, new[]
+                if (user != null)
                 {
-                    new Claim("FirstName", user.FirstName ?? ""),
-                    new Claim("LastName", user.LastName ?? "")
-                });
-                await userManager.AddClaimsAsync(user, new[]
-                {
-                    new Claim("FirstName", user.FirstName ?? ""),
-                    new Claim("LastName", user.LastName ?? "")
-                });
+                    // Ensure claims are up to date
+                    var claims = await userManager.GetClaimsAsync(user);
+
+                    if (!claims.Any(c => c.Type == "FirstName"))
+                        await userManager.AddClaimAsync(user, new Claim("FirstName", user.FirstName ?? ""));
+
+                    if (!claims.Any(c => c.Type == "LastName"))
+                        await userManager.AddClaimAsync(user, new Claim("LastName", user.LastName ?? ""));
+                }
 
                 await signInManager.RefreshSignInAsync(user);
                 return RedirectToAction("Browse", "User");
             }
 
             ModelState.AddModelError("", "Invalid login attempt.");
-            return View(svm);
+            return View(vm);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -127,8 +119,22 @@ namespace GabayForGood.WebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Browse()
+        {
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
 
-            return View();
+            // Get all active projects with their organization details
+            var projects = await context.Projects
+                .Where(p => p.Status == "Active")
+                .Include(p => p.Organization) // Include organization details if needed
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            var projectVMs = mapper.Map<List<ProjectVM>>(projects);
+            return View(projectVMs);
         }
 
         // EDIT PROFILE
@@ -195,4 +201,3 @@ namespace GabayForGood.WebApp.Controllers
         }
     }
 }
-    

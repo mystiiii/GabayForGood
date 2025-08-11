@@ -22,6 +22,10 @@ namespace GabayForGood.Data
                 {
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
+                else
+                {
+
+                }
             }
 
             var adminEmail = "admin@gabayforgood.com";
