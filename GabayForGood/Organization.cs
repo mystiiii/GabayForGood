@@ -14,10 +14,15 @@
             [Column(TypeName = "nvarchar(50)")]
             public string Name { get; set; }
 
-            [Required]
-            [MaxLength(500)]
-            [Column(TypeName = "nvarchar(500)")]
-            public string Description { get; set; }
+        [Required]
+        [MaxLength(50)]
+        [Column(TypeName = "nvarchar(50)")]
+        public string Password { get; set; } = "GFGOrg123!";
+
+        [Required]
+        [MaxLength(500)]
+        [Column(TypeName = "nvarchar(500)")]
+        public string Description { get; set; }
 
             [Required]
             [Column(TypeName = "int")]

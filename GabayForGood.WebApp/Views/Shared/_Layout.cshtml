@@ -26,24 +26,21 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="nav-links">
-                        <a href="#about" class="nav-link-custom">ABOUT</a>
-
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            var firstName = User.FindFirst("FirstName")?.Value ?? "";
-                            var lastName = User.FindFirst("LastName")?.Value ?? "";
-                            var fullName = $"{firstName} {lastName}".Trim();
-
                             <div class="dropdown">
-                                <button class="btn btn-link dropdown-toggle nav-link-custom" data-bs-toggle="dropdown">
-                                    @fullName
+                                <button class="btn dropdown-toggle nav-link-custom" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @User.Identity.Name
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
+                                    @if (!User.IsInRole("Organization"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Edit Profile</a>
-                                    </li>
-                                    <li>
-                                        <form asp-controller="User" asp-action="SignOut" method="post">
+                                        <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
                                             <button type="submit" class="dropdown-item">Sign Out</button>
                                         </form>
                                     </li>
@@ -52,23 +49,18 @@
                         }
                         else
                         {
-                            <a asp-controller="User" asp-action="SignIn" class="nav-link-custom">Sign In</a>
-                            <a asp-controller="User" asp-action="SignUp" class="nav-link-custom">Sign Up</a>
+                            <a asp-controller="User" asp-action="SignIn" class="btn-signup ">Donate now!</a>
                         }
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-
     <footer>
-        
     </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

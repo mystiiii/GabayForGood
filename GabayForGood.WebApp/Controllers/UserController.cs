@@ -13,17 +13,36 @@ namespace GabayForGood.WebApp.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UserController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
-        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult SignIn(string? returnUrl = null)
+        {
+            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        public IActionResult Browse()
+        {
+            if (User.Identity == null || !User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
@@ -61,23 +80,17 @@ namespace GabayForGood.WebApp.Controllers
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
-
             return View(vm);
-        }
-
-        // SIGN IN
-        [HttpGet]
-        public IActionResult SignIn(string? returnUrl = null)
-        {
-            return View(new SignInVM { ReturnUrl = returnUrl ?? Url.Content("~/") });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInVM vm)
+        public async Task<IActionResult> SignIn(SignInVM svm)
         {
             if (!ModelState.IsValid)
-                return View(vm);
+                return View(svm);
+
+            var user = await userManager.FindByNameAsync(svm.UserName);
 
             var result = await signInManager.PasswordSignInAsync(vm.Email, vm.Password, false, false);
 
@@ -102,8 +115,9 @@ namespace GabayForGood.WebApp.Controllers
             }
 
             ModelState.AddModelError("", "Invalid login attempt.");
-            return View(vm);
+            return View(svm);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -113,12 +127,6 @@ namespace GabayForGood.WebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
-        [Authorize]
-        public IActionResult Browse()
-        {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "Home");
 
             return View();
         }

@@ -1,0 +1,328 @@
+﻿@using GabayForGood.WebApp.Models
+@model List<ProjectVM>;
+@{
+    ViewData["Title"] = "ORG Dashboard -";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+        margin: 0;
+        letter-spacing: 2px;
+    }
+
+    .create-btn {
+        background-color: #ffd700;
+        color: #333;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .create-btn:hover {
+            background-color: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-decoration: none;
+            color: #333;
+        }
+
+    .projects-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+        .projects-table thead {
+            background-color: #e0e0e0;
+        }
+
+        .projects-table th {
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            border-bottom: 2px solid #d0d0d0;
+        }
+
+        .projects-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        .projects-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .projects-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .project-title {
+        font-weight: bold;
+        color: #333;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .project-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .project-details {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .detail-item {
+        margin-bottom: 3px;
+        color: #555;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .goal-amount {
+        font-weight: bold;
+        color: #28a745;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .date-info {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.4;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-completed {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    .actions-container {
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+    }
+
+    .action-btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s ease;
+        min-width: 80px;
+    }
+
+    .btn-update {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+        .btn-update:hover {
+            background-color: #138496;
+            text-decoration: none;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    .btn-edit {
+        background-color: #ffc107;
+        color: #333;
+    }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+            text-decoration: none;
+            color: #333;
+            transform: translateY(-1px);
+        }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            text-decoration: none;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+
+        .empty-state h3 {
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #aaa;
+            font-size: 16px;
+        }
+
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+        }
+
+        .projects-table {
+            font-size: 12px;
+        }
+
+            .projects-table th,
+            .projects-table td {
+                padding: 12px 8px;
+            }
+
+        .actions-container {
+            flex-direction: row;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            min-width: 60px;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">PROJECT DASHBOARD</h1>
+        <a asp-controller="Organization" asp-action="Add" class="create-btn">Create Project</a>
+    </div>
+
+    @if (Model == null || Model.Count < 1)
+    {
+        <div class="empty-state">
+            <h3>No Projects Found</h3>
+            <p>You haven't created any projects yet. Click "Create Project" to get started!</p>
+        </div>
+    }
+    else
+    {
+        <table class="projects-table">
+            <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ProjectVM p in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="project-title">@p.Title</div>
+                            <div class="project-description">@p.Description</div>
+                            <div class="project-details">
+                                <div class="detail-item"><span class="detail-label">Category:</span> @p.Category</div>
+                                <div class="detail-item"><span class="detail-label">Cause:</span> @p.Cause</div>
+                                <div class="detail-item"><span class="detail-label">Location:</span> @p.Location</div>
+                                <div class="detail-item"><span class="detail-label">Goal:</span> <span class="goal-amount">₱@p.GoalAmount.ToString("N0")</span></div>
+                                <div class="date-info">
+                                    <div><span class="detail-label">Start:</span> @p.StartDate.ToString("MMM dd, yyyy")</div>
+                                    <div><span class="detail-label">End:</span> @p.EndDate.ToString("MMM dd, yyyy")</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @{
+                                string statusClass = "status-pending";
+                                if (p.Status?.ToLower() == "active") statusClass = "status-active";
+                                else if (p.Status?.ToLower() == "completed") statusClass = "status-completed";
+                            }
+                            <span class="status-badge @statusClass">@p.Status</span>
+                        </td>
+                        <td>
+                            <div class="actions-container">
+                                <a asp-controller="Organization" asp-action="Update" asp-route-id="@p.ProjectId" class="action-btn btn-update">Update</a>
+                                <a asp-controller="Organization" asp-action="Edit" asp-route-id="@p.ProjectId" class="action-btn btn-edit">Edit</a>
+                                <a asp-controller="Organization" asp-action="Delete" asp-route-id="@p.ProjectId" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete this project?')">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

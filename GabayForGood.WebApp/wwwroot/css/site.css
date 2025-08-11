@@ -4,6 +4,30 @@
     padding: 20px 0;
 }
 
+.btn-signup {
+    background-color: #ffd700;
+    color: #000 !important;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 0.9rem 2.5rem;
+    border-radius: 25px;
+    text-decoration: none !important;
+    border: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+    .btn-signup:hover {
+        background-color: #ffed4a;
+        color: #000 !important;
+        text-decoration: none !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
 .navbar-brand-custom {
     font-size: 2.5rem;
     font-weight: bold;
@@ -31,6 +55,7 @@
     .nav-link-custom:hover {
         color: #f0f0f0 !important;
     }
+
 
 body {
     display: flex;

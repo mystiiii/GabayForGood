@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +19,7 @@ namespace GabayForGood.DataModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(
-                    "Server=LAPTOP-P2U5CE9K\\SQLEXPRESS01;Database=GabayforGood;UID=sa;Password=stbenilde;TrustServerCertificate=true");
-            }
+            optionsBuilder.UseSqlServer("Server=MAIBENBEN-PC\\SQLEXPRESS;Database=GabayforGood;UID=sa;PWD=stbenilde;TrustServerCertificate=true");
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
@@ -48,10 +45,20 @@ namespace GabayForGood.DataModel
                 .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-                .HasOne<IdentityUser>()
-                .WithMany()
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+               .HasOne<IdentityUser>()  
+               .WithMany()  
+               .HasForeignKey(d => d.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            mb.Entity<ApplicationUser>()
+               .HasOne(p => p.Organization)
+               .WithMany()
+               .HasForeignKey(u => u.OrganizationID)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            mb.Entity<Organization>()
+            .Property(o => o.Password)
+            .HasDefaultValue("GFGOrg123!");
         }
 
         public DbSet<Organization> Organizations { get; set; }

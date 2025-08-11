@@ -7,28 +7,21 @@
 <head>
     <meta charset="utf-8" />
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #1d3835;
+            background-color: #2C7A7B !important;
             font-family: Arial, sans-serif;
         }
 
-        .auth-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .auth-card {
-            background-color: rgba(255, 255, 255, 0.06);
-            padding: 2rem;
+        .custom-card {
+            background-color: #315456 !important;
+            border: none !important;
             border-radius: 12px;
-            width: 300px;
             color: white;
-            text-align: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
 
@@ -39,31 +32,63 @@
                 padding: 10px;
                 margin: 8px 0;
                 border-radius: 6px;
-                border: none;
+                color: #315456 !important;
+                padding: 10px;
             }
 
-            .auth-card input[type="submit"] {
-                background-color: white;
-                color: #1d3835;
-                padding: 8px 16px;
-                border: none;
+                .custom-card .form-control:focus {
+                    background-color: white !important;
+                    border: none !important;
+                    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+                    color: #315456 !important;
+                }
+
+                .custom-card .form-control::placeholder {
+                    color: rgba(49, 84, 86, 0.6) !important;
+                }
+
+            .custom-card .btn-primary {
+                background-color: white !important;
+                border-color: white !important;
+                color: #315456 !important;
+                font-weight: 500;
                 border-radius: 6px;
+                padding: 8px 16px;
                 cursor: pointer;
-                margin-top: 10px;
             }
 
-            .auth-card a {
-                color: white;
+                .custom-card .btn-primary:hover {
+                    background-color: #f8f9fa !important;
+                    border-color: #f8f9fa !important;
+                    color: #315456 !important;
+                }
+
+                .custom-card .btn-primary:focus {
+                    background-color: white !important;
+                    border-color: white !important;
+                    color: #315456 !important;
+                    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+                }
+
+            .custom-card a {
+                color: white !important;
                 text-decoration: underline;
-                display: block;
-                margin-top: 12px;
             }
+
+                .custom-card a:hover {
+                    color: #f8f9fa !important;
+                    text-decoration: underline;
+                }
+
+        .text-danger {
+            color: #ff6b6b !important;
+        }
     </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <h4>User Login</h4>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4 custom-card" style="min-width: 350px;">
+            <h4 class="text-center mb-4">User Login</h4>
             <form asp-controller="User" asp-action="SignIn" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="All" class="text-danger mb-2"></div>
                 <input asp-for="Email" placeholder="email" type="email" />
@@ -73,5 +98,6 @@
             </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

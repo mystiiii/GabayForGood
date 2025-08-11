@@ -4,37 +4,45 @@ using System;
 using System.Threading.Tasks;
 using GabayForGood.DataModel;
 
-public static class DbInitializer
+namespace GabayForGood.Data
 {
-    public static async Task SeedAdminAsync(IServiceProvider serviceProvider)
+    public static class DbInitializer
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-        var roleName = "Admin";
-        if (!await roleManager.RoleExistsAsync(roleName))
+        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
         {
-            await roleManager.CreateAsync(new IdentityRole(roleName));
-        }
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var context = serviceProvider.GetRequiredService<AppDbContext>();
 
-        var adminEmail = "admin@gabayforgood.com";
-        var adminPassword = "P@ssw0rd!";
+            string[] roles = { "Admin", "User", "Organization" };
 
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-        if (adminUser == null)
-        {
-            var user = new ApplicationUser
+            foreach (var role in roles)
             {
-                UserName = adminEmail,
-                Email = adminEmail,
-                FullName = "System Administrator",
-                EmailConfirmed = true,
-            };
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
 
-            var result = await userManager.CreateAsync(user, adminPassword);
-            if (result.Succeeded)
+            var adminEmail = "admin@gabayforgood.com";
+            var adminPassword = "P@ssw0rd!";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
             {
-                await userManager.AddToRoleAsync(user, roleName);
+                var user = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    FullName = "System Administrator",
+                    EmailConfirmed = true,
+                };
+
+                var result = await userManager.CreateAsync(user, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
             }
         }
     }
