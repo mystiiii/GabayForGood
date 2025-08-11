@@ -45,6 +45,7 @@ namespace GabayForGood.WebApp.Models
         public string Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
     }
     public class DateGreaterThanAttribute : ValidationAttribute
     {

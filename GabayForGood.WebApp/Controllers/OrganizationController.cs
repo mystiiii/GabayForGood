@@ -44,9 +44,82 @@ namespace GabayForGood.WebApp.Controllers
         }
 
         [Authorize(Roles = "Organization")]
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            try
+            {
+                var project = await context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID != project.OrganizationId)
+                {
+                    TempData["ErrorMessage"] = "You don't have permission to edit this project.";
+                    return RedirectToAction("Index");
+                }
+
+                var projectVM = mapper.Map<ProjectVM>(project);
+                return View(projectVM);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the project.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, ProjectVM model)
+        {
+            if (id != model.ProjectId)
+            {
+                TempData["ErrorMessage"] = "Invalid project ID.";
+                return RedirectToAction("Index");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var project = await context.Projects.FindAsync(id);
+                    if (project == null)
+                    {
+                        TempData["ErrorMessage"] = "Project not found.";
+                        return RedirectToAction("Index");
+                    }
+
+                    var user = await userManager.GetUserAsync(User);
+                    if (user?.OrganizationID != project.OrganizationId)
+                    {
+                        TempData["ErrorMessage"] = "You don't have permission to edit this project.";
+                        return RedirectToAction("Index");
+                    }
+
+                    project.Description = model.Description;
+                    project.GoalAmount = model.GoalAmount;
+                    project.StartDate = model.StartDate;
+                    project.EndDate = model.EndDate;
+                    project.Status = model.Status;
+                    project.ModifiedAt = DateTime.UtcNow;
+
+                    context.Projects.Update(project);
+                    await context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Project updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the project.";
+                }
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> Updates(int id)
@@ -133,5 +206,46 @@ namespace GabayForGood.WebApp.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var project = await context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID != project.OrganizationId)
+                {
+                    TempData["ErrorMessage"] = "You don't have permission to delete this project.";
+                    return RedirectToAction("Index");
+                }
+
+                var projectUpdates = await context.ProjectUpdates
+                    .Where(u => u.ProjectId == id)
+                    .ToListAsync();
+
+                if (projectUpdates.Any())
+                {
+                    context.ProjectUpdates.RemoveRange(projectUpdates);
+                }
+
+                context.Projects.Remove(project);
+                await context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Project '{project.Title}' has been deleted successfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the project. Please try again.";
+                return RedirectToAction("Index");
+            }
+        }
     }
 }
