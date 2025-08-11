@@ -54,6 +54,8 @@ namespace GabayForGood.DataModel
         [Required]
         public DateTime CreatedAt { get; set; }
 
+        public DateTime? ModifiedAt { get; set; }
+
         public Organization Organization { get; set; }
         public List<ProjectUpdate> ProjectUpdates { get; set; }
         public List<Donation> Donations { get; set; }
