@@ -247,15 +247,23 @@ namespace GabayForGood.WebApp.Controllers
             }
         }
 
+        [Authorize(Roles = "Organization")]
         public async Task<IActionResult> Updates(int id)
         {
             try
             {
-                var project = await context.Projects.FindAsync(id);
-                if (project == null)
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
                 {
-                    TempData["ErrorMessage"] = "Project not found.";
-                    return RedirectToAction("Index", "Organization");
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var project = await context.Projects.FindAsync(id);
+                if (project == null || project.OrganizationId != user.OrganizationID)
+                {
+                    TempData["ErrorMessage"] = "Project not found or you don't have permission to view it.";
+                    return RedirectToAction("Index");
                 }
 
                 var updates = await context.ProjectUpdates
@@ -272,26 +280,18 @@ namespace GabayForGood.WebApp.Controllers
                     Cause = project.Cause,
                     Location = project.Location,
                     GoalAmount = project.GoalAmount,
-                    CurrentAmount = project.CurrentAmount, // Added this line
+                    CurrentAmount = project.CurrentAmount,
                     StartDate = project.StartDate,
                     EndDate = project.EndDate,
                     Status = project.Status,
-                    ImageUrl = project.ImageUrl // Added this line
+                    ImageUrl = project.ImageUrl,
+                    OrganizationId = project.OrganizationId
                 };
-
-                var updatesVM = updates.Select(u => new ProjectUpdateVM
-                {
-                    ProjectUpdateId = u.ProjectUpdateId,
-                    ProjectId = u.ProjectId,
-                    Title = u.Title,
-                    Description = u.Description,
-                    CreatedAt = u.CreatedAt
-                }).ToList();
 
                 var viewModel = new ProjectUpdatesVM
                 {
                     Project = projectVM,
-                    Updates = updatesVM
+                    Updates = updates
                 };
 
                 return View(viewModel);
@@ -299,7 +299,291 @@ namespace GabayForGood.WebApp.Controllers
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = "An error occurred while loading the project updates.";
-                return RedirectToAction("Index", "Organization");
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpGet]
+        public async Task<IActionResult> CreateUpdate(int id)
+        {
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var project = await context.Projects
+                    .FirstOrDefaultAsync(p => p.ProjectId == id && p.OrganizationId == user.OrganizationID.Value);
+
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found or you don't have permission to add updates.";
+                    return RedirectToAction("Index");
+                }
+
+                var model = new CreateProjectUpdateVM
+                {
+                    ProjectId = id
+                };
+
+                return View("AddUpdate", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the page.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateUpdate(CreateProjectUpdateVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("AddUpdate", model);
+            }
+
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return View("AddUpdate", model);
+                }
+
+                var project = await context.Projects
+                    .FirstOrDefaultAsync(p => p.ProjectId == model.ProjectId && p.OrganizationId == user.OrganizationID.Value);
+
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found or you don't have permission to add updates.";
+                    return View("AddUpdate", model);
+                }
+
+                // Handle image upload if provided
+                string imageUrl = model.ImageUrl;
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    imageUrl = await ProcessImageUpload(model.ImageFile);
+                    if (imageUrl == null)
+                    {
+                        return View("AddUpdate", model);
+                    }
+                }
+
+                var projectUpdate = new ProjectUpdate
+                {
+                    ProjectId = model.ProjectId,
+                    Title = model.Title,
+                    Description = model.Description,
+                    ImageUrl = imageUrl,
+                    CreatedAt = DateTime.Now
+                };
+
+                context.ProjectUpdates.Add(projectUpdate);
+                await context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Project update added successfully!";
+                return RedirectToAction("Updates", new { id = model.ProjectId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while adding the update.";
+                return View("AddUpdate", model);
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpGet]
+        public async Task<IActionResult> EditUpdate(int id)
+        {
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var update = await context.ProjectUpdates
+                    .Include(u => u.Project)
+                    .FirstOrDefaultAsync(u => u.ProjectUpdateId == id && u.Project.OrganizationId == user.OrganizationID.Value);
+
+                if (update == null)
+                {
+                    TempData["ErrorMessage"] = "Update not found or you don't have permission to edit it.";
+                    return RedirectToAction("Index");
+                }
+
+                var model = new EditProjectUpdateVM
+                {
+                    ProjectUpdateId = update.ProjectUpdateId,
+                    ProjectId = update.ProjectId,
+                    Title = update.Title,
+                    Description = update.Description,
+                    ImageUrl = update.ImageUrl,
+                    CreatedAt = update.CreatedAt
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the update.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUpdate(EditProjectUpdateVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return View(model);
+                }
+
+                var update = await context.ProjectUpdates
+                    .Include(u => u.Project)
+                    .FirstOrDefaultAsync(u => u.ProjectUpdateId == model.ProjectUpdateId && u.Project.OrganizationId == user.OrganizationID.Value);
+
+                if (update == null)
+                {
+                    TempData["ErrorMessage"] = "Update not found or you don't have permission to edit it.";
+                    return View(model);
+                }
+
+                // Handle image upload if provided
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    // Delete old image if exists
+                    if (!string.IsNullOrEmpty(update.ImageUrl))
+                    {
+                        DeleteImage(update.ImageUrl);
+                    }
+
+                    var newImageUrl = await ProcessImageUpload(model.ImageFile);
+                    if (newImageUrl != null)
+                    {
+                        update.ImageUrl = newImageUrl;
+                    }
+                    else
+                    {
+                        return View(model);
+                    }
+                }
+                else if (!string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    update.ImageUrl = model.ImageUrl;
+                }
+
+                update.Title = model.Title;
+                update.Description = model.Description;
+
+                await context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Project update updated successfully!";
+                return RedirectToAction("Updates", new { id = update.ProjectId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the project update.";
+                return View(model);
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpGet]
+        public async Task<IActionResult> DeleteUpdate(int id)
+        {
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var update = await context.ProjectUpdates
+                    .Include(u => u.Project)
+                    .FirstOrDefaultAsync(u => u.ProjectUpdateId == id && u.Project.OrganizationId == user.OrganizationID.Value);
+
+                if (update == null)
+                {
+                    TempData["ErrorMessage"] = "Update not found or you don't have permission to delete it.";
+                    return RedirectToAction("Index");
+                }
+
+                return View(update);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the update.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUpdateConfirmed(int id)
+        {
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var update = await context.ProjectUpdates
+                    .Include(u => u.Project)
+                    .FirstOrDefaultAsync(u => u.ProjectUpdateId == id && u.Project.OrganizationId == user.OrganizationID.Value);
+
+                if (update == null)
+                {
+                    TempData["ErrorMessage"] = "Update not found or you don't have permission to delete it.";
+                    return RedirectToAction("Index");
+                }
+
+                int projectId = update.ProjectId;
+
+                // Delete associated image
+                if (!string.IsNullOrEmpty(update.ImageUrl))
+                {
+                    DeleteImage(update.ImageUrl);
+                }
+
+                context.ProjectUpdates.Remove(update);
+                await context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Project update deleted successfully!";
+                return RedirectToAction("Updates", new { id = projectId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the update.";
+                return RedirectToAction("Index");
             }
         }
 
@@ -359,6 +643,7 @@ namespace GabayForGood.WebApp.Controllers
             }
             catch (Exception ex)
             {
+                // Log error if needed, but don't throw
             }
         }
 
