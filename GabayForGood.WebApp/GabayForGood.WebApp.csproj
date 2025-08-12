@@ -19,4 +19,8 @@
     <ProjectReference Include="..\GabayForGood\GabayForGood.DataModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\projects\" />
+  </ItemGroup>
+
 </Project>

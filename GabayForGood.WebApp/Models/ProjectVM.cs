@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace GabayForGood.WebApp.Models
 {
@@ -14,22 +15,31 @@ namespace GabayForGood.WebApp.Models
         [Required(ErrorMessage = "Description is required.")]
         [StringLength(1000, ErrorMessage = "Description must be less than 1000 characters.")]
         public string Description { get; set; }
-    
+
         [Required(ErrorMessage = "Location is required.")]
-        [StringLength(200, ErrorMessage = "Location must be less than 200 characters.")]
+        [StringLength(150, ErrorMessage = "Location must be less than 150 characters.")]
         public string Location { get; set; }
 
         [Required(ErrorMessage = "Category is required.")]
-        [StringLength(50, ErrorMessage = "Category must be less than 50 characters.")]
+        [StringLength(100, ErrorMessage = "Category must be less than 100 characters.")]
         public string Category { get; set; }
 
         [Required(ErrorMessage = "Cause is required.")]
-        [StringLength(50, ErrorMessage = "Cause must be less than 50 characters.")]
+        [StringLength(100, ErrorMessage = "Cause must be less than 100 characters.")]
         public string Cause { get; set; }
 
         [Required(ErrorMessage = "Goal Amount is required.")]
         [Range(1, double.MaxValue, ErrorMessage = "Goal Amount must be greater than 0.")]
         public decimal GoalAmount { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "Current Amount cannot be negative.")]
+        public decimal CurrentAmount { get; set; } = 0;
+
+        [StringLength(500, ErrorMessage = "Image URL must be less than 500 characters.")]
+        public string? ImageUrl { get; set; }
+
+        [Display(Name = "Project Image")]
+        public IFormFile? ImageFile { get; set; }
 
         [Required(ErrorMessage = "Start Date is required.")]
         [DataType(DataType.Date)]
@@ -45,8 +55,19 @@ namespace GabayForGood.WebApp.Models
         public string Status { get; set; }
 
         public DateTime CreatedAt { get; set; }
-        public DateTime ModifiedAt { get; set; }
+        public DateTime? ModifiedAt { get; set; }
+
+        // Computed properties for display
+        [Display(Name = "Progress Percentage")]
+        public decimal ProgressPercentage => GoalAmount > 0 ? (CurrentAmount / GoalAmount) * 100 : 0;
+
+        [Display(Name = "Remaining Amount")]
+        public decimal RemainingAmount => GoalAmount - CurrentAmount;
+
+        [Display(Name = "Is Goal Reached")]
+        public bool IsGoalReached => CurrentAmount >= GoalAmount;
     }
+
     public class DateGreaterThanAttribute : ValidationAttribute
     {
         private readonly string _startDatePropertyName;
@@ -61,14 +82,12 @@ namespace GabayForGood.WebApp.Models
             var startDate = (DateTime)validationContext.ObjectType
                 .GetProperty(_startDatePropertyName)
                 .GetValue(validationContext.ObjectInstance);
-
             var endDate = (DateTime)value;
 
             if (endDate <= startDate)
             {
                 return new ValidationResult(ErrorMessage);
             }
-
             return ValidationResult.Success;
         }
     }
