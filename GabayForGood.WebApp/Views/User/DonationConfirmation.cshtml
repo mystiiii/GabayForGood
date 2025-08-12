@@ -1,0 +1,9 @@
+﻿@using GabayForGood.WebApp.Models
+@model DonationVM
+
+<div class="confirmation-container">
+    <h2>Donation Confirmed!</h2>
+    <p>Thank you for your donation of @Model.Amount.ToString("C")</p>
+    <p>Transaction ID: @Model.ProjectId</p>
+    <a asp-action="Browse" class="btn btn-primary">Back to Projects</a>
+</div>

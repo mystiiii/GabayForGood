@@ -18,7 +18,7 @@ public class Donation
 
     [Required]
     [Column(TypeName = "nvarchar(50)")]
-    public string Payment { get; set; }
+    public string PaymentMethod { get; set; }
 
     [Column(TypeName = "nvarchar(500)")]
     public string Message { get; set; }

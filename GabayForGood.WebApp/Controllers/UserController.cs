@@ -299,7 +299,7 @@ namespace GabayForGood.WebApp.Controllers
                     UserId = user.Id,
                     ProjectId = model.ProjectId,
                     Amount = model.Amount,
-                    Payment = model.PaymentMethod,
+                    PaymentMethod = model.PaymentMethod,
                     Message = model.Message ?? "",
                     Status = "Pending",
                     CreatedAt = DateTime.UtcNow
