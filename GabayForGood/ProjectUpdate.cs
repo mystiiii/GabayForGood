@@ -7,9 +7,9 @@ namespace GabayForGood.DataModel
     public class ProjectUpdate
     {
         [Key]
-        public int ProjectUpdateId { get; set; } 
+        public int ProjectUpdateId { get; set; }
 
-        public int ProjectId { get; set; } 
+        public int ProjectId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -20,6 +20,10 @@ namespace GabayForGood.DataModel
         [MaxLength(1000)]
         [Column(TypeName = "nvarchar(1000)")]
         public string Description { get; set; }
+
+        [MaxLength(500)]
+        [Column(TypeName = "nvarchar(500)")]
+        public string? ImageUrl { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }

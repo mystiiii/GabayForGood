@@ -82,20 +82,63 @@
             color: #333;
         }
 
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    /* Project Details Card - Following Index Style */
     .project-details-card {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 25px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
         margin-bottom: 30px;
-        border-left: 5px solid #ffd700;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        border: none;
+    }
+
+    .project-header {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .image-container {
+        flex-shrink: 0;
+        width: 250px;
+        height: 180px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .project-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-placeholder {
+        color: #999;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .project-info {
+        flex: 1;
+        padding: 20px;
     }
 
     .project-title {
-        font-size: 1.8rem;
+        font-size: 24px;
         font-weight: bold;
         color: #333;
         margin-bottom: 10px;
+        line-height: 1.3;
     }
 
     .project-description {
@@ -105,32 +148,37 @@
         margin-bottom: 20px;
     }
 
-    .project-info-grid {
+    .project-meta {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
 
-    .info-item {
+    .meta-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 8px 0;
+        font-size: 14px;
     }
 
-    .info-label {
+    .meta-label {
         font-weight: 600;
         color: #333;
-        font-size: 14px;
     }
 
-    .info-value {
+    .meta-value {
         color: #555;
-        font-size: 14px;
     }
 
     .goal-amount {
+        font-weight: bold;
+        color: #28a745;
+        font-size: 16px;
+    }
+
+    .current-amount {
         font-weight: bold;
         color: #28a745;
         font-size: 16px;
@@ -160,6 +208,43 @@
         color: #004085;
     }
 
+    .funding-section {
+        grid-column: 1 / -1;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-left: 5px solid #ffd700;
+    }
+
+    .funding-amounts {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .progress-bar-container {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        height: 10px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .progress-text {
+        font-size: 13px;
+        color: #666;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    /* Updates Section */
     .updates-section {
         margin-top: 30px;
     }
@@ -283,58 +368,64 @@
             margin-bottom: 10px;
         }
 
+
+
+
+
+
         .empty-state p {
             color: #aaa;
             font-size: 16px;
         }
 
-    .header-actions {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
     @@media (max-width: 768px) {
-        .dashboard-header
-
-    {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .dashboard-title {
-        font-size: 2rem;
-    }
-
-    .header-actions {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .project-info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .updates-table {
-        font-size: 12px;
-    }
-
-        .updates-table th,
-        .updates-table td {
-            padding: 12px 8px;
+        .dashboard-header {
+            flex-direction: column;
+            gap: 15px;
         }
 
-    .actions-container {
-        flex-direction: row;
-        gap: 5px;
-    }
+        .dashboard-title {
+            font-size: 2rem;
+        }
 
-    .action-btn {
-        padding: 6px 10px;
-        font-size: 11px;
-        min-width: 60px;
-    }
+        .header-actions {
+            flex-direction: column;
+            width: 100%;
+        }
 
+        .project-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 200px;
+        }
+
+        .project-meta {
+            grid-template-columns: 1fr;
+        }
+
+        .updates-table {
+            font-size: 12px;
+        }
+
+            .updates-table th,
+            .updates-table td {
+                padding: 12px 8px;
+            }
+
+        .actions-container {
+            flex-direction: row;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            min-width: 60px;
+        }
     }
 </style>
 
@@ -347,46 +438,104 @@
         </div>
     </div>
 
-    <!-- Project Details Card -->
+    <!-- Project Details Card - Following Index Style -->
     <div class="project-details-card">
-        <div class="project-title">@Model.Project.Title</div>
-        <div class="project-description">@Model.Project.Description</div>
+        <div class="project-info">
+            <div class="project-header">
+                <div class="image-container">
+                    @* Debug: Show the actual ImageUrl value *@
+                    @* <p>Debug: ImageUrl = '@Model.Project.ImageUrl'</p> *@
 
-        <div class="project-info-grid">
-            <div class="info-item">
-                <span class="info-label">Category:</span>
-                <span class="info-value">@Model.Project.Category</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Cause:</span>
-                <span class="info-value">@Model.Project.Cause</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Location:</span>
-                <span class="info-value">@Model.Project.Location</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Goal Amount:</span>
-                <span class="info-value goal-amount">₱@Model.Project.GoalAmount.ToString("N0")</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Start Date:</span>
-                <span class="info-value">@Model.Project.StartDate.ToString("MMM dd, yyyy")</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">End Date:</span>
-                <span class="info-value">@Model.Project.EndDate.ToString("MMM dd, yyyy")</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Status:</span>
-                <span class="info-value">
-                    @{
-                        string statusClass = "status-pending";
-                        if (Model.Project.Status?.ToLower() == "active") statusClass = "status-active";
-                        else if (Model.Project.Status?.ToLower() == "completed") statusClass = "status-completed";
+                    @if (!string.IsNullOrEmpty(Model.Project.ImageUrl))
+                    {
+                        <img src="@Model.Project.ImageUrl" alt="@Model.Project.Title" class="project-image" />
                     }
-                    <span class="status-badge @statusClass">@Model.Project.Status</span>
-                </span>
+                    else
+                    {
+                        <div class="image-placeholder">
+                            <i class="fas fa-image fa-2x mb-2"></i><br />
+                            No Image Available
+                            @* Debug info *@
+                            <br><small style="color: #999;">ImageUrl: '@(Model.Project.ImageUrl ?? "NULL")'</small>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
+                </div>
+
+                <div style="flex: 1;">
+                    <div class="project-title">@Model.Project.Title</div>
+                    <div class="project-description">@Model.Project.Description</div>
+
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Category:</span>
+                            <span class="meta-value">@Model.Project.Category</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Cause:</span>
+                            <span class="meta-value">@Model.Project.Cause</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Location:</span>
+                            <span class="meta-value">@Model.Project.Location</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Start Date:</span>
+                            <span class="meta-value">@Model.Project.StartDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">End Date:</span>
+                            <span class="meta-value">@Model.Project.EndDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status:</span>
+                            <span class="meta-value">
+                                @{
+                                    string statusClass = "status-pending";
+                                    if (Model.Project.Status?.ToLower() == "active") statusClass = "status-active";
+                                    else if (Model.Project.Status?.ToLower() == "completed") statusClass = "status-completed";
+                                }
+                                <span class="status-badge @statusClass">@Model.Project.Status</span>
+                            </span>
+                        </div>
+
+                        <!-- Funding Section -->
+                        <div class="funding-section">
+                            @{
+                                decimal currentAmount = Model.Project.CurrentAmount;
+                                decimal goalAmount = Model.Project.GoalAmount;
+                                decimal percentage = goalAmount > 0 ? (currentAmount / goalAmount) * 100 : 0;
+                            }
+                            <div class="funding-amounts">
+                                <span class="current-amount">₱@currentAmount.ToString("N0") raised</span>
+                                <span class="goal-amount">₱@goalAmount.ToString("N0") goal</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: @Math.Min(percentage, 100)%"></div>
+                            </div>
+                            <div class="progress-text">@percentage.ToString("F1")% Funded</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -436,4 +585,3 @@
             </table>
         }
     </div>
-</div>

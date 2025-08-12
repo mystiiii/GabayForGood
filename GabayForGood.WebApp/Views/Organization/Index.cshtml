@@ -393,10 +393,11 @@
                         </div>
 
                         <div class="actions-section">
-                            <a asp-controller="Organization" asp-action="Updates" asp-route-id="@project.ProjectId" class="action-btn btn-update">Update</a>
+                            <a asp-controller="Organization" asp-action="Updates" asp-route-id="@project.ProjectId"
+                               class="action-btn btn-update">Update</a>
                             <a asp-controller="Organization" asp-action="Edit" asp-route-id="@project.ProjectId" class="action-btn btn-edit">Edit</a>
-                            <form asp-controller="Organization" asp-action="Delete" asp-route-id="@project.ProjectId" method="post" style="flex: 1; max-width: 80px;">
-                                <button type="submit" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete this project?')" style="width: 100%;">Delete</button>
+                            <form asp-controller="Organization" asp-action="Delete" asp-route-id="@project.ProjectId" method="post" style="flex: 1; max-width: 80px;" onsubmit="return confirm('Are you sure you want to delete this project?')">
+                                <button type="submit" class="action-btn btn-delete" style="width: 100%;">Delete</button>
                             </form>
                         </div>
                     </div>

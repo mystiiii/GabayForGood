@@ -77,7 +77,7 @@ namespace GabayForGood.WebApp.Controllers
                     var projectModel = mapper.Map<Project>(model);
                     projectModel.CreatedAt = DateTime.UtcNow;
                     projectModel.OrganizationId = user.OrganizationID.Value;
-                    projectModel.ImageUrl = imageUrl; 
+                    projectModel.ImageUrl = imageUrl;
 
                     await context.Projects.AddAsync(projectModel);
                     await context.SaveChangesAsync();
@@ -272,9 +272,11 @@ namespace GabayForGood.WebApp.Controllers
                     Cause = project.Cause,
                     Location = project.Location,
                     GoalAmount = project.GoalAmount,
+                    CurrentAmount = project.CurrentAmount, // Added this line
                     StartDate = project.StartDate,
                     EndDate = project.EndDate,
-                    Status = project.Status
+                    Status = project.Status,
+                    ImageUrl = project.ImageUrl // Added this line
                 };
 
                 var updatesVM = updates.Select(u => new ProjectUpdateVM

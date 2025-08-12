@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace GabayForGood.WebApp.Models
 {
@@ -24,6 +25,12 @@ namespace GabayForGood.WebApp.Models
         [MaxLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
         [Display(Name = "Update Description")]
         public string Description { get; set; }
+
+        [StringLength(500, ErrorMessage = "Image URL must be less than 500 characters.")]
+        public string? ImageUrl { get; set; }
+
+        [Display(Name = "Update Image")]
+        public IFormFile? ImageFile { get; set; }
 
         [Display(Name = "Date Posted")]
         public DateTime CreatedAt { get; set; }
