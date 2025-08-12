@@ -22,15 +22,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
-
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Admin/Login";
-    options.LogoutPath = "/Admin/Logout";
+    options.LoginPath = "/Admin/Login"; 
+    options.LogoutPath = "/Admin/Logout"; 
 });
 
 builder.Services.AddControllersWithViews();
@@ -53,7 +52,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseMiddleware<RoleBasedDefaultRouteMiddleware>();
 
 app.UseStatusCodePages(async context =>
@@ -61,7 +59,16 @@ app.UseStatusCodePages(async context =>
     var response = context.HttpContext.Response;
     if (response.StatusCode == 401 || response.StatusCode == 403)
     {
-        response.Redirect("/Home/Index");
+        // Check if it's an admin route
+        var path = context.HttpContext.Request.Path;
+        if (path.StartsWithSegments("/Admin"))
+        {
+            response.Redirect("/Admin/Login");
+        }
+        else
+        {
+            response.Redirect("/User/SignIn"); 
+        }
     }
 });
 
@@ -81,7 +88,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "user",
-    pattern: "User/{action=Index}/{id?}",
+    pattern: "User/{action=SignIn}/{id?}",  
     defaults: new { controller = "User" });
 
 app.Run();

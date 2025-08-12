@@ -59,6 +59,43 @@
             color: white;
         }
 
+    .current-image-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #ffd700;
+    }
+
+    .current-image-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .current-image-display {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+        .current-image-display img {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+    .no-image-placeholder {
+        padding: 40px;
+        background-color: #e9ecef;
+        border: 2px dashed #adb5bd;
+        border-radius: 8px;
+        color: #6c757d;
+        font-style: italic;
+        text-align: center;
+    }
+
     .edit-form {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -115,6 +152,49 @@
             resize: vertical;
             min-height: 100px;
         }
+
+    .image-upload-container {
+        border: 2px dashed #e0e0e0;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        background-color: #fafafa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        min-height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .image-upload-container:hover {
+            border-color: #ffd700;
+            background-color: #fffef7;
+        }
+
+    .upload-text {
+        color: #666;
+        font-size: 14px;
+        margin: 10px 0;
+    }
+
+    .upload-subtext {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    .file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
 
     .readonly-notice {
         font-size: 12px;
@@ -202,6 +282,67 @@
         background-color: #fff5f5 !important;
     }
 
+    .currency-input {
+        position: relative;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+        font-weight: 600;
+        z-index: 1;
+    }
+
+    .currency-input .form-control,
+    .currency-input input {
+        padding-left: 35px;
+    }
+
+    /* New image preview styles - inside container */
+    .image-preview {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+    .remove-preview-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+        .remove-preview-btn:hover {
+            background-color: #c82333;
+        }
+
+    #uploadPlaceholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+
     @@media (max-width: 768px) {
         .edit-form
 
@@ -245,8 +386,26 @@
         </div>
     }
 
-    <form asp-action="Edit" method="post" class="edit-form">
+    <!-- Current Image Display -->
+    <div class="current-image-section">
+        <div class="current-image-title">Current Project Image</div>
+        <div class="current-image-display" id="currentImageDisplay">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="@Model.Title" id="currentImage" />
+            }
+            else
+            {
+                <div class="no-image-placeholder" id="noImagePlaceholder">
+                    No image uploaded for this project
+                </div>
+            }
+        </div>
+    </div>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="edit-form">
         <input asp-for="ProjectId" type="hidden" />
+        <input asp-for="ImageUrl" type="hidden" />
 
         @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
 
@@ -260,6 +419,27 @@
             <label asp-for="Description">Description</label>
             <textarea asp-for="Description" class="form-control" placeholder="Provide a detailed description of your project..."></textarea>
             <span asp-validation-for="Description" class="field-validation-error"></span>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-group full-width">
+            <label asp-for="ImageFile">Update Project Image (Optional)</label>
+            <div class="image-upload-container" onclick="document.getElementById('imageFileInput').click();">
+                <input asp-for="ImageFile" type="file" accept="image/*" class="file-input" id="imageFileInput" />
+                <div id="uploadPlaceholder">
+                    <div class="upload-text">📷 Click to upload a new image or drag and drop</div>
+                    <div class="upload-subtext">PNG, JPG, JPEG, WebP up to 5MB</div>
+                </div>
+
+                <!-- Image Preview Section - Inside the container -->
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImage" src="" alt="Preview" />
+                    <button type="button" class="remove-preview-btn" onclick="removeImagePreview()">Remove Preview</button>
+                </div>
+            </div>
+
+            <span asp-validation-for="ImageFile" class="field-validation-error"></span>
+            <div class="readonly-notice">Leave blank to keep the current image</div>
         </div>
 
         <div class="form-group">
@@ -281,9 +461,22 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="GoalAmount">Goal Amount (₱)</label>
-            <input asp-for="GoalAmount" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+            <label asp-for="GoalAmount">Goal Amount</label>
+            <div class="currency-input">
+                <span class="currency-symbol">₱</span>
+                <input asp-for="GoalAmount" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+            </div>
             <span asp-validation-for="GoalAmount" class="field-validation-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CurrentAmount">Current Amount</label>
+            <div class="currency-input">
+                <span class="currency-symbol">₱</span>
+                <input asp-for="CurrentAmount" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+            </div>
+            <span asp-validation-for="CurrentAmount" class="field-validation-error"></span>
+            <div class="readonly-notice">Amount currently raised for this project</div>
         </div>
 
         <div class="form-group">
@@ -314,6 +507,61 @@
         </div>
     </form>
 </div>
+
+<script>
+    // Image preview functionality
+    document.getElementById('imageFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById('uploadPlaceholder').style.display = 'none';
+                document.getElementById('imagePreview').style.display = 'flex';
+
+                // Hide current image display to show the preview instead
+                document.getElementById('currentImageDisplay').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Remove image preview function
+    function removeImagePreview() {
+        document.getElementById('imageFileInput').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        document.getElementById('uploadPlaceholder').style.display = 'flex';
+        document.getElementById('currentImageDisplay').style.display = 'block';
+    }
+
+    // Drag and drop functionality
+    const uploadContainer = document.querySelector('.image-upload-container');
+    const fileInput = document.getElementById('imageFileInput');
+
+    uploadContainer.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadContainer.style.borderColor = '#ffd700';
+        uploadContainer.style.backgroundColor = '#fffef7';
+    });
+
+    uploadContainer.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadContainer.style.borderColor = '#e0e0e0';
+        uploadContainer.style.backgroundColor = '#fafafa';
+    });
+
+    uploadContainer.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadContainer.style.borderColor = '#e0e0e0';
+        uploadContainer.style.backgroundColor = '#fafafa';
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+</script>
 
 @section Scripts {
     @{

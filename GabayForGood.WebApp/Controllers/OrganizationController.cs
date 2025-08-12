@@ -14,20 +14,22 @@ namespace GabayForGood.WebApp.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IMapper mapper;
         private readonly AppDbContext context;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public OrganizationController(AppDbContext context, IMapper mapper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public OrganizationController(AppDbContext context, IMapper mapper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             this.context = context;
             this.mapper = mapper;
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         [Authorize(Roles = "Organization")]
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(User);
-            var orgId = user.OrganizationID; 
+            var orgId = user.OrganizationID;
 
             var projs = await context.Projects
                 .Where(p => p.OrganizationId == orgId)
@@ -36,11 +38,60 @@ namespace GabayForGood.WebApp.Controllers
             return View(mapper.Map<List<ProjectVM>>(projs));
         }
 
-
         [Authorize(Roles = "Organization")]
         public IActionResult Add()
         {
             return View();
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        public async Task<IActionResult> Add(ProjectVM model)
+        {
+            // Remove ImageUrl from ModelState validation since it's generated automatically
+            ModelState.Remove("ImageUrl");
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await userManager.GetUserAsync(User);
+                    if (user == null || !user.OrganizationID.HasValue)
+                    {
+                        TempData["ErrorMessage"] = "Unable to identify your organization.";
+                        return View(model);
+                    }
+
+                    // Handle image upload
+                    string imageUrl = null;
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        imageUrl = await ProcessImageUpload(model.ImageFile);
+                        if (imageUrl == null)
+                        {
+                            // Error occurred during upload, ModelState should contain the error
+                            return View(model);
+                        }
+                    }
+
+                    var projectModel = mapper.Map<Project>(model);
+                    projectModel.CreatedAt = DateTime.UtcNow;
+                    projectModel.OrganizationId = user.OrganizationID.Value;
+                    projectModel.ImageUrl = imageUrl; 
+
+                    await context.Projects.AddAsync(projectModel);
+                    await context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Project created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while creating the project.";
+                }
+            }
+
+            return View(model);
         }
 
         [Authorize(Roles = "Organization")]
@@ -82,6 +133,10 @@ namespace GabayForGood.WebApp.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Remove ImageUrl and ImageFile from ModelState validation since they're optional
+            ModelState.Remove("ImageUrl");
+            ModelState.Remove("ImageFile");
+
             if (ModelState.IsValid)
             {
                 try
@@ -100,8 +155,29 @@ namespace GabayForGood.WebApp.Controllers
                         return RedirectToAction("Index");
                     }
 
+                    // Handle image upload if new image is provided
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        // Delete old image if exists
+                        if (!string.IsNullOrEmpty(project.ImageUrl))
+                        {
+                            DeleteImage(project.ImageUrl);
+                        }
+
+                        // Upload new image
+                        var newImageUrl = await ProcessImageUpload(model.ImageFile);
+                        if (newImageUrl != null)
+                        {
+                            project.ImageUrl = newImageUrl;
+                        }
+                        else
+                        {
+                            return View(model); // Error occurred during upload
+                        }
+                    }
                     project.Description = model.Description;
                     project.GoalAmount = model.GoalAmount;
+                    project.CurrentAmount = model.CurrentAmount; // Add this line since it's editable in the form
                     project.StartDate = model.StartDate;
                     project.EndDate = model.EndDate;
                     project.Status = model.Status;
@@ -120,6 +196,55 @@ namespace GabayForGood.WebApp.Controllers
             }
 
             return View(model);
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var project = await context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID != project.OrganizationId)
+                {
+                    TempData["ErrorMessage"] = "You don't have permission to delete this project.";
+                    return RedirectToAction("Index");
+                }
+
+                // Delete associated image
+                if (!string.IsNullOrEmpty(project.ImageUrl))
+                {
+                    DeleteImage(project.ImageUrl);
+                }
+
+                // Delete project updates
+                var projectUpdates = await context.ProjectUpdates
+                    .Where(u => u.ProjectId == id)
+                    .ToListAsync();
+
+                if (projectUpdates.Any())
+                {
+                    context.ProjectUpdates.RemoveRange(projectUpdates);
+                }
+
+                context.Projects.Remove(project);
+                await context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Project '{project.Title}' has been deleted successfully.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the project. Please try again.";
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> Updates(int id)
@@ -176,76 +301,65 @@ namespace GabayForGood.WebApp.Controllers
             }
         }
 
+        #region Private Helper Methods
 
-        [Authorize(Roles = "Organization")]
-        [HttpPost]
-        public async Task<IActionResult> Add(ProjectVM model)
-        {
-            if (ModelState.IsValid)
-            {
-                var projectModel = mapper.Map<Project>(model);
-                projectModel.CreatedAt = DateTime.UtcNow;
-
-                var user = await userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    return Unauthorized();
-                }
-
-                if (user.OrganizationID.HasValue)
-                {
-                    projectModel.OrganizationId = user.OrganizationID.Value;
-                } 
-
-                await context.Projects.AddAsync(projectModel);
-                await context.SaveChangesAsync();
-
-                return RedirectToAction("Index");
-            }
-
-            return View(model);
-        }
-
-        [Authorize(Roles = "Organization")]
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        private async Task<string> ProcessImageUpload(IFormFile imageFile)
         {
             try
             {
-                var project = await context.Projects.FindAsync(id);
-                if (project == null)
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
                 {
-                    TempData["ErrorMessage"] = "Project not found.";
-                    return RedirectToAction("Index");
+                    ModelState.AddModelError("ImageFile", "Only JPG, JPEG, PNG, GIF, and WebP files are allowed.");
+                    return null;
                 }
 
-                var user = await userManager.GetUserAsync(User);
-                if (user?.OrganizationID != project.OrganizationId)
+                if (imageFile.Length > 5 * 1024 * 1024)
                 {
-                    TempData["ErrorMessage"] = "You don't have permission to delete this project.";
-                    return RedirectToAction("Index");
+                    ModelState.AddModelError("ImageFile", "File size cannot exceed 5MB.");
+                    return null;
                 }
 
-                var projectUpdates = await context.ProjectUpdates
-                    .Where(u => u.ProjectId == id)
-                    .ToListAsync();
+                var uniqueFileName = Guid.NewGuid().ToString() + extension;
 
-                if (projectUpdates.Any())
+                var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "uploads", "projects");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    context.ProjectUpdates.RemoveRange(projectUpdates);
+                    await imageFile.CopyToAsync(fileStream);
                 }
 
-                context.Projects.Remove(project);
-                await context.SaveChangesAsync();
-
-                TempData["SuccessMessage"] = $"Project '{project.Title}' has been deleted successfully.";
-                return RedirectToAction("Index");
+                return $"/uploads/projects/{uniqueFileName}";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while deleting the project. Please try again.";
-                return RedirectToAction("Index");
+                ModelState.AddModelError("ImageFile", "An error occurred while uploading the image.");
+                return null;
             }
         }
+
+        private void DeleteImage(string imageUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imageUrl)) return;
+
+                var fullPath = Path.Combine(webHostEnvironment.WebRootPath, imageUrl.TrimStart('/'));
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #endregion
     }
 }

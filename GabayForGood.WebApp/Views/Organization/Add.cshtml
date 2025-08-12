@@ -129,6 +129,89 @@
         align-items: end;
     }
 
+    .image-upload-container {
+        border: 2px dashed #e0e0e0;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        background-color: #fafafa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .image-upload-container:hover {
+            border-color: #ffd700;
+            background-color: #fffef7;
+        }
+
+        .image-upload-container.dragover {
+            border-color: #ffd700;
+            background-color: #fffef7;
+            transform: scale(1.02);
+        }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        display: none;
+    }
+
+    .upload-placeholder {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .upload-icon {
+        font-size: 3rem;
+        color: #ccc;
+        margin-bottom: 15px;
+    }
+
+    .upload-text {
+        margin: 10px 0;
+        color: #666;
+    }
+
+    .upload-subtext {
+        font-size: 14px;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    .file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .remove-image-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: none;
+        font-size: 16px;
+        line-height: 1;
+    }
+
     .btn-container {
         display: flex;
         gap: 15px;
@@ -258,7 +341,7 @@
         <div asp-validation-summary="All" class="validation-summary"></div>
     }
 
-    <form asp-controller="Organization" asp-action="Add" method="post">
+    <form asp-controller="Organization" asp-action="Add" method="post" enctype="multipart/form-data">
 
         <!-- Project Title -->
         <div class="form-row">
@@ -276,6 +359,25 @@
                 <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your project, its goals, and impact on the community..."></textarea>
                 <span asp-validation-for="Description" class="field-validation-error"></span>
                 <div class="help-text">Provide a detailed description to help donors understand your cause</div>
+            </div>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-row">
+            <div class="form-group full-width">
+                <label asp-for="ImageFile" class="form-label">Project Image</label>
+                <div class="image-upload-container" id="imageUploadContainer">
+                    <input asp-for="ImageFile" type="file" accept="image/*" class="file-input" id="imageFileInput" />
+                    <img id="imagePreview" class="image-preview" alt="Preview" />
+                    <button type="button" class="remove-image-btn" id="removeImageBtn">&times;</button>
+                    <div id="uploadPlaceholder" class="upload-placeholder">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Click to upload or drag and drop</div>
+                        <div class="upload-subtext">PNG, JPG, JPEG up to 5MB</div>
+                    </div>
+                </div>
+                <span asp-validation-for="ImageFile" class="field-validation-error"></span>
+                <div class="help-text">Add an image to make your project more appealing to potential donors</div>
             </div>
         </div>
 
@@ -319,7 +421,7 @@
             </div>
         </div>
 
-        <!-- Goal Amount -->
+        <!-- Goal Amount and Current Amount -->
         <div class="form-row">
             <div class="form-group">
                 <label asp-for="GoalAmount" class="form-label">Funding Goal <span class="required">*</span></label>
@@ -331,13 +433,18 @@
                 <div class="help-text">Enter the total amount needed for this project</div>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="form-label">Project Status</label>
-                <input asp-for="Status" type="hidden" value="Active" />
-                <input type="text" class="form-control" value="Active" disabled readonly />
-                <span asp-validation-for="Status" class="field-validation-error"></span>
-                <div class="help-text">New projects start as Active. Status can be changed to Completed later.</div>
+                <label asp-for="CurrentAmount" class="form-label">Initial Amount</label>
+                <div class="currency-input">
+                    <span class="currency-symbol">₱</span>
+                    <input asp-for="CurrentAmount" type="number" class="form-control" placeholder="0.00" step="0.01" min="0" value="0" />
+                </div>
+                <span asp-validation-for="CurrentAmount" class="field-validation-error"></span>
+                <div class="help-text">Any initial funding already secured (optional, defaults to 0)</div>
             </div>
         </div>
+
+        <!-- Status (Hidden for new projects) -->
+        <input asp-for="Status" type="hidden" value="Active" />
 
         <!-- Project Duration -->
         <div class="form-row">
@@ -454,6 +561,13 @@
         const startDateInput = document.getElementById('startDateInput');
         const endDateInput = document.getElementById('endDateInput');
 
+        // Image upload elements
+        const imageUploadContainer = document.getElementById('imageUploadContainer');
+        const imageFileInput = document.getElementById('imageFileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
         // Set today's date as default start date
         const today = new Date().toISOString().split('T')[0];
         startDateInput.value = today;
@@ -468,10 +582,7 @@
             causeSelect.value = '';
 
             if (selectedCategory && causesByCategory[selectedCategory]) {
-                // Enable cause dropdown
                 causeSelect.disabled = false;
-
-                // Populate cause options
                 causesByCategory[selectedCategory].forEach(cause => {
                     const option = document.createElement('option');
                     option.value = cause.value;
@@ -479,7 +590,6 @@
                     causeSelect.appendChild(option);
                 });
             } else {
-                // Disable cause dropdown if no category selected
                 causeSelect.disabled = true;
                 causeSelect.innerHTML = '<option value="">Select a category first</option>';
             }
@@ -496,6 +606,61 @@
         // Set minimum end date on page load if start date has value
         if (startDateInput.value) {
             endDateInput.setAttribute('min', startDateInput.value);
+        }
+
+        // Image upload functionality
+        imageFileInput.addEventListener('change', function(e) {
+            handleImageUpload(e.target.files[0]);
+        });
+
+        // Drag and drop functionality
+        imageUploadContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            imageUploadContainer.classList.add('dragover');
+        });
+
+        imageUploadContainer.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            imageUploadContainer.classList.remove('dragover');
+        });
+
+        imageUploadContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            imageUploadContainer.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    imageFileInput.files = files;
+                    handleImageUpload(file);
+                }
+            }
+        });
+
+        removeImageBtn.addEventListener('click', function() {
+            imageFileInput.value = '';
+            imagePreview.style.display = 'none';
+            removeImageBtn.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
+        });
+
+        function handleImageUpload(file) {
+            if (file && file.type.startsWith('image/')) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    removeImageBtn.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
         }
     });
 </script>

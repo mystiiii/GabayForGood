@@ -26,6 +26,7 @@ namespace GabayForGood.WebApp.Controllers
             this.mapper = mapper;
         }
 
+        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {

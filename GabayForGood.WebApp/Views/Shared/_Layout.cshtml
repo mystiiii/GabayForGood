@@ -21,68 +21,69 @@
     <header class="main-header px-3">
         <div class="container-fluid">
             <div class="row align-items-center">
-                <!-- Brand -->
                 <div class="col-md-6 d-flex align-items-center">
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <a asp-controller="User" asp-action="Browse" class="navbar-brand-custom">Gabay For Good</a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Home" asp-action="Index" class="navbar-brand-custom">Gabay For Good</a>
-                    }
+                    <a asp-controller="Home" asp-action="Index" class="navbar-brand-custom">Gabay For Good</a>
                 </div>
-
-
-                <!-- Navigation Links -->
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="nav-links">
+                        @{
+                            string displayName = "";
+
+                            if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                if (User.IsInRole("User"))
+                                {
+                                    var firstName = User.FindFirst("FirstName")?.Value ?? "";
+                                    var lastName = User.FindFirst("LastName")?.Value ?? "";
+                                    displayName = $"{firstName} {lastName}".Trim();
+                                }
+                                else if (User.IsInRole("Organization"))
+                                {
+                                    displayName = User.FindFirst("Name")?.Value ?? User.Identity.Name ?? "Organization";
+                                }
+                                else
+                                {
+                                    displayName = User.Identity.Name ?? "User";
+                                }
+                            }
+                        }
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            var firstName = User.FindFirst("FirstName")?.Value ?? "";
-                            var lastName = User.FindFirst("LastName")?.Value ?? "";
-                            var fullNameUser = $"{firstName} {lastName}".Trim();
 
                             <div class="dropdown">
-                                <button class="btn btn-link dropdown-toggle nav-link-custom" data-bs-toggle="dropdown">
-                                    @fullNameUser
+                                <button class="btn dropdown-toggle nav-link-custom" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @displayName
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Edit Profile</a></li>
-
-                                    @if (User.IsInRole("User"))
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
+                                    @if (!User.IsInRole("Organization"))
                                     {
                                         <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
                                     }
-
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <form asp-controller="User" asp-action="SignOut" method="post">
+                                        <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
                                             <button type="submit" class="dropdown-item">Sign Out</button>
                                         </form>
                                     </li>
                                 </ul>
                             </div>
-                            <!-- No Donate button when logged in -->
                         }
                         else
                         {
-                            <!-- Only Donate button for logged-out users -->
-                            <a asp-controller="User" asp-action="SignIn" class="btn-signup">Donate now!</a>
+                            <a asp-controller="User" asp-action="SignIn" class="btn-signup ">Donate now!</a>
                         }
                     </div>
                 </div>
             </div>
         </div>
     </header>
-
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-
-    <footer></footer>
-
+    <footer>
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

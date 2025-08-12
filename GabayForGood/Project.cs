@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace GabayForGood.DataModel
 {
     public class Project
     {
         [Key]
-        public int ProjectId { get; set; } 
+        public int ProjectId { get; set; }
         public int OrganizationId { get; set; }
 
         [Required]
@@ -39,7 +38,11 @@ namespace GabayForGood.DataModel
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal GoalAmount { get; set; }
-
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal CurrentAmount { get; set; } = 0;
+        [MaxLength(500)]
+        [Column(TypeName = "nvarchar(500)")]
+        public string ImageUrl { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
 
@@ -53,9 +56,7 @@ namespace GabayForGood.DataModel
 
         [Required]
         public DateTime CreatedAt { get; set; }
-
         public DateTime? ModifiedAt { get; set; }
-
         public Organization Organization { get; set; }
         public List<ProjectUpdate> ProjectUpdates { get; set; }
         public List<Donation> Donations { get; set; }
