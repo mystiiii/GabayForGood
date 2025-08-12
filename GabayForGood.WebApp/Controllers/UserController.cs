@@ -202,5 +202,137 @@ namespace GabayForGood.WebApp.Controllers
 
             return View(vm);
         }
+
+        [Authorize]
+        [HttpGet("/Donation/User/{id}")]
+        public async Task<IActionResult> Donate(int id)
+        {
+            try
+            {
+                var project = await context.Projects.FindAsync(id);
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Browse");
+                }
+
+                if (project.Status != "Active")
+                {
+                    TempData["ErrorMessage"] = "This project is no longer accepting donations.";
+                    return RedirectToAction("Browse");
+                }
+
+                // Calculate current donation amount for this project
+                var currentAmount = await context.Donations
+                    .Where(d => d.ProjectId == id && d.Status == "Completed")
+                    .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
+                var fundingPercentage = project.GoalAmount > 0
+                    ? (currentAmount / project.GoalAmount) * 100
+                    : 0;
+
+                var daysRemaining = (project.EndDate - DateTime.Now).Days;
+
+                var donationVM = new DonationVM
+                {
+                    ProjectId = id,
+                    Project = mapper.Map<ProjectVM>(project),
+                    CurrentAmount = currentAmount,
+                    FundingPercentage = Math.Min(fundingPercentage, 100), // Cap at 100%
+                    DaysRemaining = Math.Max(daysRemaining, 0) // Prevent negative days
+                };
+
+                // Explicitly load the view from Views/User/Donation.cshtml
+                return View("Donation", donationVM);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the donation page.";
+                return RedirectToAction("Browse");
+            }
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcessDonation(DonationVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload the donation page if invalid
+                var project = await context.Projects.FindAsync(model.ProjectId);
+                if (project != null)
+                {
+                    model.Project = mapper.Map<ProjectVM>(project);
+                    var currentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+                    model.CurrentAmount = currentAmount;
+                    model.FundingPercentage = project.GoalAmount > 0 ? (currentAmount / project.GoalAmount) * 100 : 0;
+                    model.DaysRemaining = Math.Max((project.EndDate - DateTime.Now).Days, 0);
+                }
+                return View("Donation", model);
+            }
+
+            try
+            {
+                // Verify project
+                var project = await context.Projects.FindAsync(model.ProjectId);
+                if (project == null || project.Status != "Active")
+                {
+                    TempData["ErrorMessage"] = "Project not found or inactive.";
+                    return RedirectToAction("Browse");
+                }
+
+                // Get user
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "You must be logged in to donate.";
+                    return RedirectToAction("SignIn");
+                }
+
+                // Create donation entry
+                var donation = new Donation
+                {
+                    UserId = user.Id,
+                    ProjectId = model.ProjectId,
+                    Amount = model.Amount,
+                    Payment = model.PaymentMethod,
+                    Message = model.Message ?? "",
+                    Status = "Pending",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await context.Donations.AddAsync(donation);
+                await context.SaveChangesAsync();
+
+                // TEMP: Mark as success until real payment gateway is integrated
+                bool paymentSuccess = true;
+                string paymentMessage = "Payment processed successfully.";
+
+                // Update donation status
+                donation.Status = paymentSuccess ? "Completed" : "Failed";
+                context.Donations.Update(donation);
+                await context.SaveChangesAsync();
+
+                if (paymentSuccess)
+                {
+                    TempData["SuccessMessage"] = $"Thank you for donating ₱{model.Amount:N2}! {paymentMessage}";
+                    return RedirectToAction("DonationSuccess", new { donationId = donation.DonationId });
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = paymentMessage;
+                    return RedirectToAction("Donation", new { id = model.ProjectId });
+                }
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "An error occurred while processing your donation.";
+                return RedirectToAction("Donation", new { id = model.ProjectId });
+            }
+        }
     }
 }

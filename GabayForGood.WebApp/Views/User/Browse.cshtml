@@ -48,8 +48,24 @@
 
     .btn-donate {
         font-size: 0.9rem;
-        padding: 6px 15px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        color: white;
+        border-radius: 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
     }
+
+        .btn-donate:hover {
+            background: linear-gradient(135deg, #218838, #1ea085);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            color: white;
+        }
 
     .project-card {
         transition: transform 0.2s ease-in-out;
@@ -141,7 +157,9 @@
                                         <div><small class="text-muted">Goal: ₱@(project.GoalAmount.ToString("N0"))</small></div>
                                     </div>
                                     <div class="d-flex gap-1">
-                                        <button class="btn btn-success btn-sm rounded-pill btn-donate">DONATE NOW</button>
+                                        <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })" class="btn-donate">
+                                            <i class="fas fa-heart"></i> DONATE NOW
+                                        </a>
                                     </div>
                                 </div>
 
