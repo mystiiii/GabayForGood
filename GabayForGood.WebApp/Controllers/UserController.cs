@@ -258,8 +258,19 @@ namespace GabayForGood.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessDonation(DonationVM model)
         {
+
+            ModelState.Remove("Project.Cause");
+            ModelState.Remove("Project.Title");
+            ModelState.Remove("Project.Status");
+            ModelState.Remove("Project.EndDate");
+            ModelState.Remove("Project.Category");
+            ModelState.Remove("Project.Location");
+            ModelState.Remove("Project.GoalAmount");
+            ModelState.Remove("Project.Description");
+
             if (!ModelState.IsValid)
             {
+
                 // Reload the donation page if invalid
                 var project = await context.Projects.FindAsync(model.ProjectId);
                 if (project != null)
@@ -274,10 +285,8 @@ namespace GabayForGood.WebApp.Controllers
                 }
                 return View("Donation", model);
             }
-
-            try
+            else
             {
-                // Verify project
                 var project = await context.Projects.FindAsync(model.ProjectId);
                 if (project == null || project.Status != "Active")
                 {
@@ -285,18 +294,19 @@ namespace GabayForGood.WebApp.Controllers
                     return RedirectToAction("Browse");
                 }
 
-                // Get user
-                var user = await userManager.GetUserAsync(User);
-                if (user == null)
+                var currentUser = await userManager.GetUserAsync(User);
+                if (currentUser == null)
                 {
-                    TempData["ErrorMessage"] = "You must be logged in to donate.";
-                    return RedirectToAction("SignIn");
+                    TempData["ErrorMessage"] = "You must be logged in to make a donation.";
+                    return RedirectToAction("SignIn", "User");
                 }
 
-                // Create donation entry
+                // Debug: Check what ID we're getting
+                System.Diagnostics.Debug.WriteLine($"UserManager UserId: {currentUser.Id}");
+
                 var donation = new Donation
                 {
-                    UserId = user.Id,
+                    UserId = currentUser.Id,
                     ProjectId = model.ProjectId,
                     Amount = model.Amount,
                     PaymentMethod = model.PaymentMethod,
@@ -305,8 +315,16 @@ namespace GabayForGood.WebApp.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
 
-                await context.Donations.AddAsync(donation);
-                await context.SaveChangesAsync();
+                try
+                {
+                    await context.Donations.AddAsync(donation);
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                    throw;
+                }
 
                 // TEMP: Mark as success until real payment gateway is integrated
                 bool paymentSuccess = true;
@@ -327,11 +345,6 @@ namespace GabayForGood.WebApp.Controllers
                     TempData["ErrorMessage"] = paymentMessage;
                     return RedirectToAction("Donation", new { id = model.ProjectId });
                 }
-            }
-            catch
-            {
-                TempData["ErrorMessage"] = "An error occurred while processing your donation.";
-                return RedirectToAction("Donation", new { id = model.ProjectId });
             }
         }
     }

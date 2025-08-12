@@ -40,14 +40,14 @@ namespace GabayForGood.DataModel
                 .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-                .HasOne(p => p.Project)
-                .WithMany(p => p.Donations)
-                .HasForeignKey(d => d.ProjectId)
-                .OnDelete(DeleteBehavior.Restrict);
+               .HasOne(d => d.Project)
+               .WithMany(p => p.Donations)
+               .HasForeignKey(d => d.ProjectId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-               .HasOne<IdentityUser>()  
-               .WithMany()  
+               .HasOne<ApplicationUser>()
+               .WithMany()
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -62,10 +62,10 @@ namespace GabayForGood.DataModel
             .HasDefaultValue("GFGOrg123!");
         }
 
+        public DbSet<Donation> Donations { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectUpdate> ProjectUpdates { get; set; }
-        public DbSet<Donation> Donations { get; set; }
 
     }
 }

@@ -9,8 +9,10 @@ public class Donation
     public int DonationId { get; set; }
 
     public string UserId { get; set; }
+    public ApplicationUser User { get; set; }
 
     public int ProjectId { get; set; }
+    public Project Project { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(18,2)")]
@@ -30,10 +32,4 @@ public class Donation
     [Required]
     public DateTime CreatedAt { get; set; }
 
-    // Navigation properties
-    [ForeignKey("UserId")]
-    public ApplicationUser User { get; set; }
-
-    [ForeignKey("ProjectId")]
-    public Project Project { get; set; }
 }
