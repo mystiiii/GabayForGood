@@ -79,7 +79,7 @@ namespace GabayForGood.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(OrgVM org)
+        public async Task<IActionResult> RegisterOrg(OrgVM org)
         {
             if (!ModelState.IsValid)
             {
