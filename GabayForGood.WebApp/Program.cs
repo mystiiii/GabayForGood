@@ -12,7 +12,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddDbContext<AppDbContext>(opts =>
 {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("LeiServer"));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("Pollo"));
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
