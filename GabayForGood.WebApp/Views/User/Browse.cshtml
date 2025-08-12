@@ -10,9 +10,12 @@
     }
 
     @@media (max-width: 768px) {
-        .hero-text {
-            font-size: 2rem;
-        }
+        .hero-text
+
+    {
+        font-size: 2rem;
+    }
+
     }
 
     .cause-title {
@@ -76,44 +79,37 @@
         }
 </style>
 
-<!-- WHOLE PAGE CONTAINER -->
 <div class="container-fluid p-0 m-0 w-100">
-    <!-- TOP SECTION -->
-    <div class="row g-0 m-0" style="height: 100vh; width: 100%;">
-        <!-- Left Side: Motivational Text -->
-        <div class="col-md-6 d-flex align-items-center justify-content-center p-5" style="background-color: white;">
-            <div>
-                <h1 class="hero-text fw-bold text-dark">
-                    You're not just giving — you're healing, feeding, and inspiring lives.
-                </h1>
-            </div>
-        </div>
+    @* <div class="row g-0 m-0" style="height: 100vh; width: 100%;"> *@
+    @*     <div class="col-md-6 d-flex align-items-center justify-content-center p-5" style="background-color: white;"> *@
+    @*         <div> *@
+    @*             <h1 class="hero-text fw-bold text-dark"> *@
+    @*                 You're not just giving — you're healing, feeding, and inspiring lives. *@
+    @*             </h1> *@
+    @*         </div> *@
+    @*     </div> *@
 
-        <!-- Right Side: Two Rectangles with Image Upload -->
-        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" style="background-color: #FDBB2D;">
-            <div class="mb-4 position-relative" style="width: 70%; height: 350px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage1')" />
-                <img id="previewImage1" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
-            </div>
-            <div class="position-relative" style="width: 60%; height: 300px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage2')" />
-                <img id="previewImage2" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
-            </div>
-        </div>
-    </div>
+    @*     <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" style="background-color: #FDBB2D;"> *@
+    @*         <div class="mb-4 position-relative" style="width: 70%; height: 350px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;"> *@
+    @*             <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage1')" /> *@
+    @*             <img id="previewImage1" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" /> *@
+    @*             <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span> *@
+    @*         </div> *@
+    @*         <div class="position-relative" style="width: 60%; height: 300px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;"> *@
+    @*             <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage2')" /> *@
+    @*             <img id="previewImage2" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" /> *@
+    @*             <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span> *@
+    @*         </div> *@
+    @*     </div> *@
+    @* </div> *@
 
-    <!-- SECTION TITLE -->
     <div class="text-center py-5 w-100" style="background-color: white;">
         <h4 class="fw-bold mb-0">Popular causes what you should know</h4>
     </div>
 
-    <!-- PROJECT CARDS SECTION -->
     <div class="w-100 py-5 px-4" style="background-color: #003840;">
         @if (Model == null || Model.Count == 0)
         {
-            <!-- No Projects Found -->
             <div class="no-projects">
                 <h3>No Projects Found</h3>
                 <p>There are currently no active projects available. Check back later for new causes to support!</p>
@@ -124,20 +120,26 @@
         }
         else
         {
-            <!-- Display Projects -->
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 @for (int i = 0; i < Model.Count; i++)
                 {
                     var project = Model[i];
-                    decimal currentAmount = 0; // You'll need to add this to your model or calculate it
-                    decimal percentage = project.GoalAmount > 0 ? (currentAmount / project.GoalAmount) * 100 : 0;
+                    var currentAmount = project.CurrentAmount;
+                    var progressPercentage = project.ProgressPercentage;
 
                     <div class="col">
                         <div class="card h-100 shadow-sm rounded-4 overflow-hidden project-card">
                             <div class="position-relative bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'cardPreview@(i)')" />
-                                <img id="cardPreview@(i)" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                                <span class="position-absolute text-muted" style="z-index: -1;">Click to upload image</span>
+                                @if (!string.IsNullOrEmpty(project.ImageUrl))
+                                {
+                                    <img src="@project.ImageUrl" alt="@project.Title" class="w-100 h-100 object-fit-cover" />
+                                }
+                                else
+                                {
+                                    <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-secondary bg-opacity-10">
+                                        <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                                    </div>
+                                }
                             </div>
                             <div class="card-footer bg-white p-3">
                                 <h6 class="cause-title text-truncate" title="@project.Title">@project.Title</h6>
@@ -146,9 +148,29 @@
 
                                 <div class="mb-2">
                                     <div class="progress rounded-pill" style="height: 10px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: @(percentage.ToString("F1"))%;" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-success"
+                                             role="progressbar"
+                                             style="width: @(Math.Min(progressPercentage, 100).ToString("F1"))%;"
+                                             aria-valuenow="@progressPercentage"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                        </div>
                                     </div>
-                                    <small class="text-muted">@(percentage.ToString("F1"))% Funded</small>
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">@(progressPercentage.ToString("F1"))% Funded</small>
+                                        @if (project.IsGoalReached)
+                                        {
+                                            <small class="text-success fw-bold">
+                                                <i class="fas fa-check-circle"></i> Goal Reached!
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-muted">
+                                                ₱@(project.RemainingAmount.ToString("N0")) remaining
+                                            </small>
+                                        }
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mt-3">
@@ -157,8 +179,10 @@
                                         <div><small class="text-muted">Goal: ₱@(project.GoalAmount.ToString("N0"))</small></div>
                                     </div>
                                     <div class="d-flex gap-1">
-                                        <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })" class="btn-donate">
-                                            <i class="fas fa-heart"></i> DONATE NOW
+                                        <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })"
+                                           class="btn-donate @(project.IsGoalReached ? "opacity-75" : "")">
+                                            <i class="fas fa-heart"></i>
+                                            @(project.IsGoalReached ? "SUPPORT" : "DONATE NOW")
                                         </a>
                                     </div>
                                 </div>
@@ -168,6 +192,18 @@
                                         <i class="fas fa-calendar-alt"></i>
                                         @(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))
                                     </small>
+                                    @if (project.EndDate < DateTime.Now)
+                                    {
+                                        <small class="text-danger ms-2">
+                                            <i class="fas fa-exclamation-circle"></i> Expired
+                                        </small>
+                                    }
+                                    else if ((project.EndDate - DateTime.Now).TotalDays <= 7)
+                                    {
+                                        <small class="text-warning ms-2">
+                                            <i class="fas fa-clock"></i> @((int)(project.EndDate - DateTime.Now).TotalDays) days left
+                                        </small>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -178,7 +214,6 @@
     </div>
 </div>
 
-<!-- IMAGE PREVIEW SCRIPT -->
 <script>
     function previewImage(input, previewId) {
         const file = input.files[0];

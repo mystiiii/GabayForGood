@@ -79,11 +79,30 @@
             </div>
         </div>
     </header>
-    <main role="main" class="pb-3">
+
+    <main class="container-main">
         @RenderBody()
     </main>
-    <footer>
+
+    <!-- Footer matching the header design -->
+    <footer class="main-footer px-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="footer-brand">Gabay For Good</h2>
+                    <p class="footer-description">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque faucibus ex
+                        sapien vitae pellentesque sem placerat.
+                    </p>
+                </div>
+                <div class="col-md-4 footer-contact">
+                    <p><strong>+63 (919) 063 2964</strong></p>
+                    <p><a href="mailto:info@gabayfor good.ph">info@gabayfor good.ph</a></p>
+                </div>
+            </div>
+        </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

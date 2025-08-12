@@ -56,7 +56,6 @@
         color: #f0f0f0 !important;
     }
 
-
 body {
     display: flex;
     flex-direction: column;
@@ -65,4 +64,53 @@ body {
 
 .container-main {
     flex: 1;
+}
+
+/* Footer Styles */
+.main-footer {
+    background: linear-gradient(135deg, #4a9b9b 0%, #5fb3b3 100%);
+    color: white;
+    padding: 40px 0 20px 0;
+    margin-top: auto;
+}
+
+.footer-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.footer-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.footer-contact {
+    text-align: right;
+}
+
+    .footer-contact p {
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .footer-contact a {
+        color: white;
+        text-decoration: none;
+    }
+
+        .footer-contact a:hover {
+            color: #f0f0f0;
+            text-decoration: underline;
+        }
+
+@media (max-width: 768px) {
+    .footer-contact {
+        text-align: left;
+        margin-top: 20px;
+    }
 }
