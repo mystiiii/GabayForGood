@@ -295,6 +295,20 @@
         font-style: italic;
     }
 
+    /* Custom validation error styles */
+    .custom-validation-error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+        font-weight: 500;
+        display: none;
+    }
+
+    .has-error {
+        border-color: #dc3545 !important;
+        background-color: #fff5f5 !important;
+    }
+
     @@media (max-width: 768px) {
         .form-container
 
@@ -427,18 +441,20 @@
                 <label asp-for="GoalAmount" class="form-label">Funding Goal <span class="required">*</span></label>
                 <div class="currency-input">
                     <span class="currency-symbol">₱</span>
-                    <input asp-for="GoalAmount" type="number" class="form-control" placeholder="0.00" step="0.01" min="1" />
+                    <input asp-for="GoalAmount" type="number" id="goalAmountInput" class="form-control" placeholder="1000.00" step="0.01" min="1000" />
                 </div>
                 <span asp-validation-for="GoalAmount" class="field-validation-error"></span>
-                <div class="help-text">Enter the total amount needed for this project</div>
+                <span id="goalAmountError" class="custom-validation-error">Goal amount must be at least ₱1,000.00</span>
+                <div class="help-text">Enter the total amount needed for this project (minimum ₱1,000)</div>
             </div>
             <div class="form-group">
                 <label asp-for="CurrentAmount" class="form-label">Initial Amount</label>
                 <div class="currency-input">
                     <span class="currency-symbol">₱</span>
-                    <input asp-for="CurrentAmount" type="number" class="form-control" placeholder="0.00" step="0.01" min="0" value="0" />
+                    <input asp-for="CurrentAmount" type="number" id="currentAmountInput" class="form-control" placeholder="0.00" step="0.01" min="0" value="0" />
                 </div>
                 <span asp-validation-for="CurrentAmount" class="field-validation-error"></span>
+                <span id="currentAmountError" class="custom-validation-error">Initial amount cannot exceed the funding goal</span>
                 <div class="help-text">Any initial funding already secured (optional, defaults to 0)</div>
             </div>
         </div>
@@ -464,7 +480,7 @@
 
         <!-- Form Actions -->
         <div class="btn-container">
-            <button type="submit" class="btn btn-primary">Create Project</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary">Create Project</button>
             <a asp-controller="Organization" asp-action="Index" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
@@ -560,6 +576,11 @@
         const causeSelect = document.getElementById('causeSelect');
         const startDateInput = document.getElementById('startDateInput');
         const endDateInput = document.getElementById('endDateInput');
+        const goalAmountInput = document.getElementById('goalAmountInput');
+        const currentAmountInput = document.getElementById('currentAmountInput');
+        const goalAmountError = document.getElementById('goalAmountError');
+        const currentAmountError = document.getElementById('currentAmountError');
+        const submitBtn = document.getElementById('submitBtn');
 
         // Image upload elements
         const imageUploadContainer = document.getElementById('imageUploadContainer');
@@ -572,6 +593,61 @@
         const today = new Date().toISOString().split('T')[0];
         startDateInput.value = today;
         startDateInput.setAttribute('min', today);
+
+        // Validation functions
+        function validateGoalAmount() {
+            const goalAmount = parseFloat(goalAmountInput.value) || 0;
+            const isValid = goalAmount >= 1000;
+
+            if (!isValid && goalAmountInput.value) {
+                goalAmountInput.classList.add('has-error');
+                goalAmountError.style.display = 'block';
+            } else {
+                goalAmountInput.classList.remove('has-error');
+                goalAmountError.style.display = 'none';
+            }
+
+            // Revalidate current amount when goal amount changes
+            validateCurrentAmount();
+            return isValid;
+        }
+
+        function validateCurrentAmount() {
+            const goalAmount = parseFloat(goalAmountInput.value) || 0;
+            const currentAmount = parseFloat(currentAmountInput.value) || 0;
+            const isValid = currentAmount <= goalAmount;
+
+            if (!isValid && currentAmountInput.value && goalAmount > 0) {
+                currentAmountInput.classList.add('has-error');
+                currentAmountError.style.display = 'block';
+            } else {
+                currentAmountInput.classList.remove('has-error');
+                currentAmountError.style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        function validateForm() {
+            const isGoalValid = validateGoalAmount();
+            const isCurrentValid = validateCurrentAmount();
+            return isGoalValid && isCurrentValid;
+        }
+
+        // Event listeners for validation
+        goalAmountInput.addEventListener('input', validateGoalAmount);
+        goalAmountInput.addEventListener('blur', validateGoalAmount);
+        currentAmountInput.addEventListener('input', validateCurrentAmount);
+        currentAmountInput.addEventListener('blur', validateCurrentAmount);
+
+        // Form submission validation
+        submitBtn.addEventListener('click', function(e) {
+            if (!validateForm()) {
+                e.preventDefault();
+                alert('Please correct the validation errors before submitting the form.');
+                return false;
+            }
+        });
 
         // Category change handler
         categorySelect.addEventListener('change', function() {

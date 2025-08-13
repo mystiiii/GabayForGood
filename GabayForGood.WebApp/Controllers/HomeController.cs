@@ -22,18 +22,11 @@ public class HomeController : Controller
             var user = await userManager.GetUserAsync(User);
             if (user != null)
             {
-                if (await userManager.IsInRoleAsync(user, "Organization"))
-                {
-                    return RedirectToAction("Index", "Organization");
-                }
-                else if (await userManager.IsInRoleAsync(user, "Admin"))
+                if (await userManager.IsInRoleAsync(user, "Admin"))
                 {
                     return RedirectToAction("Index", "Admin");
                 }
-                else if (await userManager.IsInRoleAsync(user, "User"))
-                {
-                    return RedirectToAction("Index", "User");
-                }
+
             }
         }
         return View();

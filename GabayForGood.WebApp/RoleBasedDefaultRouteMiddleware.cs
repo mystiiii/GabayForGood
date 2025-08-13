@@ -44,13 +44,13 @@ namespace GabayForGood.WebApp.Middleware
                         else if (await userManager.IsInRoleAsync(user, "Organization"))
                         {
                             logger.LogInformation("Redirecting to Organization");
-                            context.Response.Redirect("/Organization");
+                            context.Response.Redirect("/Home");
                             return;
                         }
                         else if (await userManager.IsInRoleAsync(user, "User"))
                         {
                             logger.LogInformation("Redirecting to User/Browse");
-                            context.Response.Redirect("/User/Browse"); // More specific redirect
+                            context.Response.Redirect("/Home"); // More specific redirect
                             return;
                         }
                         else

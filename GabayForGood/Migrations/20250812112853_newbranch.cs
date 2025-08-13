@@ -5,7 +5,7 @@
 namespace GabayForGood.DataModel.Migrations
 {
     /// <inheritdoc />
-    public partial class fixedorganizationID : Migration
+    public partial class newbranch : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

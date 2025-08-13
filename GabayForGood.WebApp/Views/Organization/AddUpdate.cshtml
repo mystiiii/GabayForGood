@@ -1,0 +1,173 @@
+﻿@using GabayForGood.WebApp.Models
+@model CreateProjectUpdateVM
+@{
+    ViewData["Title"] = "Add Project Update";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+    }
+
+    .update-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-width: 400px;
+        margin: 40px auto;
+    }
+
+    .update-image-container {
+        position: relative;
+        height: 200px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .update-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .update-image-placeholder {
+        color: #999;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .update-card-body {
+        padding: 20px;
+    }
+
+    .update-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .update-description {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .update-date-section {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: #666;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .actions-section {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .action-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s ease;
+        flex: 1;
+        max-width: 80px;
+    }
+
+    .btn-edit {
+        background-color: #ffc107;
+        color: #333;
+    }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+            text-decoration: none;
+            color: #333;
+            transform: translateY(-1px);
+        }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            text-decoration: none;
+            color: white;
+            transform: translateY(-1px);
+        }
+</style>
+
+<div class="update-card">
+    <div class="update-image-container">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Title" class="update-image" />
+        }
+        else
+        {
+            <div class="update-image-placeholder">
+                <i class="fas fa-image fa-2x mb-2"></i><br />
+                No Image Selected
+            </div>
+        }
+    </div>
+
+    <div class="update-card-body">
+        <form asp-controller="Organization" asp-action="CreateUpdate" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ProjectId" />
+
+            <div class="form-group">
+                <input asp-for="Title" class="form-control" placeholder="Enter update title..." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <textarea asp-for="Description" class="form-control" placeholder="Describe what's new..." rows="3"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="ImageUrl" class="form-control" placeholder="Image URL (optional)" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+
+            <div class="update-date-section">
+                <span>@DateTime.Now.ToString("MMM dd, yyyy")</span>
+                <span>@DateTime.Now.ToString("h:mm tt")</span>
+            </div>
+
+            <div class="actions-section">
+                <a asp-controller="Organization" asp-action="Updates" asp-route-id="@Model.ProjectId" class="action-btn btn-edit">Cancel</a>
+                <button type="submit" class="action-btn btn-delete">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

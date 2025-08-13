@@ -26,7 +26,6 @@ namespace GabayForGood.WebApp.Controllers
             this.mapper = mapper;
         }
 
-        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {
@@ -129,10 +128,9 @@ namespace GabayForGood.WebApp.Controllers
             if (User.Identity == null || !User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
 
-            // Get all active projects with their organization details
             var projects = await context.Projects
                 .Where(p => p.Status == "Active")
-                .Include(p => p.Organization) // Include organization details if needed
+                .Include(p => p.Organization)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
@@ -140,7 +138,6 @@ namespace GabayForGood.WebApp.Controllers
             return View(projectVMs);
         }
 
-        // EDIT PROFILE
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> EditProfile()
@@ -180,7 +177,6 @@ namespace GabayForGood.WebApp.Controllers
 
             if (result.Succeeded)
             {
-                // Update claims with new name
                 await userManager.RemoveClaimsAsync(user, new[]
                 {
                     new Claim("FirstName", user.FirstName ?? ""),
@@ -201,6 +197,185 @@ namespace GabayForGood.WebApp.Controllers
                 ModelState.AddModelError("", error.Description);
 
             return View(vm);
+        }
+
+        [Authorize]
+        [HttpGet("/Donation/User/{id}")]
+        public async Task<IActionResult> Donate(int id)
+        {
+            try
+            {
+                var project = await context.Projects
+                    .Include(p => p.Organization) // Include organization data
+                    .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+                if (project == null)
+                {
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Browse");
+                }
+
+                if (project.Status != "Active")
+                {
+                    TempData["ErrorMessage"] = "This project is no longer accepting donations.";
+                    return RedirectToAction("Browse");
+                }
+
+                var currentAmount = await context.Donations
+                    .Where(d => d.ProjectId == id && d.Status == "Completed")
+                    .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
+                var fundingPercentage = project.GoalAmount > 0
+                    ? (currentAmount / project.GoalAmount) * 100
+                    : 0;
+
+                var daysRemaining = (project.EndDate - DateTime.Now).Days;
+
+                var donationVM = new DonationVM
+                {
+                    ProjectId = id,
+                    Project = mapper.Map<ProjectVM>(project),
+                    Organization = mapper.Map<OrgVM>(project.Organization), // Map organization data
+                    CurrentAmount = currentAmount,
+                    FundingPercentage = Math.Min(fundingPercentage, 100),
+                    DaysRemaining = Math.Max(daysRemaining, 0)
+                };
+
+                return View("Donation", donationVM);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the donation page.";
+                return RedirectToAction("Browse");
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcessDonation(DonationVM model)
+        {
+            // Remove model state validation for nested properties that aren't being submitted
+            ModelState.Remove("Project.Cause");
+            ModelState.Remove("Project.Title");
+            ModelState.Remove("Project.Status");
+            ModelState.Remove("Project.EndDate");
+            ModelState.Remove("Project.Category");
+            ModelState.Remove("Project.Location");
+            ModelState.Remove("Project.GoalAmount");
+            ModelState.Remove("Project.Description");
+            ModelState.Remove("Project.StartDate");
+            ModelState.Remove("Organization.Name");
+            ModelState.Remove("Organization.Description");
+            ModelState.Remove("Organization.YearFounded");
+            ModelState.Remove("Organization.Address");
+            ModelState.Remove("Organization.Email");
+            ModelState.Remove("Organization.ContactNo");
+            ModelState.Remove("Organization.ContactPerson");
+            ModelState.Remove("Organization.OrgLink");
+
+            if (!ModelState.IsValid)
+            {
+                var project = await context.Projects
+                    .Include(p => p.Organization)
+                    .FirstOrDefaultAsync(p => p.ProjectId == model.ProjectId);
+
+                if (project != null)
+                {
+                    model.Project = mapper.Map<ProjectVM>(project);
+                    model.Organization = mapper.Map<OrgVM>(project.Organization);
+                    var currentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+                    model.CurrentAmount = currentAmount;
+                    model.FundingPercentage = project.GoalAmount > 0 ? (currentAmount / project.GoalAmount) * 100 : 0;
+                    model.DaysRemaining = Math.Max((project.EndDate - DateTime.Now).Days, 0);
+                }
+                return View("Donation", model);
+            }
+            else
+            {
+                var project = await context.Projects
+                    .Include(p => p.Organization)
+                    .FirstOrDefaultAsync(p => p.ProjectId == model.ProjectId);
+
+                if (project == null || project.Status != "Active")
+                {
+                    TempData["ErrorMessage"] = "Project not found or inactive.";
+                    return RedirectToAction("Browse");
+                }
+
+                var currentUser = await userManager.GetUserAsync(User);
+                if (currentUser == null)
+                {
+                    TempData["ErrorMessage"] = "You must be logged in to make a donation.";
+                    return RedirectToAction("SignIn", "User");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"UserManager UserId: {currentUser.Id}");
+
+                var donation = new Donation
+                {
+                    UserId = currentUser.Id,
+                    ProjectId = model.ProjectId,
+                    Amount = model.Amount,
+                    PaymentMethod = model.PaymentMethod,
+                    Message = model.Message ?? "",
+                    Status = "Pending",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                try
+                {
+                    await context.Donations.AddAsync(donation);
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+                    throw;
+                }
+
+                bool paymentSuccess = true;
+                string paymentMessage = "Payment processed successfully.";
+
+                donation.Status = paymentSuccess ? "Completed" : "Failed";
+                context.Donations.Update(donation);
+
+                if (paymentSuccess)
+                {
+                    var updatedCurrentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
+                    project.CurrentAmount = updatedCurrentAmount + project.CurrentAmount;
+                    context.Projects.Update(project);
+                }
+
+                await context.SaveChangesAsync();
+
+                if (paymentSuccess)
+                {
+                    var updatedCurrentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
+                    project.CurrentAmount = updatedCurrentAmount;
+                    context.Projects.Update(project);
+                    await context.SaveChangesAsync();
+                }
+
+                if (paymentSuccess)
+                {
+                    TempData["SuccessMessage"] = "Thank you for your donation!";
+                    return RedirectToAction("Browse", "User");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Payment failed. Please try again.";
+                    return RedirectToAction("Donate", new { id = model.ProjectId });
+                }
+            }
         }
     }
 }

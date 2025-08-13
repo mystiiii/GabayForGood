@@ -83,62 +83,62 @@
     }
 
     .header-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
 
     /* Project Details Card - Following Index Style */
     .project-details-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    overflow: hidden;
-    margin-bottom: 30px;
-    border: none;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 30px;
+        border: none;
     }
 
     .project-header {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
     }
 
     .image-container {
-    flex-shrink: 0;
-    width: 250px;
-    height: 180px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border-radius: 10px;
+        flex-shrink: 0;
+        width: 250px;
+        height: 180px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 10px;
     }
 
     .project-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .image-placeholder {
-    color: #999;
-    font-size: 14px;
-    text-align: center;
+        color: #999;
+        font-size: 14px;
+        text-align: center;
     }
 
     .project-info {
-    flex: 1;
-    padding: 20px;
+        flex: 1;
+        padding: 20px;
     }
 
     .project-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-    line-height: 1.3;
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+        line-height: 1.3;
     }
 
     .project-description {
@@ -149,27 +149,27 @@
     }
 
     .project-meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
     }
 
     .meta-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 14px;
     }
 
     .meta-label {
-    font-weight: 600;
-    color: #333;
+        font-weight: 600;
+        color: #333;
     }
 
     .meta-value {
-    color: #555;
+        color: #555;
     }
 
     .goal-amount {
@@ -179,9 +179,9 @@
     }
 
     .current-amount {
-    font-weight: bold;
-    color: #28a745;
-    font-size: 16px;
+        font-weight: bold;
+        color: #28a745;
+        font-size: 16px;
     }
 
     .status-badge {
@@ -209,39 +209,39 @@
     }
 
     .funding-section {
-    grid-column: 1 / -1;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    border-left: 5px solid #ffd700;
+        grid-column: 1 / -1;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border-left: 5px solid #ffd700;
     }
 
     .funding-amounts {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
     }
 
     .progress-bar-container {
-    background-color: #e9ecef;
-    border-radius: 10px;
-    height: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        height: 10px;
+        overflow: hidden;
+        margin-bottom: 8px;
     }
 
     .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
-    border-radius: 10px;
-    transition: width 0.3s ease;
+        height: 100%;
+        background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+        border-radius: 10px;
+        transition: width 0.3s ease;
     }
 
     .progress-text {
-    font-size: 13px;
-    color: #666;
-    text-align: center;
-    font-weight: 600;
+        font-size: 13px;
+        color: #666;
+        text-align: center;
+        font-weight: 600;
     }
 
     /* Updates Section */
@@ -258,79 +258,101 @@
     border-bottom: 2px solid #e0e0e0;
     }
 
-    .updates-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    /* Updates Grid - Using Index.cshtml Style */
+    .updates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
     }
 
-    .updates-table thead {
-    background-color: #e0e0e0;
+    .update-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
     }
 
-    .updates-table th {
-    padding: 20px 15px;
-    text-align: left;
-    font-weight: bold;
-    color: #333;
-    font-size: 14px;
-    border-bottom: 2px solid #d0d0d0;
+        .update-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+    .update-image-container {
+        position: relative;
+        height: 200px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
     }
 
-    .updates-table td {
-    padding: 20px 15px;
-    border-bottom: 1px solid #f0f0f0;
-    vertical-align: top;
+    .update-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-    .updates-table tr:hover {
-    background-color: #f8f9fa;
+    .update-image-placeholder {
+        color: #999;
+        font-size: 14px;
+        text-align: center;
     }
 
-    .updates-table tr:last-child td {
-    border-bottom: none;
+    .update-card-body {
+        padding: 20px;
     }
 
     .update-title {
-    font-weight: bold;
-    color: #333;
-    font-size: 16px;
-    margin-bottom: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.3;
     }
 
     .update-description {
-    color: #666;
-    font-size: 14px;
-    line-height: 1.4;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    .update-date {
-    font-size: 13px;
-    color: #666;
-    font-weight: 600;
+    .update-date-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 13px;
+        color: #666;
+        font-weight: 600;
     }
 
-    .actions-container {
-    display: flex;
-    gap: 8px;
-    flex-direction: column;
+    .actions-section {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
     }
 
     .action-btn {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    text-align: center;
-    transition: all 0.2s ease;
-    min-width: 80px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s ease;
+        flex: 1;
+        max-width: 80px;
     }
 
     .btn-edit {
@@ -391,37 +413,22 @@
     }
 
     .project-header {
-    flex-direction: column;
-    gap: 15px;
+        flex-direction: column;
+        gap: 15px;
     }
 
     .image-container {
-    width: 100%;
-    height: 200px;
+        width: 100%;
+        height: 200px;
     }
 
     .project-meta {
-    grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
 
-    .updates-table {
-    font-size: 12px;
-    }
-
-    .updates-table th,
-    .updates-table td {
-    padding: 12px 8px;
-    }
-
-    .actions-container {
-    flex-direction: row;
-    gap: 5px;
-    }
-
-    .action-btn {
-    padding: 6px 10px;
-    font-size: 11px;
-    min-width: 60px;
+    .updates-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     }
@@ -441,9 +448,6 @@
         <div class="project-info">
             <div class="project-header">
                 <div class="image-container">
-                    @* Debug: Show the actual ImageUrl value *@
-                    @* <p>Debug: ImageUrl = '@Model.Project.ImageUrl'</p> *@
-
                     @if (!string.IsNullOrEmpty(Model.Project.ImageUrl))
                     {
                         <img src="@Model.Project.ImageUrl" alt="@Model.Project.Title" class="project-image" />
@@ -453,8 +457,6 @@
                         <div class="image-placeholder">
                             <i class="fas fa-image fa-2x mb-2"></i><br />
                             No Image Available
-                            @* Debug info *@
-                            <br><small style="color: #999;">ImageUrl: '@(Model.Project.ImageUrl ?? "NULL")'</small>
                         </div>
                     }
                 </div>
@@ -531,36 +533,43 @@
         }
         else
         {
-            <table class="updates-table">
-                <thead>
-                    <tr>
-                        <th>Update Details</th>
-                        <th>Date Posted</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var update in Model.Updates.OrderByDescending(u => u.CreatedAt))
-                    {
-                        <tr>
-                            <td>
-                                <div class="update-title">@update.Title</div>
-                                <div class="update-description">@update.Description</div>
-                            </td>
-                            <td>
-                                <div class="update-date">@update.CreatedAt.ToString("MMM dd, yyyy")</div>
-                                <div style="font-size: 12px; color: #999;">@update.CreatedAt.ToString("h:mm tt")</div>
-                            </td>
-                            <td>
-                                <div class="actions-container">
-                                    <a asp-controller="Organization" asp-action="EditUpdate" asp-route-id="@update.ProjectUpdateId" class="action-btn btn-edit">Edit</a>
-                                    <a asp-controller="Organization" asp-action="DeleteUpdate" asp-route-id="@update.ProjectUpdateId" class="action-btn btn-delete" onclick="return confirm('Are you sure you want to delete this update?')">Delete</a>
+            <div class="updates-grid">
+                @foreach (var update in Model.Updates.OrderByDescending(u => u.CreatedAt))
+                {
+                    <div class="update-card">
+                        <div class="update-image-container">
+                            @if (!string.IsNullOrEmpty(update.ImageUrl))
+                            {
+                                <img src="@update.ImageUrl" alt="@update.Title" class="update-image" />
+                            }
+                            else
+                            {
+                                <div class="update-image-placeholder">
+                                    <i class="fas fa-image fa-2x mb-2"></i><br />
+                                    No Image Available
                                 </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            }
+                        </div>
+
+                        <div class="update-card-body">
+                            <h6 class="update-title">@update.Title</h6>
+                            <p class="update-description">@update.Description</p>
+
+                            <div class="update-date-section">
+                                <span>@update.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                <span>@update.CreatedAt.ToString("h:mm tt")</span>
+                            </div>
+
+                            <div class="actions-section">
+                                <a asp-controller="Organization" asp-action="EditUpdate" asp-route-id="@update.ProjectUpdateId" class="action-btn btn-edit">Edit</a>
+                                <form asp-controller="Organization" asp-action="DeleteUpdateConfirmed" asp-route-id="@update.ProjectUpdateId" method="post" style="flex: 1; max-width: 80px;" onsubmit="return confirm('Are you sure you want to delete this update?')">
+                                    <button type="submit" class="action-btn btn-delete" style="width: 100%;">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
     </div>
 </div>

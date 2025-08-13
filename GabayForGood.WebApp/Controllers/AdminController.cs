@@ -32,7 +32,6 @@ namespace GabayForGood.WebApp.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")] 
         public IActionResult RegisterOrg()
         {
             return View();
@@ -52,34 +51,28 @@ namespace GabayForGood.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, "Please complete all required fields.");
                 return View(model);
             }
 
-            ApplicationUser admin = await userManager.FindByEmailAsync(model.Username);
+            ApplicationUser admin = await userManager.FindByNameAsync(model.Username);
+
             if (admin != null)
             {
-                var result = await signInManager.PasswordSignInAsync(admin, model.Password, false, false);
-
+                var result = await signInManager.PasswordSignInAsync(admin.UserName, model.Password, false, false);
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(returnURL)) return LocalRedirect(returnURL);
                     return LocalRedirect("/Admin");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid Credentials");
-                    return View(model);
                 }
             }
             ModelState.AddModelError(string.Empty, "Invalid Credentials");
             return View(model);
         }
 
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(OrgVM org)
+        public async Task<IActionResult> RegisterOrg(OrgVM org)
         {
             if (!ModelState.IsValid)
             {

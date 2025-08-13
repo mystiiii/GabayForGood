@@ -54,6 +54,8 @@ namespace GabayForGood.DataModel
         [Column(TypeName = "nvarchar(50)")]
         public string Status { get; set; }
 
+
+
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }

@@ -1,68 +1,218 @@
+body {
+    background-color: #F8F9FA;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* NAVIGATION STYLES */
 .main-header {
-    background: linear-gradient(135deg, #4a9b9b 0%, #5fb3b3 100%);
-    color: white;
+    background: linear-gradient(135deg, #0e4d64 0%, #194041 100%);
     padding: 20px 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
-
-.btn-signup {
-    background-color: #ffd700;
-    color: #000 !important;
-    font-weight: 900;
-    text-transform: uppercase;
-    padding: 0.9rem 2.5rem;
-    border-radius: 25px;
-    text-decoration: none !important;
-    border: none;
-    transition: all 0.3s ease;
-    display: inline-block;
-    font-size: 1.3rem;
-    letter-spacing: 1px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-    .btn-signup:hover {
-        background-color: #ffed4a;
-        color: #000 !important;
-        text-decoration: none !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
 
 .navbar-brand-custom {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 2.2rem;
+    font-weight: 900;
     color: white !important;
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
 }
 
     .navbar-brand-custom:hover {
-        color: #f0f0f0 !important;
+        color: #F4C430 !important;
+        transform: translateY(-2px);
     }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
 }
 
-.nav-link-custom {
-    color: white !important;
+.btn-signup {
+    background-color: #F4C430;
+    color: #2C3E50 !important;
+    padding: 12px 32px;
+    border-radius: 25px;
     text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     font-size: 1.1rem;
-    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
-    .nav-link-custom:hover {
-        color: #f0f0f0 !important;
+    .btn-signup:hover {
+        background-color: #E6B800;
+        color: #2C3E50 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244, 196, 48, 0.4);
     }
 
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.dropdown-toggle.nav-link-custom {
+    background: none;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
 }
 
+    .dropdown-toggle.nav-link-custom:hover {
+        border-color: #F4C430;
+        background-color: rgba(244, 196, 48, 0.1);
+        color: #F4C430;
+    }
+
+.dropdown-menu {
+    background-color: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    margin-top: 8px;
+}
+
+.dropdown-item {
+    padding: 12px 24px;
+    color: #2C3E50;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .dropdown-item:hover {
+        background-color: #F4C430;
+        color: #2C3E50;
+    }
+
+/* MAIN CONTENT */
 .container-main {
-    flex: 1;
+    min-height: calc(100vh - 200px);
+    padding: 0;
+    max-width: 100%;
+}
+
+/* FOOTER STYLES */
+.main-footer {
+    background: linear-gradient(135deg, #194041 0%, #0e4d64 100%);
+    color: white;
+    padding: 60px 0 40px 0;
+    margin-top: auto;
+}
+
+.footer-brand {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #F4C430;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.footer-description {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 0;
+    text-align: justify;
+}
+
+.footer-contact {
+    text-align: right;
+}
+
+    .footer-contact p {
+        margin-bottom: 16px;
+        font-size: 1.2rem;
+    }
+
+    .footer-contact strong {
+        color: #F4C430;
+        font-size: 1.3rem;
+    }
+
+    .footer-contact a {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .footer-contact a:hover {
+            color: #F4C430;
+        }
+
+.footer-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #F4C430 50%, transparent 100%);
+    border: none;
+    margin: 40px 0 20px 0;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .navbar-brand-custom {
+        font-size: 1.8rem;
+    }
+
+    .btn-signup {
+        padding: 10px 24px;
+        font-size: 1rem;
+    }
+
+    .footer-brand {
+        font-size: 2.2rem;
+        text-align: center;
+    }
+
+    .footer-description {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .footer-contact {
+        text-align: center;
+    }
+
+    .main-header {
+        padding: 16px 0;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand-custom {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
+
+    .btn-signup {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .dropdown-toggle.nav-link-custom {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
 }

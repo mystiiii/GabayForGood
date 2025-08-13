@@ -7,17 +7,22 @@
 <style>
     .hero-text {
         font-size: 3.5rem;
+        color: #2c3e50;
     }
 
     @@media (max-width: 768px) {
-        .hero-text {
-            font-size: 2rem;
-        }
+        .hero-text
+
+    {
+        font-size: 2rem;
+    }
+
     }
 
     .cause-title {
         font-size: 1.1rem;
         font-weight: bold;
+        color: #2c3e50;
     }
 
     .card-footer small {
@@ -27,140 +32,338 @@
     .no-projects {
         text-align: center;
         padding: 60px 20px;
-        color: white;
+        color: #6c757d;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        margin: 40px auto;
+        max-width: 600px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
         .no-projects h3 {
             font-size: 2rem;
             margin-bottom: 20px;
-            color: white;
+            color: #495057;
+            font-weight: 600;
         }
 
         .no-projects p {
             font-size: 1.1rem;
             margin-bottom: 30px;
-            color: white;
+            color: #6c757d;
+            line-height: 1.6;
         }
 
     .progress {
         background-color: #e9ecef;
+        height: 12px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+        border-radius: 15px;
+        transition: width 0.6s ease;
     }
 
     .btn-donate {
         font-size: 0.9rem;
-        padding: 6px 15px;
+        padding: 10px 18px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        color: white;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
+        .btn-donate:hover {
+            background: linear-gradient(135deg, #0056b3, #004494);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-donate.opacity-75 {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+            .btn-donate.opacity-75:hover {
+                background: linear-gradient(135deg, #218838, #1ea085);
+            }
+
     .project-card {
-        transition: transform 0.2s ease-in-out;
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        background: white;
     }
 
         .project-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
+
+    .section-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        padding: 60px 0;
+        margin-bottom: 0;
+    }
+
+        .section-header h4 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            text-align: center;
+            position: relative;
+        }
+
+            .section-header h4::after {
+                content: '';
+                position: absolute;
+                bottom: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 4px;
+                background: linear-gradient(90deg, #007bff, #20c997);
+                border-radius: 2px;
+            }
+
+    .projects-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 70vh;
+        padding: 60px 0;
+    }
+
+    .card-image-container {
+        position: relative;
+        height: 280px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f1f3f4, #e8eaed);
+    }
+
+        .card-image-container img {
+            transition: transform 0.3s ease;
+        }
+
+    .project-card:hover .card-image-container img {
+        transform: scale(1.05);
+    }
+
+    .card-footer {
+        background: white !important;
+        border-top: 1px solid #f1f3f4;
+        padding: 25px !important;
+    }
+
+    .location-badge {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+
+        .location-badge i {
+            color: #dc3545;
+            margin-right: 5px;
+        }
+
+    .funding-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 12px;
+        margin: 15px 0;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-warning {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .container-custom {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
 </style>
 
-<!-- WHOLE PAGE CONTAINER -->
 <div class="container-fluid p-0 m-0 w-100">
-    <!-- TOP SECTION -->
-    <div class="row g-0 m-0" style="height: 100vh; width: 100%;">
-        <!-- Left Side: Motivational Text -->
-        <div class="col-md-6 d-flex align-items-center justify-content-center p-5" style="background-color: white;">
-            <div>
-                <h1 class="hero-text fw-bold text-dark">
-                    You're not just giving — you're healing, feeding, and inspiring lives.
-                </h1>
-            </div>
-        </div>
-
-        <!-- Right Side: Two Rectangles with Image Upload -->
-        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" style="background-color: #FDBB2D;">
-            <div class="mb-4 position-relative" style="width: 70%; height: 350px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage1')" />
-                <img id="previewImage1" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
-            </div>
-            <div class="position-relative" style="width: 60%; height: 300px; background-color: #D9D9D9; border-radius: 12px; overflow: hidden;">
-                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'previewImage2')" />
-                <img id="previewImage2" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                <span class="position-absolute text-muted w-100 text-center" style="top: 50%; transform: translateY(-50%); z-index: -1;">Click to upload image</span>
-            </div>
+    <!-- Hero Section -->
+    <div class="section-header">
+        <div class="container-custom">
+            <h4>Popular Causes You Should Know</h4>
         </div>
     </div>
 
-    <!-- SECTION TITLE -->
-    <div class="text-center py-5 w-100" style="background-color: white;">
-        <h4 class="fw-bold mb-0">Popular causes what you should know</h4>
-    </div>
-
-    <!-- PROJECT CARDS SECTION -->
-    <div class="w-100 py-5 px-4" style="background-color: #003840;">
-        @if (Model == null || Model.Count == 0)
-        {
-            <!-- No Projects Found -->
-            <div class="no-projects">
-                <h3>No Projects Found</h3>
-                <p>There are currently no active projects available. Check back later for new causes to support!</p>
-                <div class="mt-4">
-                    <i class="fas fa-heart" style="font-size: 3rem; color: white; opacity: 0.5;"></i>
+    <!-- Projects Section -->
+    <div class="projects-section">
+        <div class="container-custom">
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="no-projects">
+                    <div class="mb-4">
+                        <i class="fas fa-heart" style="font-size: 4rem; color: #dee2e6;"></i>
+                    </div>
+                    <h3>No Projects Available</h3>
+                    <p>There are currently no active projects to display. Our team is working hard to bring you meaningful causes to support. Check back soon for new opportunities to make a difference!</p>
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg rounded-pill px-4">
+                            <i class="fas fa-home me-2"></i>Return Home
+                        </a>
+                    </div>
                 </div>
-            </div>
-        }
-        else
-        {
-            <!-- Display Projects -->
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @for (int i = 0; i < Model.Count; i++)
-                {
-                    var project = Model[i];
-                    decimal currentAmount = 0; // You'll need to add this to your model or calculate it
-                    decimal percentage = project.GoalAmount > 0 ? (currentAmount / project.GoalAmount) * 100 : 0;
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var project = Model[i];
+                        var currentAmount = project.CurrentAmount;
+                        var progressPercentage = project.ProgressPercentage;
+                        var isExpired = project.EndDate < DateTime.Now;
+                        var isUrgent = !isExpired && (project.EndDate - DateTime.Now).TotalDays <= 7;
 
-                    <div class="col">
-                        <div class="card h-100 shadow-sm rounded-4 overflow-hidden project-card">
-                            <div class="position-relative bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                                <input type="file" accept="image/*" class="form-control position-absolute top-0 start-0 w-100 h-100 opacity-0" onchange="previewImage(this, 'cardPreview@(i)')" />
-                                <img id="cardPreview@(i)" src="" alt="Upload Image" class="w-100 h-100 object-fit-cover" />
-                                <span class="position-absolute text-muted" style="z-index: -1;">Click to upload image</span>
-                            </div>
-                            <div class="card-footer bg-white p-3">
-                                <h6 class="cause-title text-truncate" title="@project.Title">@project.Title</h6>
-                                <small class="text-muted d-block mb-2">@project.Category - @project.Cause</small>
-                                <small class="text-muted d-block mb-3"><i class="fas fa-map-marker-alt"></i> @project.Location</small>
+                        <div class="col">
+                            <div class="card h-100 project-card">
+                                <div class="card-image-container">
+                                    @if (!string.IsNullOrEmpty(project.ImageUrl))
+                                    {
+                                        <img src="@project.ImageUrl" alt="@project.Title" class="w-100 h-100" style="object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                                            <i class="fas fa-image text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                                        </div>
+                                    }
 
-                                <div class="mb-2">
-                                    <div class="progress rounded-pill" style="height: 10px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: @(percentage.ToString("F1"))%;" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <small class="text-muted">@(percentage.ToString("F1"))% Funded</small>
+                                    @if (isExpired)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-3">
+                                            <span class="status-badge status-danger">
+                                                <i class="fas fa-exclamation-circle"></i> Expired
+                                            </span>
+                                        </div>
+                                    }
+                                    else if (isUrgent)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-3">
+                                            <span class="status-badge status-warning">
+                                                <i class="fas fa-clock"></i> @((int)(project.EndDate - DateTime.Now).TotalDays) Days Left
+                                            </span>
+                                        </div>
+                                    }
+                                    else if (project.IsGoalReached)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-3">
+                                            <span class="status-badge status-success">
+                                                <i class="fas fa-check-circle"></i> Goal Reached
+                                            </span>
+                                        </div>
+                                    }
                                 </div>
 
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div>
-                                        <div><small class="text-muted">Raised: ₱@(currentAmount.ToString("N0"))</small></div>
-                                        <div><small class="text-muted">Goal: ₱@(project.GoalAmount.ToString("N0"))</small></div>
-                                    </div>
-                                    <div class="d-flex gap-1">
-                                        <button class="btn btn-success btn-sm rounded-pill btn-donate">DONATE NOW</button>
-                                    </div>
-                                </div>
+                                <div class="card-footer">
+                                    <h6 class="cause-title mb-2" title="@project.Title">@project.Title</h6>
 
-                                <div class="mt-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        @(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))
-                                    </small>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <small class="text-muted fw-semibold">@project.Category</small>
+                                        <small class="text-muted">@project.Cause</small>
+                                    </div>
+
+                                    <div class="location-badge mb-3">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        @project.Location
+                                    </div>
+
+                                    <div class="funding-info">
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar"
+                                                 role="progressbar"
+                                                 style="width: @(Math.Min(progressPercentage, 100).ToString("F1"))%;"
+                                                 aria-valuenow="@progressPercentage"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-0 text-center">
+                                            <div class="col-4">
+                                                <div class="fw-bold text-success">₱@(currentAmount.ToString("N0"))</div>
+                                                <small class="text-muted">Raised</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="fw-bold text-primary">@(progressPercentage.ToString("F1"))%</div>
+                                                <small class="text-muted">Funded</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="fw-bold text-secondary">₱@(project.GoalAmount.ToString("N0"))</div>
+                                                <small class="text-muted">Goal</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-calendar-alt me-1"></i>
+                                            <small>@(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))</small>
+                                        </div>
+                                        <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })"
+                                           class="btn-donate @(project.IsGoalReached ? "opacity-75" : "")">
+                                            <i class="fas fa-heart me-1"></i>
+                                            @(project.IsGoalReached ? "Support" : "Donate")
+                                        </a>
+                                    </div>
+
+                                    @if (!project.IsGoalReached && !isExpired)
+                                    {
+                                        <div class="text-center mt-3">
+                                            <small class="text-muted">
+                                                <strong>₱@(project.RemainingAmount.ToString("N0"))</strong> remaining to reach goal
+                                            </small>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
+                    }
+                </div>
+            }
+        </div>
     </div>
 </div>
 
-<!-- IMAGE PREVIEW SCRIPT -->
 <script>
     function previewImage(input, previewId) {
         const file = input.files[0];

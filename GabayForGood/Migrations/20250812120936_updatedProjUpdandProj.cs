@@ -5,7 +5,7 @@
 namespace GabayForGood.DataModel.Migrations
 {
     /// <inheritdoc />
-    public partial class EditedUTCTIME : Migration
+    public partial class updatedProjUpdandProj : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
