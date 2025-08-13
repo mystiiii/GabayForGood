@@ -54,6 +54,7 @@ namespace GabayForGood.WebApp.Models
         [StringLength(50, ErrorMessage = "Status must be less than 50 characters.")]
         public string Status { get; set; }
 
+
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
 

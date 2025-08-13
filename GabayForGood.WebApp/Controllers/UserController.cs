@@ -26,7 +26,6 @@ namespace GabayForGood.WebApp.Controllers
             this.mapper = mapper;
         }
 
-        // SIGN UP
         [HttpGet]
         public IActionResult SignUp()
         {
@@ -129,10 +128,9 @@ namespace GabayForGood.WebApp.Controllers
             if (User.Identity == null || !User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
 
-            // Get all active projects with their organization details
             var projects = await context.Projects
                 .Where(p => p.Status == "Active")
-                .Include(p => p.Organization) // Include organization details if needed
+                .Include(p => p.Organization)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
@@ -140,7 +138,6 @@ namespace GabayForGood.WebApp.Controllers
             return View(projectVMs);
         }
 
-        // EDIT PROFILE
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> EditProfile()
@@ -180,7 +177,6 @@ namespace GabayForGood.WebApp.Controllers
 
             if (result.Succeeded)
             {
-                // Update claims with new name
                 await userManager.RemoveClaimsAsync(user, new[]
                 {
                     new Claim("FirstName", user.FirstName ?? ""),
@@ -222,7 +218,6 @@ namespace GabayForGood.WebApp.Controllers
                     return RedirectToAction("Browse");
                 }
 
-                // Calculate current donation amount for this project
                 var currentAmount = await context.Donations
                     .Where(d => d.ProjectId == id && d.Status == "Completed")
                     .SumAsync(d => (decimal?)d.Amount) ?? 0;
@@ -238,11 +233,10 @@ namespace GabayForGood.WebApp.Controllers
                     ProjectId = id,
                     Project = mapper.Map<ProjectVM>(project),
                     CurrentAmount = currentAmount,
-                    FundingPercentage = Math.Min(fundingPercentage, 100), // Cap at 100%
-                    DaysRemaining = Math.Max(daysRemaining, 0) // Prevent negative days
+                    FundingPercentage = Math.Min(fundingPercentage, 100), 
+                    DaysRemaining = Math.Max(daysRemaining, 0) 
                 };
 
-                // Explicitly load the view from Views/User/Donation.cshtml
                 return View("Donation", donationVM);
             }
             catch (Exception)
@@ -268,7 +262,6 @@ namespace GabayForGood.WebApp.Controllers
             ModelState.Remove("Project.Description");
             if (!ModelState.IsValid)
             {
-                // Reload the donation page if invalid
                 var project = await context.Projects.FindAsync(model.ProjectId);
                 if (project != null)
                 {
@@ -297,7 +290,6 @@ namespace GabayForGood.WebApp.Controllers
                     return RedirectToAction("SignIn", "User");
                 }
 
-                // Debug: Check what ID we're getting
                 System.Diagnostics.Debug.WriteLine($"UserManager UserId: {currentUser.Id}");
 
                 var donation = new Donation
@@ -322,53 +314,42 @@ namespace GabayForGood.WebApp.Controllers
                     throw;
                 }
 
-                // TEMP: Mark as success until real payment gateway is integrated
                 bool paymentSuccess = true;
                 string paymentMessage = "Payment processed successfully.";
 
-                // Update donation status
                 donation.Status = paymentSuccess ? "Completed" : "Failed";
                 context.Donations.Update(donation);
 
                 if (paymentSuccess)
                 {
-                    // Update project's CurrentAmount field (assuming your Project entity has this field)
-                    project.CurrentAmount = updatedCurrentAmount;
-                    context.Projects.Update(project);
-
-                    // Debug: Log the updated amounts
-                    System.Diagnostics.Debug.WriteLine($"Project ID: {model.ProjectId}");
-                    System.Diagnostics.Debug.WriteLine($"New donation amount: ₱{model.Amount:N2}");
-                    System.Diagnostics.Debug.WriteLine($"Updated total current amount: ₱{updatedCurrentAmount:N2}");
-                }
-
-                // Save the donation status update first
-                await context.SaveChangesAsync();
-
-                if (paymentSuccess)
-                {
-                    // Now calculate the current amount AFTER the donation status is saved
                     var updatedCurrentAmount = await context.Donations
                         .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
                         .SumAsync(d => (decimal?)d.Amount) ?? 0;
 
-                    // Update project's current amount
+                    project.CurrentAmount = updatedCurrentAmount + project.CurrentAmount;
+                    context.Projects.Update(project);
+                }
+
+                await context.SaveChangesAsync();
+
+                if (paymentSuccess)
+                {
+                    var updatedCurrentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
                     project.CurrentAmount = updatedCurrentAmount;
                     context.Projects.Update(project);
                     await context.SaveChangesAsync();
 
-                    // Debug: Log the final amounts
-                    System.Diagnostics.Debug.WriteLine($"Final current amount after save: ₱{updatedCurrentAmount:N2}");
                 }
 
                 if (paymentSuccess)
                 {
-                    TempData["SuccessMessage"] = $"Thank you for donating ₱{model.Amount:N2}! {paymentMessage}";
-                    return RedirectToAction("DonationSuccess", new { donationId = donation.DonationId });
+                    return RedirectToAction("Browse", "User");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = paymentMessage;
                     return RedirectToAction("Donation", new { id = model.ProjectId });
                 }
             }
