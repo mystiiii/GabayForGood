@@ -40,16 +40,14 @@ namespace GabayForGood.DataModel
                 .OnDelete(DeleteBehavior.Restrict);
 
             mb.Entity<Donation>()
-               .HasOne(d => d.Project)
-               .WithMany(p => p.Donations)
-               .HasForeignKey(d => d.ProjectId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(d => d.User)
+                .WithMany(p => p.Donations)
+                .HasForeignKey(d => d.UserId);
 
             mb.Entity<Donation>()
-               .HasOne<ApplicationUser>()
-               .WithMany()
-               .HasForeignKey(d => d.UserId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(d => d.Project)
+                .WithMany(p => p.Donations)
+                .HasForeignKey(d => d.ProjectId);
 
             mb.Entity<ApplicationUser>()
                .HasOne(p => p.Organization)

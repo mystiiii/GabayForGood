@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GabayForGood.DataModel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250812205141_InitialCreate")]
+    [Migration("20250812213435_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -58,17 +58,11 @@ namespace GabayForGood.DataModel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("DonationId");
 
                     b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Donations");
                 });
@@ -458,18 +452,12 @@ namespace GabayForGood.DataModel.Migrations
                     b.HasOne("GabayForGood.DataModel.Project", "Project")
                         .WithMany("Donations")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("GabayForGood.DataModel.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GabayForGood.DataModel.ApplicationUser", "User")
-                        .WithMany("Donation")
-                        .HasForeignKey("UserId1")
+                        .WithMany("Donations")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -563,7 +551,7 @@ namespace GabayForGood.DataModel.Migrations
 
             modelBuilder.Entity("GabayForGood.DataModel.ApplicationUser", b =>
                 {
-                    b.Navigation("Donation");
+                    b.Navigation("Donations");
                 });
 
             modelBuilder.Entity("GabayForGood.DataModel.Organization", b =>

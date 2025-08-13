@@ -258,7 +258,6 @@ namespace GabayForGood.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessDonation(DonationVM model)
         {
-
             ModelState.Remove("Project.Cause");
             ModelState.Remove("Project.Title");
             ModelState.Remove("Project.Status");
@@ -267,10 +266,8 @@ namespace GabayForGood.WebApp.Controllers
             ModelState.Remove("Project.Location");
             ModelState.Remove("Project.GoalAmount");
             ModelState.Remove("Project.Description");
-
             if (!ModelState.IsValid)
             {
-
                 // Reload the donation page if invalid
                 var project = await context.Projects.FindAsync(model.ProjectId);
                 if (project != null)
@@ -293,7 +290,6 @@ namespace GabayForGood.WebApp.Controllers
                     TempData["ErrorMessage"] = "Project not found or inactive.";
                     return RedirectToAction("Browse");
                 }
-
                 var currentUser = await userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
@@ -333,7 +329,37 @@ namespace GabayForGood.WebApp.Controllers
                 // Update donation status
                 donation.Status = paymentSuccess ? "Completed" : "Failed";
                 context.Donations.Update(donation);
+
+                if (paymentSuccess)
+                {
+                    // Update project's CurrentAmount field (assuming your Project entity has this field)
+                    project.CurrentAmount = updatedCurrentAmount;
+                    context.Projects.Update(project);
+
+                    // Debug: Log the updated amounts
+                    System.Diagnostics.Debug.WriteLine($"Project ID: {model.ProjectId}");
+                    System.Diagnostics.Debug.WriteLine($"New donation amount: ₱{model.Amount:N2}");
+                    System.Diagnostics.Debug.WriteLine($"Updated total current amount: ₱{updatedCurrentAmount:N2}");
+                }
+
+                // Save the donation status update first
                 await context.SaveChangesAsync();
+
+                if (paymentSuccess)
+                {
+                    // Now calculate the current amount AFTER the donation status is saved
+                    var updatedCurrentAmount = await context.Donations
+                        .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
+                        .SumAsync(d => (decimal?)d.Amount) ?? 0;
+
+                    // Update project's current amount
+                    project.CurrentAmount = updatedCurrentAmount;
+                    context.Projects.Update(project);
+                    await context.SaveChangesAsync();
+
+                    // Debug: Log the final amounts
+                    System.Diagnostics.Debug.WriteLine($"Final current amount after save: ₱{updatedCurrentAmount:N2}");
+                }
 
                 if (paymentSuccess)
                 {

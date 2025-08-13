@@ -19,7 +19,7 @@ namespace GabayForGood.DataModel
         public DateTime CreatedAt { get; set; }
         public int? OrganizationID { get; set; }
 
-        public List<Donation> Donation { get; set; }
+        public List<Donation> Donations { get; set; }
 
         [ForeignKey("OrganizationID")]
         public Organization Organization { get; set; }

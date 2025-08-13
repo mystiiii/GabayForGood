@@ -32,7 +32,6 @@ namespace GabayForGood.WebApp.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")] 
         public IActionResult RegisterOrg()
         {
             return View();
