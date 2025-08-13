@@ -207,6 +207,7 @@ namespace GabayForGood.WebApp.Controllers
                 var project = await context.Projects.FindAsync(id);
                 if (project == null)
                 {
+                    TempData["ErrorMessage"] = "Project not found.";
                     return RedirectToAction("Index");
                 }
 
@@ -217,11 +218,13 @@ namespace GabayForGood.WebApp.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // Delete associated image
                 if (!string.IsNullOrEmpty(project.ImageUrl))
                 {
                     DeleteImage(project.ImageUrl);
                 }
 
+                // Delete project updates
                 var projectUpdates = await context.ProjectUpdates
                     .Where(u => u.ProjectId == id)
                     .ToListAsync();
@@ -640,7 +643,6 @@ namespace GabayForGood.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                // Log error if needed, but don't throw
             }
         }
 

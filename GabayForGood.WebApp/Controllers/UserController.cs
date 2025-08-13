@@ -205,7 +205,10 @@ namespace GabayForGood.WebApp.Controllers
         {
             try
             {
-                var project = await context.Projects.FindAsync(id);
+                var project = await context.Projects
+                    .Include(p => p.Organization) // Include organization data
+                    .FirstOrDefaultAsync(p => p.ProjectId == id);
+
                 if (project == null)
                 {
                     TempData["ErrorMessage"] = "Project not found.";
@@ -232,9 +235,10 @@ namespace GabayForGood.WebApp.Controllers
                 {
                     ProjectId = id,
                     Project = mapper.Map<ProjectVM>(project),
+                    Organization = mapper.Map<OrgVM>(project.Organization), // Map organization data
                     CurrentAmount = currentAmount,
-                    FundingPercentage = Math.Min(fundingPercentage, 100), 
-                    DaysRemaining = Math.Max(daysRemaining, 0) 
+                    FundingPercentage = Math.Min(fundingPercentage, 100),
+                    DaysRemaining = Math.Max(daysRemaining, 0)
                 };
 
                 return View("Donation", donationVM);
@@ -246,12 +250,12 @@ namespace GabayForGood.WebApp.Controllers
             }
         }
 
-
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessDonation(DonationVM model)
         {
+            // Remove model state validation for nested properties that aren't being submitted
             ModelState.Remove("Project.Cause");
             ModelState.Remove("Project.Title");
             ModelState.Remove("Project.Status");
@@ -260,12 +264,26 @@ namespace GabayForGood.WebApp.Controllers
             ModelState.Remove("Project.Location");
             ModelState.Remove("Project.GoalAmount");
             ModelState.Remove("Project.Description");
+            ModelState.Remove("Project.StartDate");
+            ModelState.Remove("Organization.Name");
+            ModelState.Remove("Organization.Description");
+            ModelState.Remove("Organization.YearFounded");
+            ModelState.Remove("Organization.Address");
+            ModelState.Remove("Organization.Email");
+            ModelState.Remove("Organization.ContactNo");
+            ModelState.Remove("Organization.ContactPerson");
+            ModelState.Remove("Organization.OrgLink");
+
             if (!ModelState.IsValid)
             {
-                var project = await context.Projects.FindAsync(model.ProjectId);
+                var project = await context.Projects
+                    .Include(p => p.Organization)
+                    .FirstOrDefaultAsync(p => p.ProjectId == model.ProjectId);
+
                 if (project != null)
                 {
                     model.Project = mapper.Map<ProjectVM>(project);
+                    model.Organization = mapper.Map<OrgVM>(project.Organization);
                     var currentAmount = await context.Donations
                         .Where(d => d.ProjectId == model.ProjectId && d.Status == "Completed")
                         .SumAsync(d => (decimal?)d.Amount) ?? 0;
@@ -277,12 +295,16 @@ namespace GabayForGood.WebApp.Controllers
             }
             else
             {
-                var project = await context.Projects.FindAsync(model.ProjectId);
+                var project = await context.Projects
+                    .Include(p => p.Organization)
+                    .FirstOrDefaultAsync(p => p.ProjectId == model.ProjectId);
+
                 if (project == null || project.Status != "Active")
                 {
                     TempData["ErrorMessage"] = "Project not found or inactive.";
                     return RedirectToAction("Browse");
                 }
+
                 var currentUser = await userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
@@ -341,16 +363,17 @@ namespace GabayForGood.WebApp.Controllers
                     project.CurrentAmount = updatedCurrentAmount;
                     context.Projects.Update(project);
                     await context.SaveChangesAsync();
-
                 }
 
                 if (paymentSuccess)
                 {
+                    TempData["SuccessMessage"] = "Thank you for your donation!";
                     return RedirectToAction("Browse", "User");
                 }
                 else
                 {
-                    return RedirectToAction("Donation", new { id = model.ProjectId });
+                    TempData["ErrorMessage"] = "Payment failed. Please try again.";
+                    return RedirectToAction("Donate", new { id = model.ProjectId });
                 }
             }
         }

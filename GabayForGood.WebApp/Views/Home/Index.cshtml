@@ -10,7 +10,7 @@
     }
 
     .bg-dark-blue {
-        background-color: #0e4d64;
+        background: linear-gradient(135deg, #0e4d64 0%, #194041 100%);
     }
 
     .bg-section {
@@ -18,35 +18,59 @@
     }
 
     .bg-objectives {
-        background-color: #194041;
+        background: linear-gradient(135deg, #194041 0%, #0e4d64 100%);
         color: white;
+        position: relative;
     }
 
+        .bg-objectives::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+        }
+
     .card-custom {
-        background-color: #2C7A7B;
-        border-radius: 12px;
-        padding: 32px 24px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        padding: 28px 24px;
         color: white;
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        margin-bottom: 24px;
     }
 
         .card-custom:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
     .card-highlight {
-        background-color: #F4C430;
+        background: rgba(244, 196, 48, 0.9);
+        backdrop-filter: blur(10px);
         color: #2C3E50;
         font-weight: 500;
+        border: 1px solid rgba(244, 196, 48, 0.3);
     }
 
+        .card-highlight:hover {
+            background: rgba(244, 196, 48, 0.95);
+            border-color: rgba(244, 196, 48, 0.5);
+        }
+
     .objective-image {
-        height: 200px;
+        height: 160px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -65,7 +89,7 @@
 
     .objective-image-placeholder {
         font-size: 48px;
-        color: #4A6B5C;
+        color: #0e4d64;
         font-weight: bold;
     }
 
@@ -80,7 +104,7 @@
 
     .hero-img-placeholder {
         font-size: 64px;
-        color: #4A6B5C;
+        color: #0e4d64;
         font-weight: bold;
     }
 
@@ -96,29 +120,29 @@
 
     .about-img-placeholder {
         font-size: 48px;
-        color: #4A6B5C;
+        color: #0e4d64;
         font-weight: bold;
     }
 
     .hero-title {
-        font-size: 5rem;
+        font-size: 4rem;
         font-weight: 900;
-        line-height: 1.1;
+        line-height: 1.2;
         color: #2C3E50;
-        margin-bottom: 32px;
+        margin-bottom: 40px;
     }
 
     .hero-subtitle {
         font-size: 1.4rem;
         color: #6C757D;
-        margin-bottom: 40px;
+        margin-bottom: 32px;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
 
     .cta-button {
-        background-color: #4A6B5C;
-        color: white;
+        background-color: #F4C430;
+        color: #2C3E50;
         padding: 16px 48px;
         border-radius: 25px;
         text-decoration: none;
@@ -133,17 +157,17 @@
     }
 
         .cta-button:hover {
-            background-color: #3A5B4C;
-            color: white;
+            background-color: #E6B800;
+            color: #2C3E50;
             text-decoration: none;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(74, 107, 92, 0.3);
+            box-shadow: 0 4px 12px rgba(244, 196, 48, 0.4);
         }
 
     .section-title {
         font-size: 3.5rem;
         font-weight: 900;
-        color: #4A6B5C;
+        color: #0e4d64;
         text-align: center;
         margin-bottom: 64px;
         text-transform: uppercase;
@@ -151,19 +175,21 @@
     }
 
     .objectives-title {
-        font-size: 5.5rem;
-        font-weight: 900;
+        font-size: 4rem;
+        font-weight: 700;
         color: white;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }
 
     .objectives-subtitle {
-        font-size: 1.5rem;
-        color: rgba(255,255,255,0.8);
-        margin-bottom: 64px;
+        font-size: 1.3rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 40px;
         line-height: 1.6;
+        text-align: justify;
+        font-weight: 400;
     }
 
     .card-title {
@@ -177,6 +203,7 @@
         font-size: 1.2rem;
         line-height: 1.6;
         opacity: 0.9;
+        text-align: justify;
     }
 
     .about-text {
@@ -184,12 +211,19 @@
         line-height: 1.7;
         color: #495057;
         margin-bottom: 32px;
+        text-align: justify;
     }
 
-
+    .hero-description {
+        font-size: 1.4rem;
+        line-height: 1.8;
+        color: #495057;
+        margin-bottom: 48px;
+        text-align: justify;
+    }
 
     .marquee {
-        background-color: #4A6B5C;
+        background: linear-gradient(135deg, #0e4d64 0%, #194041 100%);
         color: white;
         padding: 20px 0;
         text-align: center;
@@ -219,13 +253,13 @@
     }
 
     .container-custom {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 0 24px;
+        padding: 0 32px;
     }
 
     .py-custom {
-        padding: 0;
+        padding: 80px 0;
     }
 
     .section-full-vh {
@@ -233,21 +267,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 80px 0;
     }
 
     @@media (max-width: 768px) {
         .hero-title
 
     {
-        font-size: 3.5rem;
+        font-size: 3.8rem;
     }
 
     .objectives-title {
-        font-size: 3rem;
+        font-size: 2.8rem;
     }
 
     .section-title {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
 
     .about-text {
@@ -276,16 +311,18 @@
 <!-- HERO SECTION -->
 <section class="py-custom section-full-vh">
     <div class="container-custom">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="row align-items-center" style="gap: 60px 0;">
+            <div class="col-lg-6 mb-4 mb-lg-0" style="padding-right: 40px;">
                 <div class="hero-subtitle">Gabay For Good</div>
-                <h1 class="hero-title">Lorem ipsum dolor sit amet</h1>
-                <p class="about-text">Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.</p>
-                <button class="cta-button">LEARN MORE</button>
+                <h1 class="hero-title">Empowering Filipino Communities Through Digital Giving</h1>
+                <p class="hero-description">
+                    Connect with trusted NGOs across the Philippines and make a meaningful impact through secure donations. Our platform bridges the gap between generous hearts and worthy causes, making charitable giving simple, transparent, and effective for Filipino communities.
+                </p>
+
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="padding-left: 40px;">
                 <div class="hero-img">
-                    <div class="hero-img-placeholder">IMAGE</div>
+                    <img src="~/images/index-bg.jpg" alt="Filipino Community Support" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;" />
                 </div>
             </div>
         </div>
@@ -295,29 +332,29 @@
 <!-- MARQUEE / SCROLL SECTION -->
 <div class="marquee">
     <div class="marquee-content">
-        Non Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non Profit Organizations &bull; Direct Donations &bull; Gabay For Good &bull; Non Profit Organizations &bull; Direct Donations
+        Trusted NGO Partners &bull; Secure Donations &bull; Community Impact &bull; Gabay For Good &bull; Filipino Causes &bull; Transparent Fundraising &bull; Digital Giving Platform &bull; Social Impact &bull; Gabay For Good &bull; Community Support &bull; NGO Empowerment
     </div>
 </div>
 
 <!-- ABOUT US SECTION -->
 <section class="bg-section py-custom section-full-vh">
     <div class="container-custom">
-        <div class="row align-items-center">
+        <div class="row align-items-center h-100">
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="about-img mb-3">
-                    <div class="about-img-placeholder">IMAGE</div>
+                    <img src="~/images/abt-2.jpg" alt="NGO Partnership" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;" />
                 </div>
                 <div class="about-img">
-                    <div class="about-img-placeholder">IMAGE</div>
+                    <img src="~/images/abt-1.jpeg" alt="Digital Platform" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;" />
                 </div>
             </div>
             <div class="col-lg-6 ps-lg-5">
                 <h2 class="section-title text-start mb-4">ABOUT US</h2>
                 <p class="about-text">
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                    Gabay For Good is a pioneering digital platform designed specifically for the Filipino community, connecting compassionate donors with verified non-governmental organizations (NGOs) across the Philippines. We understand that every act of kindness, no matter how small, can create ripple effects that transform lives and strengthen communities throughout our archipelago.
                 </p>
                 <p class="about-text">
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+                    Our mission extends beyond simple transactions – we're building a comprehensive ecosystem that empowers NGOs with modern fundraising tools while providing donors with transparency, security, and meaningful engagement opportunities. Through innovative technology and deep understanding of Filipino values of bayanihan and kapamilya, we're revolutionizing how charitable giving works in the digital age, ensuring that every peso donated reaches those who need it most.
                 </p>
             </div>
         </div>
@@ -332,36 +369,49 @@
                 <h2 class="objectives-title">OBJECTIVES</h2>
             </div>
             <div class="col-lg-6">
-                <p class="objectives-subtitle">Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.</p>
+                <p class="objectives-subtitle">
+                    Develop a comprehensive platform that revolutionizes fundraising for NGOs in the Philippines while creating sustainable connections between donors and causes.
+                </p>
             </div>
         </div>
 
         <div class="row">
+            <!-- Objective 1 -->
             <div class="col-lg-4 mb-4">
                 <div class="card-custom">
                     <div class="objective-image">
-                        <div class="objective-image-placeholder">IMAGE</div>
+                        <img src="~/images/obj-1.webp" alt="Enhance NGO Funding and Support" class="img-fluid">
                     </div>
-                    <h5 class="card-title">Lorem ipsum</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.</p>
+                    <h5 class="card-title">Enhance NGO Funding and Support</h5>
+                    <p class="card-text">
+                        Improve NGO visibility through digital platforms and encourage sustainable donor relationships while raising awareness about important causes and funding needs across the Philippines.
+                    </p>
                 </div>
             </div>
+
+            <!-- Objective 2 -->
             <div class="col-lg-4 mb-4">
                 <div class="card-custom card-highlight">
-                    <h5 class="card-title">Lorem ipsum</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.</p>
+                    <h5 class="card-title">Simplify the Donation Process</h5>
+                    <p class="card-text">
+                        Create user-friendly interfaces that reduce barriers and make giving easy. Support both monetary and in-kind donations while ensuring security and accessibility for all Filipino donors.
+                    </p>
                     <div class="objective-image">
-                        <div class="objective-image-placeholder">IMAGE</div>
+                        <img src="~/images/obj-2.jpg" alt="Simplify the Donation Process" class="img-fluid">
                     </div>
                 </div>
             </div>
+
+            <!-- Objective 3 -->
             <div class="col-lg-4 mb-4">
                 <div class="card-custom">
                     <div class="objective-image">
-                        <div class="objective-image-placeholder">IMAGE</div>
+                        <img src="~/images/obj-3.jpg" alt="Bridge the Digital Divide" class="img-fluid">
                     </div>
-                    <h5 class="card-title">Lorem ipsum</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.</p>
+                    <h5 class="card-title">Bridge the Digital Divide</h5>
+                    <p class="card-text">
+                        Empower small NGOs with digital fundraising tools and training. Increase organizational visibility through online listings and help grassroots organizations reach wider audiences and funding sources.
+                    </p>
                 </div>
             </div>
         </div>

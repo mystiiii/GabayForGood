@@ -131,6 +131,65 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         line-height: 1.6;
         color: #555;
+        margin-bottom: 20px;
+    }
+
+    .organization-details {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        border-left: 4px solid #005b5c;
+    }
+
+        .organization-details h4 {
+            color: #003840;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .organization-details h4 i {
+                color: #005b5c;
+            }
+
+    .org-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .org-info-item {
+        background: #f8f9ff;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 3px solid #005b5c;
+    }
+
+    .org-info-label {
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+
+    .org-info-value {
+        font-size: 0.95rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .org-description {
+        line-height: 1.5;
+        color: #555;
+        font-size: 0.95rem;
+        margin-top: 10px;
     }
 
     .goal-progress {
@@ -354,6 +413,10 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .org-info-grid {
+        grid-template-columns: 1fr;
+    }
+
     }
 </style>
 
@@ -411,6 +474,50 @@
             <div class="project-description">
                 <h4>About This Project</h4>
                 <p>@Model.Project.Description</p>
+            </div>
+
+            <div class="organization-details">
+                <h4><i class="fas fa-building"></i> About the Organization</h4>
+                <div class="org-info-grid">
+                    <div class="org-info-item">
+                        <div class="org-info-label">Organization</div>
+                        <div class="org-info-value">@Model.Organization.Name</div>
+                    </div>
+                    <div class="org-info-item">
+                        <div class="org-info-label">Contact Person</div>
+                        <div class="org-info-value">@Model.Organization.ContactPerson</div>
+                    </div>
+                    <div class="org-info-item">
+                        <div class="org-info-label">Founded</div>
+                        <div class="org-info-value">@Model.Organization.YearFounded</div>
+                    </div>
+                    <div class="org-info-item">
+                        <div class="org-info-label">Email</div>
+                        <div class="org-info-value">@Model.Organization.Email</div>
+                    </div>
+                    <div class="org-info-item">
+                        <div class="org-info-label">Contact</div>
+                        <div class="org-info-value">@Model.Organization.ContactNo</div>
+                    </div>
+                    <div class="org-info-item">
+                        <div class="org-info-label">Address</div>
+                        <div class="org-info-value">@Model.Organization.Address</div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Organization.Description))
+                {
+                    <div class="org-description">
+                        @Model.Organization.Description
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Organization.OrgLink))
+                {
+                    <div style="margin-top: 10px;">
+                        <a href="@Model.Organization.OrgLink" target="_blank" style="color: #005b5c; text-decoration: none; font-weight: 500;">
+                            <i class="fas fa-external-link-alt"></i> Visit Organization Website
+                        </a>
+                    </div>
+                }
             </div>
 
             <div class="goal-progress">
