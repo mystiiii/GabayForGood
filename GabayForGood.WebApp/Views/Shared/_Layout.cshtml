@@ -171,15 +171,42 @@
                                     @displayName
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
-                                    @if (!User.IsInRole("Organization"))
+                                    @if (User.IsInRole("Organization"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="User" asp-action="History">History</a></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Organization" asp-action="EditProfileOrg">
+                                                <i class="fas fa-user-edit me-2"></i>Edit Profile
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Organization" asp-action="Index">
+                                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (User.IsInRole("User"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">
+                                                <i class="fas fa-user me-2"></i>Account
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="User" asp-action="History">
+                                                <i class="fas fa-history me-2"></i>History
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
                                     }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">
-                                            <button type="submit" class="dropdown-item">Sign Out</button>
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                                            </button>
                                         </form>
                                     </li>
                                 </ul>

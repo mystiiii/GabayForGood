@@ -647,5 +647,124 @@ namespace GabayForGood.WebApp.Controllers
         }
 
         #endregion
+
+        // Add these methods to your OrganizationController class
+
+        [Authorize(Roles = "Organization")]
+        [HttpGet]
+        public async Task<IActionResult> EditProfileOrg()
+        {
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return RedirectToAction("Index");
+                }
+
+                var organization = await context.Organizations.FindAsync(user.OrganizationID.Value);
+                if (organization == null)
+                {
+                    TempData["ErrorMessage"] = "Organization not found.";
+                    return RedirectToAction("Index");
+                }
+
+                var orgVM = mapper.Map<OrgVM>(organization);
+                return View(orgVM);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading your profile.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [Authorize(Roles = "Organization")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfileOrg(OrgVM model, string CurrentPassword = "", string NewPassword = "", string ConfirmPassword = "")
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user?.OrganizationID == null)
+                {
+                    TempData["ErrorMessage"] = "Unable to identify your organization.";
+                    return View(model);
+                }
+
+                var organization = await context.Organizations.FindAsync(user.OrganizationID.Value);
+                if (organization == null)
+                {
+                    TempData["ErrorMessage"] = "Organization not found.";
+                    return View(model);
+                }
+
+                // Update organization details
+                organization.Name = model.Name;
+                organization.Description = model.Description;
+                organization.YearFounded = model.YearFounded;
+                organization.Address = model.Address;
+                organization.ContactNo = long.Parse(model.ContactNo);
+                organization.ContactPerson = model.ContactPerson;
+                organization.OrgLink = model.OrgLink;
+
+                // Handle password change if provided
+                bool passwordChanged = false;
+                if (!string.IsNullOrEmpty(CurrentPassword) && !string.IsNullOrEmpty(NewPassword))
+                {
+                    if (NewPassword != ConfirmPassword)
+                    {
+                        ModelState.AddModelError("", "New password and confirmation password do not match.");
+                        return View(model);
+                    }
+
+                    var passwordCheck = await userManager.CheckPasswordAsync(user, CurrentPassword);
+                    if (!passwordCheck)
+                    {
+                        ModelState.AddModelError("", "Current password is incorrect.");
+                        return View(model);
+                    }
+
+                    var passwordChangeResult = await userManager.ChangePasswordAsync(user, CurrentPassword, NewPassword);
+                    if (!passwordChangeResult.Succeeded)
+                    {
+                        foreach (var error in passwordChangeResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View(model);
+                    }
+
+                    // Update organization password as well
+                    organization.Password = NewPassword;
+                    passwordChanged = true;
+                }
+
+                // Save organization changes
+                context.Organizations.Update(organization);
+                await context.SaveChangesAsync();
+
+                string successMessage = "Profile updated successfully!";
+                if (passwordChanged)
+                {
+                    successMessage += " Password has been changed.";
+                }
+
+                TempData["SuccessMessage"] = successMessage;
+                return RedirectToAction("Index", "Organization");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating your profile.";
+                return View(model);
+            }
+        }
     }
 }
