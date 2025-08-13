@@ -1,0 +1,292 @@
+﻿@using GabayForGood.WebApp.Models
+@model OrgVM
+@{
+    ViewData["Title"] = "Edit Organization Profile";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+    }
+
+    .edit-org-container {
+        max-width: 850px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    }
+
+    .edit-org-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+    }
+
+    .edit-org-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+    }
+
+    .back-link {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+        .back-link:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: #fff;
+        }
+
+    .form-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.25s;
+    }
+
+        .form-control:focus {
+            border-color: #ffd700;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255,215,0,0.25);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+
+    .text-danger {
+        font-size: 12px;
+        color: #dc3545;
+        margin-top: 4px;
+    }
+
+    .form-note {
+        font-size: 12px;
+        color: #777;
+        margin-top: 4px;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 28px;
+        border-radius: 25px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #ffd700;
+        color: #333;
+    }
+
+        .btn-primary:hover {
+            background-color: #ffec80;
+            transform: translateY(-1px);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+        }
+
+    .password-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #ffd700;
+    }
+
+        .password-section h5 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+    @@media (max-width: 768px) {
+        .edit-org-container
+
+    {
+        margin: 15px;
+        padding: 25px;
+    }
+
+    .edit-org-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    }
+</style>
+
+<div class="edit-org-container">
+    <div class="edit-org-header">
+        <h1 class="edit-org-title">Edit Organization Profile</h1>
+        <a asp-controller="Organization" asp-action="Index" class="back-link">← Back</a>
+    </div>
+
+    <form asp-controller="Organization" asp-action="EditProfileOrg" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="OrganizationID" />
+        <input type="hidden" asp-for="CreatedAt" />
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">Organization Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Enter organization name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="YearFounded" class="form-label">Year Founded</label>
+                <input asp-for="YearFounded" class="form-control" placeholder="Enter year founded" />
+                <span asp-validation-for="YearFounded" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group full-width">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" placeholder="Describe your organization..." rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group full-width">
+            <label asp-for="Address" class="form-label">Address</label>
+            <textarea asp-for="Address" class="form-control" placeholder="Enter organization address" rows="2"></textarea>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="Email" class="form-label">Email Address</label>
+                <input asp-for="Email" class="form-control" readonly />
+                <div class="form-note">Email cannot be changed</div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ContactNo" class="form-label">Contact Number</label>
+                <input asp-for="ContactNo" class="form-control" placeholder="Enter contact number" />
+                <span asp-validation-for="ContactNo" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label asp-for="ContactPerson" class="form-label">Contact Person</label>
+                <input asp-for="ContactPerson" class="form-control" placeholder="Enter contact person name" />
+                <span asp-validation-for="ContactPerson" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="OrgLink" class="form-label">Organization Website (Optional)</label>
+                <input asp-for="OrgLink" class="form-control" placeholder="https://your-organization.com" />
+                <span asp-validation-for="OrgLink" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="password-section">
+            <h5>Change Password</h5>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input name="CurrentPassword" type="password" class="form-control" placeholder="Enter current password" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input name="NewPassword" type="password" class="form-control" placeholder="Enter new password" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input name="ConfirmPassword" type="password" class="form-control" placeholder="Confirm new password" />
+            </div>
+            <div class="form-note">Leave password fields empty if you don't want to change your password</div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-controller="Organization" asp-action="Index" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

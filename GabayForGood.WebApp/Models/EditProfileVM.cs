@@ -2,7 +2,7 @@
 
 namespace GabayForGood.WebApp.Models
 {
-    public class EditProfileVM
+    public class EditProfileVM //EditProfile for User
     {
         [Required]
         [MaxLength(30)]
