@@ -11,12 +11,9 @@
     }
 
     @@media (max-width: 768px) {
-        .hero-text
-
-    {
-        font-size: 2rem;
-    }
-
+        .hero-text {
+            font-size: 2rem;
+        }
     }
 
     .cause-title {
@@ -69,36 +66,60 @@
     }
 
     .btn-donate {
-        font-size: 0.9rem;
-        padding: 10px 18px;
+        font-size: 0.875rem;
+        padding: 12px 24px;
         background: linear-gradient(135deg, #007bff, #0056b3);
         border: none;
         color: white;
-        border-radius: 25px;
+        border-radius: 50px;
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
-        display: inline-block;
-        box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        min-width: 120px;
+        white-space: nowrap;
     }
 
         .btn-donate:hover {
             background: linear-gradient(135deg, #0056b3, #004494);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.35);
             text-decoration: none;
             color: white;
         }
 
-        .btn-donate.opacity-75 {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
+    .btn-updates {
+        font-size: 0.875rem;
+        padding: 12px 24px;
+        background: #f8f9fa;
+        border: 2px solid #dee2e6;
+        color: #495057;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 120px;
+        white-space: nowrap;
+    }
 
-            .btn-donate.opacity-75:hover {
-                background: linear-gradient(135deg, #218838, #1ea085);
-            }
+        .btn-updates:hover {
+            background: #495057;
+            border-color: #495057;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(73, 80, 87, 0.25);
+            text-decoration: none;
+        }
 
     .project-card {
         transition: all 0.3s ease;
@@ -214,6 +235,47 @@
         max-width: 1400px;
         margin: 0 auto;
         padding: 0 15px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .date-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    @@media (max-width: 576px) {
+        .action-buttons
+
+    {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-donate,
+    .btn-updates {
+        width: 100%;
+        min-width: auto;
+    }
+
     }
 </style>
 
@@ -334,16 +396,26 @@
                                         </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center mt-4">
-                                        <div class="text-muted">
-                                            <i class="fas fa-calendar-alt me-1"></i>
-                                            <small>@(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))</small>
+                                    <div class="button-container">
+                                        <div class="date-info">
+                                            <i class="fas fa-calendar-alt me-2"></i>
+                                            <span>@(project.StartDate.ToString("MMM dd")) - @(project.EndDate.ToString("MMM dd, yyyy"))</span>
                                         </div>
-                                        <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })"
-                                           class="btn-donate @(project.IsGoalReached ? "opacity-75" : "")">
-                                            <i class="fas fa-heart me-1"></i>
-                                            @(project.IsGoalReached ? "Support" : "Donate")
-                                        </a>
+                                        <div class="action-buttons">
+                                            @if (!project.IsGoalReached)
+                                            {
+                                                <a href="@Url.Action("User", "Donation", new { id = project.ProjectId })"
+                                                   class="btn-donate">
+                                                    <i class="fas fa-heart me-2"></i>
+                                                    Donate
+                                                </a>
+                                            }
+                                            <a href="@Url.Action("ProjectUpdates", "User", new { id = project.ProjectId })"
+                                               class="btn-updates">
+                                                <i class="fas fa-bell me-2"></i>
+                                                Updates
+                                            </a>
+                                        </div>
                                     </div>
 
                                     @if (!project.IsGoalReached && !isExpired)

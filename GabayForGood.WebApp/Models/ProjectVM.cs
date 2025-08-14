@@ -56,12 +56,16 @@ namespace GabayForGood.WebApp.Models
         [StringLength(50, ErrorMessage = "Status must be less than 50 characters.")]
         public string Status { get; set; }
 
+        // Add Organization Name property for display
+        [Display(Name = "Organization")]
+        public string OrganizationName { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
 
-        // Computed properties for display
+        // Computed properties for display - Changed to double for consistency
         [Display(Name = "Progress Percentage")]
-        public decimal ProgressPercentage => GoalAmount > 0 ? (CurrentAmount / GoalAmount) * 100 : 0;
+        public double ProgressPercentage => GoalAmount > 0 ? (double)(CurrentAmount / GoalAmount) * 100 : 0;
 
         [Display(Name = "Remaining Amount")]
         public decimal RemainingAmount => GoalAmount - CurrentAmount;

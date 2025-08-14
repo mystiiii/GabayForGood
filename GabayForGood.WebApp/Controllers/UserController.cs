@@ -377,5 +377,87 @@ namespace GabayForGood.WebApp.Controllers
                 }
             }
         }
+
+        public async Task<IActionResult> ProjectUpdates(int id)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"ProjectUpdates called with id: {id}");
+
+                // Step 1: Check if project exists (removed unnecessary includes for string properties)
+                var project = await context.Projects
+                    .Include(p => p.Organization) // Only include Organization since Category and Cause are strings
+                    .FirstOrDefaultAsync(p => p.ProjectId == id);
+
+                System.Diagnostics.Debug.WriteLine($"Project found: {project != null}");
+
+                if (project == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Project is null, redirecting to Browse");
+                    TempData["ErrorMessage"] = "Project not found.";
+                    return RedirectToAction("Browse", "User");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Project details - ID: {project.ProjectId}, Title: {project.Title}");
+
+                // Step 2: Get project updates
+                var updates = await context.ProjectUpdates
+                    .Where(u => u.ProjectId == id)
+                    .OrderByDescending(u => u.CreatedAt)
+                    .ToListAsync();
+
+                System.Diagnostics.Debug.WriteLine($"Found {updates.Count} updates for project {id}");
+
+                // Step 3: Create ProjectVM - Category and Cause are strings, not navigation properties
+                var projectVM = new ProjectVM
+                {
+                    ProjectId = project.ProjectId,
+                    Title = project.Title ?? "No Title",
+                    Description = project.Description ?? "No Description",
+                    GoalAmount = project.GoalAmount,
+                    CurrentAmount = project.CurrentAmount,
+                    StartDate = project.StartDate,
+                    EndDate = project.EndDate,
+                    ImageUrl = project.ImageUrl ?? "",
+                    Location = project.Location ?? "No Location",
+                    // Fixed: Category and Cause are strings, not navigation properties
+                    Category = project.Category ?? "Unknown",
+                    Cause = project.Cause ?? "Unknown",
+                    Status = project.Status ?? "Active",
+                    OrganizationName = project.Organization?.Name ?? "Unknown",
+                    OrganizationId = project.OrganizationId,
+                    CreatedAt = project.CreatedAt,
+                    ModifiedAt = project.ModifiedAt
+                };
+
+                System.Diagnostics.Debug.WriteLine("ProjectVM created successfully");
+
+                // Step 4: Create view model
+                var viewModel = new ProjectUpdatesVM
+                {
+                    Project = projectVM,
+                    Updates = updates
+                };
+
+                System.Diagnostics.Debug.WriteLine("View model created successfully");
+
+                // Set page title
+                ViewData["Title"] = $"Updates - {project.Title}";
+
+                System.Diagnostics.Debug.WriteLine("Returning view");
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Enhanced logging with full exception details
+                System.Diagnostics.Debug.WriteLine($"Exception in ProjectUpdates:");
+                System.Diagnostics.Debug.WriteLine($"Message: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                System.Diagnostics.Debug.WriteLine($"InnerException: {ex.InnerException?.Message}");
+
+                TempData["ErrorMessage"] = $"An error occurred while loading the project updates: {ex.Message}";
+                return RedirectToAction("Browse", "User");
+            }
+        }
     }
 }

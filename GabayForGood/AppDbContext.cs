@@ -31,13 +31,13 @@ namespace GabayForGood.DataModel
                 .HasOne(p => p.Organization)
                 .WithMany(p => p.Project)
                 .HasForeignKey(p => p.OrganizationId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             mb.Entity<ProjectUpdate>()
                 .HasOne(p => p.Project)
                 .WithMany(p => p.ProjectUpdates)
                 .HasForeignKey(p => p.ProjectId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             mb.Entity<Donation>()
                 .HasOne(d => d.User)

@@ -184,23 +184,6 @@
                                             </a>
                                         </li>
                                     }
-                                    else if (User.IsInRole("User"))
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">
-                                                <i class="fas fa-user me-2"></i>Account
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="User" asp-action="History">
-                                                <i class="fas fa-history me-2"></i>History
-                                            </a>
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        <li><a class="dropdown-item" asp-controller="User" asp-action="ViewAccount">Account</a></li>
-                                    }
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form asp-controller="User" asp-action="SignOut" method="post" class="d-inline w-100">

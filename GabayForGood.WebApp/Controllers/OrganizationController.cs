@@ -118,7 +118,6 @@ namespace GabayForGood.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while loading the project.";
                 return RedirectToAction("Index");
             }
         }
