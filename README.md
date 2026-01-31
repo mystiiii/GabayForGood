@@ -1,7 +1,3 @@
-This is a professional and structured README.md designed for your repository. It highlights the core functionality you've built while being honest about its "work in progress" status, which is common for academic or learning projects.
-
----
-
 # GabayForGood
 
 **GabayForGood** is a full-stack donation platform designed to connect donors with local NGOs in the Philippines. This project was developed as a finals requirement for the **Enterprise Programming (ENTPROG)** course.
