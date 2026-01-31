@@ -1,63 +1,39 @@
 # GabayForGood
 
-**GabayForGood** is a full-stack donation platform designed to connect donors with local NGOs in the Philippines. This project was developed as a finals requirement for the **Enterprise Programming (ENTPROG)** course.
+**GabayForGood** is a full-stack web application developed as a finals project for the **Enterprise Programming (ENTPROG)** course. The platform serves as a centralized donation hub dedicated to supporting local NGOs in the Philippines.
 
-The application leverages the **ASP.NET MVC** architectural pattern and **Microsoft Entity Framework** for robust data management and enterprise-level scalability.
+Built using the **ASP.NET MVC** framework and **Microsoft Entity Framework**, the project demonstrates the implementation of enterprise-level design patterns to solve real-world social challenges.
 
 ---
 
-## 🏗️ Technical Stack
+## 🏛️ Project Overview
+
+The primary goal of GabayForGood is to bridge the gap between willing donors and grassroots organizations. By providing a structured environment for NGO discovery and donation management, the platform aims to streamline the process of charitable giving.
+
+### Key Modules & Functionality
+
+* **User Management:** Includes a secure Login and Registration system to manage donor accounts.
+* **Admin Dashboard:** A dedicated interface designed for administrators to manage NGO listings and monitor platform activities.
+* **NGO Directory:** A browsable collection of local NGOs, allowing users to find causes that resonate with them.
+* **Data Integrity:** Developed with a comprehensive **Entity Relationship Diagram (ERD)** to manage complex relationships between users, NGOs, and donation records.
+
+## 💻 Tech Stack
 
 * **Framework:** ASP.NET Core MVC
-* **ORM:** Microsoft Entity Framework (Code First)
-* **Language:** C#
-* **Frontend:** HTML5, CSS3, JavaScript (with Razor Pages)
-* **Database:** SQL Server
+* **Database Tooling:** Microsoft Entity Framework (Code First)
+* **Languages:** C#, HTML, CSS, JavaScript
+* **Architecture:** Model-View-Controller (MVC)
 
-## ✨ Key Features
+## ⚠️ Development Note
 
-* **User Authentication:** Integrated login and registration system for secure access.
-* **NGO Donation Platform:** A centralized hub where users can browse and support various local NGOs.
-* **Admin Dashboard:** Dedicated management interface for administrators to monitor platform activity (In Development).
-* **Database Architecture:** Designed with structured Entity Relationship Diagrams (ERDs) to ensure data integrity and complex relationship mapping.
+This repository is for **demonstration purposes only**. Please take note of the following:
 
-## 📊 Database Design (ERDs)
-
-The project utilizes a relational database structure to handle:
-
-* User profiles and roles (Donor vs. Admin).
-* NGO details and verification status.
-* Donation transaction logs and history.
-
-## ⚠️ Project Status: Work in Progress
-
-This repository serves as a snapshot of the development process. Please note the following:
-
-* **Debugging:** The application is currently in a "non-final" state with several bugs yet to be resolved.
-* **Incomplete Modules:** While the foundation for the Admin Dashboard and User Auth is present, some functional logic may be missing or require further testing.
-
-## 🛠️ Setup & Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/mystiiii/GabayForGood.git
-
-```
-
-
-2. Open the `.sln` file in **Visual Studio 2022**.
-3. Ensure the **Connection String** in `appsettings.json` is updated to match your local SQL Server instance.
-4. Run the following command in the Package Manager Console to set up the database:
-```bash
-Update-Database
-
-```
-
-
-5. Build and Run the project.
+* **Project Status:** This is a finals project that remains in a "work in progress" state. It contains unfinished debugging and logic that was part of the iterative learning process.
+* **Database Connectivity:** The application was originally configured to interface with a specific institutional SQL Server database via SQL Authentication. For security and privacy, these connection strings have been commented out or restricted.
+* **Non-Public Use:** Due to the dependency on private school infrastructure, the project is not intended for public deployment or local execution without significant reconfiguration of the data layer.
 
 ---
 
 **Developed by:** [Lei Villacorta](https://www.google.com/search?q=https://github.com/mystiiii) & Team
 
-*Final Project for ENTPROG-FTIS3*
+*Finals Project | BS Information Systems* *De La Salle-College of Saint Benilde*
