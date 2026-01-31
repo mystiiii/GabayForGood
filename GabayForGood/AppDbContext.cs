@@ -20,7 +20,7 @@ namespace GabayForGood.DataModel
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=MAIBENBEN-PC\\SQLEXPRESS;Database=GabayforGood;UID=sa;PWD=stbenilde;TrustServerCertificate=true");
+            //SQL Connection here
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
